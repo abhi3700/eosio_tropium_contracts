@@ -1,0 +1,64 @@
+Wallet (locally)
+================
+name: vigeos
+password: "PW5JgTXhXR82ikkpKmDj9iKFBznWUtnRjwWykpHZ6nvGDK2xoS9od"
+command: `cleos wallet unlock -n vigeos --password PW5JgTXhXR82ikkpKmDj9iKFBznWUtnRjwWykpHZ6nvGDK2xoS9od`
+########################################################################
+Jungle Testnet
+*********************************************************************************************************
+
+VIGOR Contracts
+=============
+vigor11token
+Private key: 5JD1av78Wskmc1TaXywedooe2rEwkakGuoFzijbxq8Dhob7bVJY
+Public key: EOS5gZigusE7PgmLXypU15o43fVby2YkCz6BjEX2wHKYmFssCw15o
+-------------------------------------------------------------
+vigor1111ico
+Private key: 5JmiFpj389AjSopEuVxgfDGGo7nCA3VeMRnaA8uzMZJFi6jc77D
+Public key: EOS5zJKUSP4HMWdkwZ5RUXGLmXQh6gY7owrA9RWSbsVMsZcCUqAjc
+-------------------------------------------------------------
+vigor12stake
+Private key: 5KYxjdubrUmJBmycC6JKef5iZfiJafvwucK4rcoMbx6uQrp9UGa
+Public key: EOS5HdphcB4x1UNavWX4VxLSGeR44GjKnaQdfEeMbiPtGvRshq9qr
+-------------------------------------------------------------
+
+VIGOR System accounts
+===================
+vigor1issuer
+Private key: 5J271TqSqF1KYyj73jVVd7bgFH1HFHjoqA4kb3BdZPJ2LV3SUrF
+Public key: EOS7fenrtwMhQnxymysLo2iehBh5r7UsPF4dpJeB8LjQ3v2vUW77m
+-------------------------------------------------------------
+
+VIGOR Users
+=========
+vigoruser111
+Private key: 5KiTqWLH3k8M7gYRsPVD9Urpay6PwpbuyL6SaLZVuo9hFYNAhhK
+Public key: EOS4vDf9pViKNbCFtBCeAkMKGSqTvbfJaiZYxAmW35e512UASBu5G
+-------------------------------------------------------------
+vigoruser112
+Private key: 5JwyZqp6cP3Wz6KUcLMi45jbHzWL1eb9z92YzicZNwvnGc9PdeJ
+Public key: EOS6RuJdvbffDTsiC2eCwJKDub3DNnZCbVEQBcdN3UTdqaHt9Miah
+-------------------------------------------------------------
+
+Vigor Admins
+============
+vigoradmin11
+Private key: 5KM7h1UPUtJwnk26VFnqhYwV5mMQMFjmDNChdFaoDJgPHhuCMDb
+Public key: EOS5aiJJQNpSWPLmc5TDrDGS6oLhXwd7QiNjcMW5i1RsSf1QsVkpC
+-----------------------------------------------------------------
+vigoradmin12
+Private key: 5Hs1Co4hzFpfQw5KfR2x71cJavdUS1Mbu3P3KobQczrcV5cN7Hs
+Public key: EOS84g6tipcMtFqrauQmDByCytzDSZcv1FcDt1itjyyS3Nvv3ySUN
+-----------------------------------------------------------------
+vigoradmin13
+Private key: 5JTdi4rFduYnAxpJwwb7GRHQgUAruXK5hAY7fTQ2fNuxakAXJWY
+Public key: EOS6u2mToYV9FWV6KTHBcT4SqteiWjDTeArLSpe4PrkwepuYecWic
+-----------------------------------------------------------------
+vigoradmin14
+Private key: 5KVscQhTHKHJZmg3JyT3Av6gTH43Pv8Ku7nGmvLTMyFkHjoXf65
+Public key: EOS67mYLpihey6QdacuVpFy84Minu5Jna3QBHjbBF6QEByKP8vyeq
+-----------------------------------------------------------------
+vigoradmin15
+Private key: 5JcdFxnPcHgUQvvP2qGC7iVMhnzzNQgyjbysXQPh3QiZEhKA7SF
+Public key: EOS5Lk5wmBPQpWfP1DscZYfJGZy7ZYiBBKZisrh5CLqZYTCayanPt
+-----------------------------------------------------------------
