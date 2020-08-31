@@ -28,6 +28,7 @@ using eosio::action_wrapper;
 using std::string;
 using std::vector;
 using std::pair;
+using std::make_pair;
 
 
 CONTRACT vigorico : public contract
@@ -50,18 +51,18 @@ public:
 
 	/**
 	 * @brief - only accessed by contract owner
-	 * @details - contract owner initializes the ICO rate for buy, ico_type. NOTE: not used for modifying ICO rate
+	 * @details - contract owner initializes the ICO rate for buy, phase_type. NOTE: not used for modifying ICO rate
 	 * 
 	 * @param buyorsell_type - buy/sell
-	 * @param ico_type - A/B/C
-	 * @param price_pereos - price per EOS token
+	 * @param phase_type - A/B/C
+	 * @param current_price_pereos - price per EOS token
 	 * @param vector_admin - vector of admins who has the right to propose/approve the price proposal
 	 * 
-	 * @pre - the ico_type row (for buy/sell) must not exist
+	 * @pre - the phase_type row (for buy/sell) must not exist
 	 */
 	ACTION initicorate( const name& buyorsell_type,
-						const name& ico_type,
-						float price_pereos,
+						const name& phase_type,
+						float current_price_pereos,
 						const vector<name> vector_admin );
 
 
@@ -72,16 +73,16 @@ public:
 	 * 
 	 * @setter - one of admins
 	 * @param buyorsell_type - buy/sell
-	 * @param ico_type - A/B/C
-	 * @param price_pereos - price per EOS token
+	 * @param phase_type - A/B/C
+	 * @param proposed_price_pereos - price per EOS token
 	 * 
 	 * 
 	 * @pre - setter must be one of admins
 	 */
 	ACTION seticorate( const name& setter,
 						const name& buyorsell_type,
-						const name& ico_type,
-						float price_pereos,
+						const name& phase_type,
+						float proposed_price_pereos,
 						uint32_t decision_timestamp );
 
 	/**
@@ -94,7 +95,7 @@ public:
 	 * @param quantity - the deposit amount
 	 * @param memo - remarks
 	 */
-	[[eosio::on_notify("eosio.token::transfer")]]
+	[[eosio::on_notify("*::transfer")]]
 	void deposit( const name& buyer_ac, 
 					const name& contract_ac, 
 					const asset& quantity, 
@@ -106,12 +107,14 @@ public:
 	 * @details - disburse from contract a/c to user a/c. Also, update the fund table
 	 * 
 	 * @param receiver_ac - account to whom money is disbursed
-	 * @param ico_type - A/B/C
+	 * @param buyorsell_type - buy/sell
+	 * @param phase_type - A/B/C
 	 * @param disburse_qty - deposited quantity
 	 * @param memo - purpose of disbursing money
 	 */
 	ACTION disburse( const name& receiver_ac,
-					const name& ico_type,
+					const name& buyorsell_type,
+					const name& phase_type,
 					const asset& disburse_qty,
 					const string& memo );
 
@@ -153,31 +156,60 @@ private:
 	// scope - buy or sell
 	TABLE icorate
 	{
-		name ico_type;
+		name phase_type;									// a/b/c
 		float current_price_pereos;						// E.g. 1 EOS = 30 VIGOR. So, price_pereos = 30
 		float proposed_price_pereos;					// E.g. 1 EOS = 40 VIGOR. So, price_pereos = 40
 		vector<name> vector_admin;						// E.g. ["admin1", "admin2", "admin3", "admin4", "admin5"]
-		vector<name, name> vector_admin_vote			// E.g. [{"admin1": "y"}, {"admin2": "n"}]
+		vector<pair<name, name>> vector_admin_vote;			// E.g. [{"admin1": "y"}, {"admin2": "n"}]
 		uint32_t decision_timestamp;					// E.g. in next 15 mins, use the timestamp 15 mins from current timestamp
 
-		auto primary_key() const { return ico_type.value; }
+		auto primary_key() const { return phase_type.value; }
 	};
 
 	using icorate_index = multi_index<"icorates"_n, icorate>;
 
 	// -----------------------------------------------------------------------------------------------------------------------
+	struct account
+	{
+		asset balance;
+
+		uint64_t primary_key() const { return balance.symbol.code().raw(); }
+	};
+
+	using accounts_index = eosio::multi_index< "accounts"_n, account >;
+	// -----------------------------------------------------------------------------------------------------------------------
 	// Adding inline action for `sendalert` action in the same contract 
 	void send_alert(const name& user, const string& message);
 
 	// Adding inline action for `disburse` action in the same contract 
-	void disburse_inline(const name& receiver_ac,
-						const name& ico_type,
-						const asset& quantity,
-						const string& memo );
+	void disburse_inline( const name& receiver_ac,
+							const name& buyorsell_type,
+							const name& phase_type,
+							const asset& disburse_qty,
+							const string& memo );
 
 	// get the current timestamp
 	inline uint32_t now() const {
 		return current_time_point().sec_since_epoch();
+	}
+
+	// NOTE: vector arg can't be const as emplace_back is non-const method
+	inline void creatify_vector_pair( vector<pair<name, asset>>& v, 
+										const name& s, 
+										const asset& val) {
+		auto s_it = std::find_if(v.begin(), v.end(), [&](auto& vs){ return vs.first == s; });
+		if(s_it != v.end()) {		// key found
+			s_it->second += val;		// modify by adding values
+		}
+		else {						// key NOT found
+			v.emplace_back(make_pair(s, val));
+		}
+	}
+
+	// check if the setter is one of admins set in the vector
+	inline void check_setter(vector<name> vec, const name& s) {
+		auto it = std::find(vec.begin(), vec.end(), s);
+		check(it != vec.end(), "Sorry! the setter: " + s.to_string() + " is not present in the admin list.");
 	}
 
 };
