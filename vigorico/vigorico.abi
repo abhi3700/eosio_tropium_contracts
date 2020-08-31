@@ -166,6 +166,30 @@
                     "type": "uint32"
                 }
             ]
+        },
+        {
+            "name": "testdelfund",
+            "base": "",
+            "fields": [
+                {
+                    "name": "fund_type",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "testdelico",
+            "base": "",
+            "fields": [
+                {
+                    "name": "scope",
+                    "type": "name"
+                },
+                {
+                    "name": "phase_type",
+                    "type": "name"
+                }
+            ]
         }
     ],
     "actions": [
@@ -187,6 +211,16 @@
         {
             "name": "seticorate",
             "type": "seticorate",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "testdelfund",
+            "type": "testdelfund",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "testdelico",
+            "type": "testdelico",
             "ricardian_contract": ""
         }
     ],

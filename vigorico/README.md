@@ -2,34 +2,37 @@
 This contract is used for auto/manual disbursement of dApp tokens in exchange of EOS tokens (which can be modified) at ICO rates (set for multiple phases). 
 
 ## Features
-* Auto-disbursement of DCI tokens from ICO contract after receiving EOS tokens from buyer.
-* Also, Manual-disbursement of DCI tokens from ICO contract is possible, if `"dciico::disburse"` action is not added as inline action, but rather  in the `dciico` contract.
+* Auto-disbursement of VIGOR tokens from ICO contract after receiving EOS tokens from buyer.
+* Also, Manual-disbursement of VIGOR tokens from ICO contract is possible, if `"vigorico::disburse"` action is not added as inline action, but rather  in the `vigorico` contract.
 * ICO can be conducted in multiple phases completely independent of each other.
 
 ## Workflow
 ### Pre-requisite
-* Create DCI token with attributes:
+* Create VIGOR token with attributes:
 ```md
 "max_supply": "10 M",
-"issuer": "dcieosissuer"
+"issuer": "vigor1issuer"
 ```
-* Issue DCI token to the issuer: `"dcieosissuer"`
-* Issuer transfer DCI tokens to the __ICO contract__ for auto-disbursement DCI tokens only after receiving EOS tokens from buyer.
+* Issue VIGOR token to the issuer: `"vigor1issuer"`
+* Issuer transfer VIGOR tokens to the __ICO contract__ for auto-disbursement VIGOR tokens only after receiving EOS tokens from buyer.
 * ICO rate has to be set by the contract owner for respective phases - A, B, C.
 
 ### Real time
-* Buyer send EOS tokens & receive DCI tokens to/from contract respectively.
+* Buyer send EOS tokens & receive VIGOR tokens to/from contract respectively.
+* Seller send VIGOR tokens & receive EOS tokens to/from contract respectively.
 
-> NOTE: Anyone can be buyer, no authentication required from Blockchain side.
+> NOTE: Anyone can be buyer/seller, no authentication required from dApp side.
 
 ## Compile
 ```console
-$ eosio-cpp dciico.cpp -o dciico.wasm
+$ eosio-cpp vigorico.cpp -o vigorico.wasm
 Warning, empty ricardian clause file
 Warning, empty ricardian clause file
+Warning, action <initicorate> does not have a ricardian contract
 Warning, action <seticorate> does not have a ricardian contract
 Warning, action <disburse> does not have a ricardian contract
 Warning, action <sendalert> does not have a ricardian contract
+Warning, action <initicorate> does not have a ricardian contract
 Warning, action <seticorate> does not have a ricardian contract
 Warning, action <disburse> does not have a ricardian contract
 Warning, action <sendalert> does not have a ricardian contract
@@ -38,23 +41,66 @@ Warning, action <sendalert> does not have a ricardian contract
 ## Deploy
 * Deploy contract
 ```console
-$ cleost set contract dci111111ico ./
-Reading WASM from /mnt/f/Coding/github_repos/dci_contracts/dciico/dciico.wasm...
+$ cleost set contract vigor1111ico ./
+Reading WASM from /mnt/f/Coding/github_repos/eosio_vigor_contracts/vigorico/vigorico.wasm...
 Publishing contract...
-executed transaction: 72bec18c573f24d6285365e0652adb940f4ff5d4aac35ab0678498eb7c23c058  9344 bytes  868 us
-#         eosio <= eosio::setcode               {"account":"dci111111ico","vmtype":0,"vmversion":0,"code":"0061736d0100000001d3012160000060017f00600...
-#         eosio <= eosio::setabi                {"account":"dci111111ico","abi":"0e656f73696f3a3a6162692f312e31000508646973627572736500040b726563656...
+executed transaction: b52a5f5f01501638d6177616e75d7766369c429c3897dad4f853245dc4125913  13864 bytes  1187 us
+#         eosio <= eosio::setcode               {"account":"vigor1111ico","vmtype":0,"vmversion":0,"code":"0061736d0100000001e7012360000060017e00600...
+#         eosio <= eosio::setabi                {"account":"vigor1111ico","abi":"0e656f73696f3a3a6162692f312e31000808646973627572736500050b726563656...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 * Adding eosio.code to permissions (for inline actions)
 ```console
-$ cleost set account permission dci111111ico active --add-code
-executed transaction: c7ac45aad98c352d3b7f99128d474771620654cb4ba40359a5cf25ef697346eb  184 bytes  194 us
-#         eosio <= eosio::updateauth            {"account":"dci111111ico","permission":"active","parent":"owner","auth":{"threshold":1,"keys":[{"key...
+$ cleost set account permission vigor1111ico active --add-code
+executed transaction: 99ab0e7cff1339e4187a6ac8159e095c7d9f2050876ab6c8c4846b52dd7f26d7  184 bytes  195 us
+#         eosio <= eosio::updateauth            {"account":"vigor1111ico","permission":"active","parent":"owner","auth":{"threshold":1,"keys":[{"key...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 
 ## Testing
+### Action - `initicorate`
+* set the ICO rate for phase A
+```console
+$ cleost push action vigor1111ico initicorate '{"buyorsell_type": "buy","phase_type": "a","current_price_pereos": 40,"vector_admin": ["vigoradmin11", "vigoradmin12", "vigoradmin13", "vigoradmin14", "vigoradmin15"]}' -p vigor1111ico@active
+executed transaction: b8a284cd4e8a7f14f955f690ab7a679b8a091bae0ee622695679ca1ef2f5c526  160 bytes  227 us
+#  vigor1111ico <= vigor1111ico::initicorate    {"buyorsell_type":"buy","phase_type":"a","current_price_pereos":"40.00000000000000000","vector_admin...
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+  - view the table
+```console
+$ cleost get table vigor1111ico buy icorates --show-payer
+{
+  "rows": [{
+      "data": {
+        "phase_type": "a",
+        "current_price_pereos": "40.00000000000000000",
+        "proposed_price_pereos": "0.00000000000000000",
+        "vector_admin": [
+          "vigoradmin11",
+          "vigoradmin12",
+          "vigoradmin13",
+          "vigoradmin14",
+          "vigoradmin15"
+        ],
+        "vector_admin_vote": [],
+        "decision_timestamp": 0
+      },
+      "payer": "vigor1111ico"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+* Again set the ICO rate for phase A & get error:
+```console
+$ cleost push action vigor1111ico initicorate '{"buyorsell_type": "buy","phase_type": "a","current_price_pereos": 40,"vector_admin": ["vigoradmin11", "vigoradmin12", "vigoradmin13", "vigoradmin14", "vigoradmin15"]}' -p vigor1111ico@active
+Error 3050003: eosio_assert_message assertion failure
+Error Details:
+assertion failure with message: The row for this phase_type: a is already initialized.
+pending console output:
+```
+
 ### Action - `seticorate`
 * set the ICO rate for phase A
 ```console
@@ -140,12 +186,12 @@ pending console output:
 ``` 
 	- First, issuer - `dcieosissuer` transfer some 10% of total 1M tokens i.e. 1,00,000 for ICO distribution in phase A
 ```console
-$ cleost push action dci1111token transfer '["dcieosissuer", "dci111111ico", "100000.0000 DCI", "transfer DC
+$ cleost push action dci1111token transfer '["dcieosissuer", "dci111111ico", "100000.0000 VIGOR", "transfer DC
 I tokens for ICO phase A"]' -p dcieosissuer@active
 executed transaction: e4334c81c4f2894c8de88c8e7561ebcb6e7be4705156e1e71a0d0483cb58686d  160 bytes  214 us
-#  dci1111token <= dci1111token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 DCI","memo":"transfer DCI tokens ...
-#  dcieosissuer <= dci1111token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 DCI","memo":"transfer DCI tokens ...
-#  dci111111ico <= dci1111token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 DCI","memo":"transfer DCI tokens ...
+#  dci1111token <= dci1111token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tokens ...
+#  dcieosissuer <= dci1111token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tokens ...
+#  dci111111ico <= dci1111token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tokens ...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 * `dciuser11111` successfully transfer some "3.0000 EOS" to ICO funding in phase-A
@@ -155,27 +201,27 @@ executed transaction: 120b1b2bd3ba4a49601c6aa080c6f0ae7df3bed9c84bd4172e6fa06a9f
 #   eosio.token <= eosio.token::transfer        {"from":"dciuser11111","to":"dci111111ico","quantity":"3.0000 EOS","memo":"phase A"}
 #  dciuser11111 <= eosio.token::transfer        {"from":"dciuser11111","to":"dci111111ico","quantity":"3.0000 EOS","memo":"phase A"}
 #  dci111111ico <= eosio.token::transfer        {"from":"dciuser11111","to":"dci111111ico","quantity":"3.0000 EOS","memo":"phase A"}
-#  dci111111ico <= dci111111ico::disburse       {"receiver_ac":"dciuser11111","phase":"a","disburse_qty":"120.0000 DCI","memo":"phase A"}
-#  dci111111ico <= dci111111ico::sendalert      {"user":"dciuser11111","message":"You receive '120.0000 DCI' for depositing '3.0000 EOS' to DCI ICO ...
-#  dci1111token <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11111","quantity":"120.0000 DCI","memo":"DCI ICO contract disbur...
-#  dci111111ico <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11111","quantity":"120.0000 DCI","memo":"DCI ICO contract disbur...
-#  dciuser11111 <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11111","quantity":"120.0000 DCI","memo":"DCI ICO contract disbur...
-#  dciuser11111 <= dci111111ico::sendalert      {"user":"dciuser11111","message":"You receive '120.0000 DCI' for depositing '3.0000 EOS' to DCI ICO ...
+#  dci111111ico <= dci111111ico::disburse       {"receiver_ac":"dciuser11111","phase":"a","disburse_qty":"120.0000 VIGOR","memo":"phase A"}
+#  dci111111ico <= dci111111ico::sendalert      {"user":"dciuser11111","message":"You receive '120.0000 VIGOR' for depositing '3.0000 EOS' to VIGOR ICO ...
+#  dci1111token <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11111","quantity":"120.0000 VIGOR","memo":"VIGOR ICO contract disbur...
+#  dci111111ico <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11111","quantity":"120.0000 VIGOR","memo":"VIGOR ICO contract disbur...
+#  dciuser11111 <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11111","quantity":"120.0000 VIGOR","memo":"VIGOR ICO contract disbur...
+#  dciuser11111 <= dci111111ico::sendalert      {"user":"dciuser11111","message":"You receive '120.0000 VIGOR' for depositing '3.0000 EOS' to VIGOR ICO ...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
-	- View the DCI balance of `dciuser11111` buyer
+	- View the VIGOR balance of `dciuser11111` buyer
 ```console
 $ cleost get table dci1111token dciuser11111 accounts
 {
   "rows": [{
-      "balance": "120.0000 DCI"
+      "balance": "120.0000 VIGOR"
     }
   ],
   "more": false,
   "next_key": ""
 }
 ```
-	- So, basically, buyer sends `3 EOS` & receives `120 DCI` tokens instead
+	- So, basically, buyer sends `3 EOS` & receives `120 VIGOR` tokens instead
 * `dciuser11112` successfully transfer some "5.0000 EOS" to ICO funding in phase-B
 ```console
 $ cleost push action eosio.token transfer '["dciuser11112", "dci111111ico", "5.0000 EOS", "phase B"]' -p dci
@@ -184,20 +230,20 @@ executed transaction: 524005b2059de939c79fc923394d543c7bd2d888fe3bdaabda562aa18f
 #   eosio.token <= eosio.token::transfer        {"from":"dciuser11112","to":"dci111111ico","quantity":"5.0000 EOS","memo":"phase B"}
 #  dciuser11112 <= eosio.token::transfer        {"from":"dciuser11112","to":"dci111111ico","quantity":"5.0000 EOS","memo":"phase B"}
 #  dci111111ico <= eosio.token::transfer        {"from":"dciuser11112","to":"dci111111ico","quantity":"5.0000 EOS","memo":"phase B"}
-#  dci111111ico <= dci111111ico::disburse       {"receiver_ac":"dciuser11112","phase":"b","disburse_qty":"350.0000 DCI","memo":"phase B"}
-#  dci111111ico <= dci111111ico::sendalert      {"user":"dciuser11112","message":"You receive '350.0000 DCI' for depositing '5.0000 EOS' to DCI ICO ...
-#  dci1111token <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11112","quantity":"350.0000 DCI","memo":"DCI ICO contract disbur...
-#  dci111111ico <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11112","quantity":"350.0000 DCI","memo":"DCI ICO contract disbur...
-#  dciuser11112 <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11112","quantity":"350.0000 DCI","memo":"DCI ICO contract disbur...
-#  dciuser11112 <= dci111111ico::sendalert      {"user":"dciuser11112","message":"You receive '350.0000 DCI' for depositing '5.0000 EOS' to DCI ICO ...
+#  dci111111ico <= dci111111ico::disburse       {"receiver_ac":"dciuser11112","phase":"b","disburse_qty":"350.0000 VIGOR","memo":"phase B"}
+#  dci111111ico <= dci111111ico::sendalert      {"user":"dciuser11112","message":"You receive '350.0000 VIGOR' for depositing '5.0000 EOS' to VIGOR ICO ...
+#  dci1111token <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11112","quantity":"350.0000 VIGOR","memo":"VIGOR ICO contract disbur...
+#  dci111111ico <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11112","quantity":"350.0000 VIGOR","memo":"VIGOR ICO contract disbur...
+#  dciuser11112 <= dci1111token::transfer       {"from":"dci111111ico","to":"dciuser11112","quantity":"350.0000 VIGOR","memo":"VIGOR ICO contract disbur...
+#  dciuser11112 <= dci111111ico::sendalert      {"user":"dciuser11112","message":"You receive '350.0000 VIGOR' for depositing '5.0000 EOS' to VIGOR ICO ...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
-  - View the DCI balance of `dciuser11112` buyer
+  - View the VIGOR balance of `dciuser11112` buyer
 ```console
 $ cleost get table dci1111token dciuser11112 accounts
 {
   "rows": [{
-      "balance": "350.0000 DCI"
+      "balance": "350.0000 VIGOR"
     }
   ],
   "more": false,
@@ -211,7 +257,7 @@ $ cleost get table dci1111token dciuser11112 accounts
 * [ ] Phase-wise total amount disbursement in form of vector of pairs. E.g. 
 ```md
 "deposit_qty": ["a", "1.0000 EOS", "b": "30.0000 EOS"]
-"disburse_qty": ["a", "14.0000 DCI", "b": "200.0000 DCI"]
+"disburse_qty": ["a", "14.0000 VIGOR", "b": "200.0000 VIGOR"]
 ```
 * [ ] Store all the fund record into different scope of same table as per phases. As of now, all the fund_transferred are added up & cumulative is shown.
 

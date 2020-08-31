@@ -18,6 +18,7 @@ void vigorico::initicorate( const name& buyorsell_type,
 	check(ico_it == icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is already initialized." );
 
 	icorate_table.emplace(get_self(), [&](auto& row){
+		row.phase_type = phase_type;
 		row.current_price_pereos = current_price_pereos;
 		row.vector_admin = vector_admin;
 	});

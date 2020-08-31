@@ -129,6 +129,25 @@ public:
 						const string& message);
 
 
+	ACTION testdelico(const name& scope, const name& phase_type) {
+		require_auth(get_self());
+		
+		icorate_index icorate_table(get_self(), scope.value);
+		auto ico_it = icorate_table.find(phase_type.value);
+
+		check(ico_it != icorate_table.end(), "The row for this phase_type doesn't exist" );
+		icorate_table.erase(ico_it);
+	}
+
+	ACTION testdelfund(const name& fund_type) {
+		require_auth(get_self());
+		
+		fund_index fund_table(get_self(), get_self().value);
+		auto fund_it = fund_table.find(fund_type.value);
+
+		check(fund_it != fund_table.end(), "The row for this fund_type doesn't exist" );
+		fund_table.erase(fund_it);
+	}
 
 	using disburse_action  = action_wrapper<"disburse"_n, &vigorico::disburse>;
 
