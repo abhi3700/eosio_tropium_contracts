@@ -19,7 +19,7 @@ void dciico::deposit( const name& buyer_ac,
 
 	// instantiate the `fund` table
 	fund_index fund_table(get_self(), buyer_ac.value);
-	auto fund_it = fund_table.find(fund_token_symbol.raw());
+	auto fund_it = fund_table.find();
 
 	// update (add/modify) the deposit_qty
 	if(fund_it == fund_table.end()) {
