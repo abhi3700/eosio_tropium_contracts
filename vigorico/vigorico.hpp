@@ -79,11 +79,40 @@ public:
 	 * 
 	 * @pre - setter must be one of admins
 	 */
-	ACTION seticorate( const name& setter,
+	ACTION propoicorate( const name& setter,
 						const name& buyorsell_type,
 						const name& phase_type,
 						float proposed_price_pereos,
 						uint32_t decision_timestamp );
+
+
+	/**
+	 * @brief - only accessed by admins
+	 * @details - vote for the proposal
+	 * 
+	 * @admin - one of admins
+	 * @param buyorsell_type - buy/sell
+	 * @param phase_type - A/B/C
+	 * @param vote - y/n
+	 * 
+	 * @pre - [current_timestamp <= decision_timestamp]
+	 */
+	ACTION voteicorate( const name& admin,
+						const name& buyorsell_type,
+						const name& phase_type,
+						const name& vote );
+
+
+	/**
+	 * @brief - only accessed by the contract
+	 * @details - count the votes & change the current_price as proposed_price
+	 * 
+	 * @param buyorsell_type - buy or sell
+	 * @param phase_type - A/B/C
+	 * 
+	 */
+	ACTION approicorate( const name& buyorsell_type,
+						const name& phase_type );
 
 	/**
 	 * @brief - deposit EOS into vigor ICO fund to the contract
@@ -131,7 +160,7 @@ public:
 
 	ACTION testdelico(const name& scope, const name& phase_type) {
 		require_auth(get_self());
-		
+
 		icorate_index icorate_table(get_self(), scope.value);
 		auto ico_it = icorate_table.find(phase_type.value);
 
@@ -213,7 +242,8 @@ private:
 	}
 
 	// NOTE: vector arg can't be const as emplace_back is non-const method
-	inline void creatify_vector_pair( vector<pair<name, asset>>& v, 
+	// asset values are added here in order to store the total value 
+	inline void creatify_vector_pair_fund( vector<pair<name, asset>>& v, 
 										const name& s, 
 										const asset& val) {
 		auto s_it = std::find_if(v.begin(), v.end(), [&](auto& vs){ return vs.first == s; });
@@ -225,10 +255,42 @@ private:
 		}
 	}
 
-	// check if the setter is one of admins set in the vector
-	inline void check_setter(vector<name> vec, const name& s) {
+	// admin can change their votes repeatedly before the decision_timestamp
+	inline void creatify_vector_pair_ico( vector<pair<name, name>>& v, 
+										const name& s, 
+										const name& val		// can be "y"_n or "n"_n
+										) {
+		auto s_it = std::find_if(v.begin(), v.end(), [&](auto& vs){ return vs.first == s; });
+		if(s_it != v.end()) {		// key found
+			s_it->second = val;		// modify by setting values
+		}
+		else {						// key NOT found
+			v.emplace_back(make_pair(s, val));
+		}
+	}
+
+	// check if the user is one of admins set in the vector
+	inline void check_admin(const vector<name> vec, const name& s) {
 		auto it = std::find(vec.begin(), vec.end(), s);
-		check(it != vec.end(), "Sorry! the setter: " + s.to_string() + " is not present in the admin list.");
+		check(it != vec.end(), "Sorry! the user: " + s.to_string() + " is not present in the admin list.");
+	}
+
+	inline bool approval_status(vector<pair<name, name>> vec) {
+		auto admin_count = vec.size();
+		auto vote_count = 0;
+
+		for (auto itr = vec.begin(); itr != vec.end(); ++itr) {
+			if(itr->second == "y"_n) {
+				++vote_count;
+			}
+		}
+
+		if(vote_count > admin_count/2) {
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 };

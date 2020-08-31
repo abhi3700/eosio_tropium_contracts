@@ -4,6 +4,20 @@
     "types": [],
     "structs": [
         {
+            "name": "approicorate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "buyorsell_type",
+                    "type": "name"
+                },
+                {
+                    "name": "phase_type",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "disburse",
             "base": "",
             "fields": [
@@ -128,21 +142,7 @@
             ]
         },
         {
-            "name": "sendalert",
-            "base": "",
-            "fields": [
-                {
-                    "name": "user",
-                    "type": "name"
-                },
-                {
-                    "name": "message",
-                    "type": "string"
-                }
-            ]
-        },
-        {
-            "name": "seticorate",
+            "name": "propoicorate",
             "base": "",
             "fields": [
                 {
@@ -164,6 +164,20 @@
                 {
                     "name": "decision_timestamp",
                     "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "sendalert",
+            "base": "",
+            "fields": [
+                {
+                    "name": "user",
+                    "type": "name"
+                },
+                {
+                    "name": "message",
+                    "type": "string"
                 }
             ]
         },
@@ -190,9 +204,36 @@
                     "type": "name"
                 }
             ]
+        },
+        {
+            "name": "voteicorate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "admin",
+                    "type": "name"
+                },
+                {
+                    "name": "buyorsell_type",
+                    "type": "name"
+                },
+                {
+                    "name": "phase_type",
+                    "type": "name"
+                },
+                {
+                    "name": "vote",
+                    "type": "name"
+                }
+            ]
         }
     ],
     "actions": [
+        {
+            "name": "approicorate",
+            "type": "approicorate",
+            "ricardian_contract": ""
+        },
         {
             "name": "disburse",
             "type": "disburse",
@@ -204,13 +245,13 @@
             "ricardian_contract": ""
         },
         {
-            "name": "sendalert",
-            "type": "sendalert",
+            "name": "propoicorate",
+            "type": "propoicorate",
             "ricardian_contract": ""
         },
         {
-            "name": "seticorate",
-            "type": "seticorate",
+            "name": "sendalert",
+            "type": "sendalert",
             "ricardian_contract": ""
         },
         {
@@ -221,6 +262,11 @@
         {
             "name": "testdelico",
             "type": "testdelico",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "voteicorate",
+            "type": "voteicorate",
             "ricardian_contract": ""
         }
     ],

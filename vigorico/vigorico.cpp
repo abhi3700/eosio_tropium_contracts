@@ -25,7 +25,7 @@ void vigorico::initicorate( const name& buyorsell_type,
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigorico::seticorate( const name& setter,
+void vigorico::propoicorate( const name& setter,
 							const name& buyorsell_type,
 							const name& phase_type,
 							float proposed_price_pereos,
@@ -40,9 +40,9 @@ void vigorico::seticorate( const name& setter,
 	icorate_index icorate_table(get_self(), buyorsell_type.value);
 	auto ico_it = icorate_table.find(phase_type.value);
 
-	check(ico_it != icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is not set. Contract should initiate using \'initicorate\'." );
+	check(ico_it != icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is not set. Contract should initiate using \'initicorate\' action." );
 
-	check_setter(ico_it->vector_admin, setter);
+	check_admin(ico_it->vector_admin, setter);
 	require_auth(setter);
 
 	check(proposed_price_pereos != ico_it->proposed_price_pereos, "The proposed price parsed is same as stored.");
@@ -59,6 +59,66 @@ void vigorico::seticorate( const name& setter,
 	});
 }
 
+// --------------------------------------------------------------------------------------------------------------------
+void vigorico::voteicorate( const name& admin,
+							const name& buyorsell_type,
+							const name& phase_type,
+							const name& vote )
+{
+	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "Type can either be \'buy\' or \'sell\'.");
+
+	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
+
+	icorate_index icorate_table(get_self(), buyorsell_type.value);
+	auto ico_it = icorate_table.find(phase_type.value);
+
+	check(ico_it != icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is not set. Contract should initiate using \'initicorate\' action." );
+
+	check_admin(ico_it->vector_admin, admin);
+	require_auth(admin);
+
+	// vote can be "y" or "n"
+	check((vote == "y"_n) || (vote == "n"_n), "admin's vote must be \'y\' or \'n\'.");
+
+	auto v1 = ico_it->vector_admin_vote;
+	auto admin_search_it = std::find_if(v1.begin(), v1.end(), [&](auto& vs){ return vs.first == admin; });
+	check(admin_search_it != v1.end(), "admin not found in the vector_admin_vote param in ICO table.");
+
+	// the parsed vote should be different than the stored one.
+	check(vote != admin_search_it->second, "this vote already exists in the table.");
+
+	check(now() <= ico_it->decision_timestamp, "\'voteicorate\' action can be accessed within the \'decision_timestamp\'.");
+
+	icorate_table.modify(ico_it, admin, [&](auto& row){
+		creatify_vector_pair_ico(row.vector_admin_vote, admin, vote);
+	});
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+void vigorico::approicorate( const name& buyorsell_type,
+							const name& phase_type )
+{
+	require_auth(get_self());
+
+	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "Type can either be \'buy\' or \'sell\'.");
+
+	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
+
+	icorate_index icorate_table(get_self(), buyorsell_type.value);
+	auto ico_it = icorate_table.find(phase_type.value);
+
+	check(ico_it != icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is not set. Contract should initiate using \'initicorate\' action." );
+
+	check(now() > ico_it->decision_timestamp, "\'approicorate\' action can be accessed only after the \'decision_timestamp\' gets elapsed.");
+
+	icorate_table.modify(ico_it, get_self(), [&](auto& row){
+		if(approval_status(ico_it->vector_admin_vote)) {
+			row.current_price_pereos = ico_it->proposed_price_pereos;
+		}
+	});
+
+}
 
 // --------------------------------------------------------------------------------------------------------------------
 void vigorico::deposit( const name& user, 
@@ -123,7 +183,7 @@ void vigorico::deposit( const name& user,
 		});
 	} else {
 		fund_table.modify(fund_it, get_self(), [&](auto& row) {
-			creatify_vector_pair(row.tot_fundtype_qty, phase_type, quantity);
+			creatify_vector_pair_fund(row.tot_fundtype_qty, phase_type, quantity);
 		});
 	}
 
@@ -182,7 +242,7 @@ void vigorico::disburse(const name& receiver_ac,
 	).send();
 
 	fund_table.modify(fund_it, get_self(), [&](auto& row) {
-		creatify_vector_pair(row.tot_disburse_qty, phase_type, disburse_qty);
+		creatify_vector_pair_fund(row.tot_disburse_qty, phase_type, disburse_qty);
 	});
 
 }

@@ -29,11 +29,17 @@ $ eosio-cpp vigorico.cpp -o vigorico.wasm
 Warning, empty ricardian clause file
 Warning, empty ricardian clause file
 Warning, action <initicorate> does not have a ricardian contract
-Warning, action <seticorate> does not have a ricardian contract
+Warning, action <propoicorate> does not have a ricardian contract
+Warning, action <voteicorate> does not have a ricardian contract
+Warning, action <approicorate> does not have a ricardian contract
 Warning, action <disburse> does not have a ricardian contract
 Warning, action <sendalert> does not have a ricardian contract
+Warning, action <testdelico> does not have a ricardian contract
+Warning, action <testdelfund> does not have a ricardian contract
 Warning, action <initicorate> does not have a ricardian contract
-Warning, action <seticorate> does not have a ricardian contract
+Warning, action <propoicorate> does not have a ricardian contract
+Warning, action <voteicorate> does not have a ricardian contract
+Warning, action <approicorate> does not have a ricardian contract
 Warning, action <disburse> does not have a ricardian contract
 Warning, action <sendalert> does not have a ricardian contract
 ```
@@ -44,9 +50,9 @@ Warning, action <sendalert> does not have a ricardian contract
 $ cleost set contract vigor1111ico ./
 Reading WASM from /mnt/f/Coding/github_repos/eosio_vigor_contracts/vigorico/vigorico.wasm...
 Publishing contract...
-executed transaction: b52a5f5f01501638d6177616e75d7766369c429c3897dad4f853245dc4125913  13864 bytes  1187 us
+executed transaction: e1dba7df60f6d00b0e11a34c185205690fc4236ffe8ea48182cf94998a641c5b  16352 bytes  1388 us
 #         eosio <= eosio::setcode               {"account":"vigor1111ico","vmtype":0,"vmversion":0,"code":"0061736d0100000001e7012360000060017e00600...
-#         eosio <= eosio::setabi                {"account":"vigor1111ico","abi":"0e656f73696f3a3a6162692f312e31000808646973627572736500050b726563656...
+#         eosio <= eosio::setabi                {"account":"vigor1111ico","abi":"0e656f73696f3a3a6162692f312e31000c0c617070726f69636f7261746500020e6...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 * Adding eosio.code to permissions (for inline actions)
