@@ -170,10 +170,10 @@ public:
 		icorate_table.erase(ico_it);
 	}
 
-	ACTION testdelfund(const name& fund_type) {
+	ACTION testdelfund(const name& user, const name& fund_type) {
 		require_auth(get_self());
 		
-		fund_index fund_table(get_self(), get_self().value);
+		fund_index fund_table(get_self(), user.value);
 		auto fund_it = fund_table.find(fund_type.value);
 
 		check(fund_it != fund_table.end(), "The row for this fund_type doesn't exist" );
@@ -219,14 +219,14 @@ private:
 	using icorate_index = multi_index<"icorates"_n, icorate>;
 
 	// -----------------------------------------------------------------------------------------------------------------------
-	struct account
-	{
-		asset balance;
+	// struct account
+	// {
+	// 	asset balance;
 
-		uint64_t primary_key() const { return balance.symbol.code().raw(); }
-	};
+	// 	uint64_t primary_key() const { return balance.symbol.code().raw(); }
+	// };
 
-	using accounts_index = eosio::multi_index< "accounts"_n, account >;
+	// using accounts_index = eosio::multi_index< "accounts"_n, account >;
 	// -----------------------------------------------------------------------------------------------------------------------
 	// Adding inline action for `sendalert` action in the same contract 
 	void send_alert(const name& user, const string& message);
@@ -278,16 +278,18 @@ private:
 	}
 
 	inline bool approval_status(vector<pair<name, name>> vec) {
-		auto admin_count = vec.size();
-		auto vote_count = 0;
+		auto yes_count = 0;
+		auto voter_count = 0;
 
 		for (auto itr = vec.begin(); itr != vec.end(); ++itr) {
 			if(itr->second == "y"_n) {
-				++vote_count;
+				++yes_count;
 			}
+			++voter_count;
 		}
 
-		if(vote_count > admin_count/2) {
+		// if "yes" count is more than 50% of voter_count
+		if(yes_count > voter_count/2) {
 			return true;
 		} else {
 			return false;
