@@ -37,6 +37,7 @@ private:
 	const symbol fund_token_symbol;
 	const symbol dapp_token_symbol;
 	const name token_contract_ac;
+	const name dapp_token_issuer;
 
 public:
 	using contract::contract;
@@ -45,7 +46,8 @@ public:
 				contract(receiver, code, ds), 
 				fund_token_symbol("EOS", 4),
 				dapp_token_symbol("VIGOR", 4),
-				token_contract_ac("vigor11token"_n) {}
+				token_contract_ac("vigor11token"_n),
+				dapp_token_issuer("vigor1issuer"_n) {}
 
 
 

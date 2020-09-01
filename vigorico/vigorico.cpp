@@ -126,84 +126,92 @@ void vigorico::deposit( const name& user,
 						const asset& quantity, 
 						const string& memo ) {
 
+
 	// check for conditions if either or both of these are true for `from` & `to`
 	if(contract_ac != get_self() ||  user == get_self()) {		// atleast one of the condition is true
 		print("Either money is not sent to the contract or contract itself is the buyer.");
 		return;
 	}
 
-	check((get_first_receiver() == "eosio.token"_n) || (get_first_receiver() == token_contract_ac), 
-		"Acceptable token contracts: \'eosio.token\' or \'" + token_contract_ac.to_string() +" \'.");
+	if(user == dapp_token_issuer) {		// include the case where, additional ICO money with VIGOR tokens needed after the contract is deployed on this a/c 
+		return;
+	} else {		
+		check((get_first_receiver() == "eosio.token"_n) || (get_first_receiver() == token_contract_ac), 
+			"Acceptable token contracts: \'eosio.token\' or \'" + token_contract_ac.to_string() +" \'.");
 
-	name buyorsell_type = ""_n;
-	if(get_first_receiver() == "eosio.token"_n) {
-		buyorsell_type = "buy"_n;
-		
-		// Although this is checked in "vigortoken::transfer" action, but fund_token_symbol check is pending. 
-		// So, in addition the entire asset check is done using static func defined in "vigorico.hpp" file.
-		// check quantity is valid for all conditions as 'asset'
-		check_quantity(quantity, fund_token_symbol);
-
-	} else if(get_first_receiver() == token_contract_ac) {
-		buyorsell_type = "sell"_n;
-
-		// Although this is checked in "vigortoken::transfer" action, but fund_token_symbol check is pending. 
-		// So, in addition the entire asset check is done using static func defined in "vigorico.hpp" file.
-		// check quantity is valid for all conditions as 'asset'
-		check_quantity(quantity, dapp_token_symbol);
-	}
-
-
-	check((memo == "phase A") || (memo == "phase B") || (memo == "phase C"), 
-		"For sending to this contract, parsed memo can either be \'buy for phase A' or \'phase B' or \'phase C'");
-
-	name phase_type = ""_n;
-	if(memo == "phase A") {
-		phase_type = "a"_n;
-	} else 	if(memo == "phase B") {
-		phase_type = "b"_n;
-	} else 	if(memo == "phase C") {
-		phase_type = "c"_n;
-	}
-
-	// instantiate the `fund` table
-	fund_index fund_table(get_self(), user.value);
-	auto fund_it = fund_table.find(buyorsell_type.value);
-
-	// update (add/modify) the deposit_qty
-	if(fund_it == fund_table.end()) {
-		fund_table.emplace(get_self(), [&](auto& row) {
-			row.tot_fundtype_qty.emplace_back(make_pair(phase_type, quantity));
+		name buyorsell_type = ""_n;
+		if(get_first_receiver() == "eosio.token"_n) {
+			buyorsell_type = "buy"_n;
 			
-			if(buyorsell_type == "buy"_n) {
-				row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, dapp_token_symbol))) ;		// initialize the asset with symbol "vigor" & '0' amount 
-			} else if(buyorsell_type == "sell"_n) {
-				row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, fund_token_symbol))) ;		// initialize the asset with symbol "vigor" & '0' amount 
-			}
-		});
-	} else {
-		fund_table.modify(fund_it, get_self(), [&](auto& row) {
-			creatify_vector_pair_fund(row.tot_fundtype_qty, phase_type, quantity);
-		});
+			// Although this is checked in "vigortoken::transfer" action, but fund_token_symbol check is pending. 
+			// So, in addition the entire asset check is done using static func defined in "vigorico.hpp" file.
+			// check quantity is valid for all conditions as 'asset'
+			check_quantity(quantity, fund_token_symbol);
+
+		} else if(get_first_receiver() == token_contract_ac) {
+			buyorsell_type = "sell"_n;
+
+			// Although this is checked in "vigortoken::transfer" action, but fund_token_symbol check is pending. 
+			// So, in addition the entire asset check is done using static func defined in "vigorico.hpp" file.
+			// check quantity is valid for all conditions as 'asset'
+			check_quantity(quantity, dapp_token_symbol);
+		}
+
+
+		check((memo == "phase A") || (memo == "phase B") || (memo == "phase C"), 
+			"For sending to this contract, parsed memo can either be \'buy for phase A' or \'phase B' or \'phase C'");
+
+		name phase_type = ""_n;
+		if(memo == "phase A") {
+			phase_type = "a"_n;
+		} else 	if(memo == "phase B") {
+			phase_type = "b"_n;
+		} else 	if(memo == "phase C") {
+			phase_type = "c"_n;
+		}
+
+		// instantiate the `fund` table
+		fund_index fund_table(get_self(), user.value);
+		auto fund_it = fund_table.find(buyorsell_type.value);
+
+		// update (add/modify) the deposit_qty
+		if(fund_it == fund_table.end()) {
+			fund_table.emplace(get_self(), [&](auto& row) {
+				row.tot_fundtype_qty.emplace_back(make_pair(phase_type, quantity));
+				
+				if(buyorsell_type == "buy"_n) {
+					row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, dapp_token_symbol))) ;		// initialize the asset with symbol "vigor" & '0' amount 
+				} else if(buyorsell_type == "sell"_n) {
+					row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, fund_token_symbol))) ;		// initialize the asset with symbol "vigor" & '0' amount 
+				}
+			});
+		} else {
+			fund_table.modify(fund_it, get_self(), [&](auto& row) {
+				creatify_vector_pair_fund(row.tot_fundtype_qty, phase_type, quantity);
+			});
+		}
+
+		// prepare for disbursement of dapp tokens as per ICO rate
+		auto disburse_asset = asset(0, dapp_token_symbol);
+
+		icorate_index icorate_table(get_self(), buyorsell_type.value);
+
+		auto ico_it = icorate_table.find(phase_type.value);
+
+		check(ico_it != icorate_table.end(), "ICO rate for phase " + phase_type.to_string() + " is not set. Please set using \'seticorate\'");
+
+		disburse_asset.amount = quantity.amount * ico_it->current_price_pereos;
+
+		// inline disburse of dapp token based on the amount of EOS sent
+		disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
+
+		// send alert to buyer for receiving dapp token
+		send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
+									quantity.to_string() + "\' to vigor ICO contract for " + buyorsell_type.to_string() + " in " + memo );
 	}
 
-	// prepare for disbursement of dapp tokens as per ICO rate
-	auto disburse_asset = asset(0, dapp_token_symbol);
 
-	icorate_index icorate_table(get_self(), buyorsell_type.value);
 
-	auto ico_it = icorate_table.find(phase_type.value);
-
-	check(ico_it != icorate_table.end(), "ICO rate for phase " + phase_type.to_string() + " is not set. Please set using \'seticorate\'");
-
-	disburse_asset.amount = quantity.amount * ico_it->current_price_pereos;
-
-	// inline disburse of dapp token based on the amount of EOS sent
-	disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
-
-	// send alert to buyer for receiving dapp token
-	send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
-								quantity.to_string() + "\' to vigor ICO contract for " + buyorsell_type.to_string() + " in " + memo );
 }
 
 
