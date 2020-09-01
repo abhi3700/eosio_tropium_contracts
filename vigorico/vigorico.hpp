@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <math.h>
 
 using eosio::contract;
 using eosio::print;
@@ -295,6 +296,12 @@ private:
 			return false;
 		}
 
+	}
+
+	// set the precision of price_pereos (of float type) to precision 2. E.g. 37.7765757 to 37.78
+	inline float round_float_2( float val ) {
+		float rounded_up = ceilf(val * 100) / 100;
+		return rounded_up;
 	}
 
 };

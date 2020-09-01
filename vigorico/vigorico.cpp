@@ -19,7 +19,7 @@ void vigorico::initicorate( const name& buyorsell_type,
 
 	icorate_table.emplace(get_self(), [&](auto& row){
 		row.phase_type = phase_type;
-		row.current_price_pereos = current_price_pereos;
+		row.current_price_pereos = round_float_2(current_price_pereos);
 		row.vector_admin = vector_admin;
 	});
 }
@@ -53,7 +53,7 @@ void vigorico::propoicorate( const name& setter,
 	// TODO: how does setter gets the RAM back. Here, the row won't be deleted, but it will remain forever.
 
 	icorate_table.modify(ico_it, setter, [&](auto& row){
-		row.proposed_price_pereos = proposed_price_pereos;
+		row.proposed_price_pereos = round_float_2(proposed_price_pereos);
 		row.decision_timestamp = decision_timestamp;
 	});
 }
@@ -193,23 +193,45 @@ void vigorico::deposit( const name& user,
 		}
 
 		// prepare for disbursement of dapp tokens as per ICO rate
-		auto disburse_asset = asset(0, dapp_token_symbol);
+		if(buyorsell_type == "buy"_n) {
+			auto disburse_asset = asset(0, dapp_token_symbol);
 
-		icorate_index icorate_table(get_self(), buyorsell_type.value);
+			icorate_index icorate_table(get_self(), buyorsell_type.value);
 
-		auto ico_it = icorate_table.find(phase_type.value);
+			auto ico_it = icorate_table.find(phase_type.value);
 
-		check(ico_it != icorate_table.end(), "ICO rate for phase " + phase_type.to_string() + " is not set. Please set using \'seticorate\'");
-		check(ico_it->current_price_pereos != 0, "current price_pereos must be non-zero.");
+			check(ico_it != icorate_table.end(), "ICO rate for \'" + buyorsell_type.to_string() + "\' in phase " + phase_type.to_string() + " is not set. Contract owner must set using \'initicorate\'");
+			check(ico_it->current_price_pereos != 0, "current price_pereos must be non-zero.");
 
-		disburse_asset.amount = quantity.amount * ico_it->current_price_pereos;
+			disburse_asset.amount = quantity.amount * ico_it->current_price_pereos;
 
-		// // inline disburse of dapp token based on the amount of EOS sent
-		disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
+			// // inline disburse of dapp token based on the amount of EOS sent
+			disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
 
-		// send alert to buyer for receiving dapp token
-		send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
-									quantity.to_string() + "\' to vigor ICO contract for " + buyorsell_type.to_string() + " in " + memo );
+			// send alert to buyer for receiving dapp token
+			send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
+										quantity.to_string() + "\' to vigor ICO contract for " + buyorsell_type.to_string() + " in " + memo );
+		} 
+		else if(buyorsell_type == "sell"_n) {
+			auto disburse_asset = asset(0, fund_token_symbol);
+
+			icorate_index icorate_table(get_self(), buyorsell_type.value);
+
+			auto ico_it = icorate_table.find(phase_type.value);
+
+			check(ico_it != icorate_table.end(), "ICO rate for \'" + buyorsell_type.to_string() + "\' in phase " + phase_type.to_string() + " is not set. Contract owner must set using \'initicorate\'");
+			check(ico_it->current_price_pereos != 0, "current price_pereos must be non-zero.");
+
+			disburse_asset.amount = quantity.amount * ico_it->current_price_pereos;
+
+			// // inline disburse of dapp token based on the amount of EOS sent
+			disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
+
+			// send alert to buyer for receiving dapp token
+			send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
+										quantity.to_string() + "\' to vigor ICO contract for " + buyorsell_type.to_string() + " in " + memo );
+		}
+
 	}
 
 
@@ -234,8 +256,14 @@ void vigorico::disburse(const name& receiver_ac,
 	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "buyorsell_type can either be \'buy\' or \'sell\'.");
 	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
 
-	// check quantity is valid for all conditions as 'asset'
-	check_quantity(disburse_qty, dapp_token_symbol);
+	if(buyorsell_type == "buy"_n) {
+		// check quantity is valid for all conditions as 'asset'
+		check_quantity(disburse_qty, dapp_token_symbol);
+	}
+	else if(buyorsell_type == "sell"_n) {
+		// check quantity is valid for all conditions as 'asset'
+		check_quantity(disburse_qty, fund_token_symbol);
+	}
 
 	// instantiate the `fund` table
 	fund_index fund_table(get_self(), receiver_ac.value);

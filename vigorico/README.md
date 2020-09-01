@@ -156,6 +156,41 @@ $ cleost get table vigor1111ico buy icorates --show-payer
 }
 ```
 
+#### For SELL
+* set the ICO rate for phase A
+```console
+$ cleost push action vigor1111ico initicorate '{"buyorsell_type": "sell","phase_type": "a","current_price_pereos": 0.05,"vector_admin": ["vigoradmin11", "vigoradmin12", "vigoradmin13", "vigoradmin14", "vigoradmin15"]}' -p vigor1111ico@active
+executed transaction: 1b8a946833e3df5b11d3e8a8f00a7acb7fd079316a15ece18843c9bf879e9ee1  160 bytes  179 us
+#  vigor1111ico <= vigor1111ico::initicorate    {"buyorsell_type":"sell","phase_type":"a","current_price_pereos":"0.05000000074505806","vector_admin...
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+  - view the table
+```console
+$ cleost get table vigor1111ico sell icorates --show-payer
+{
+  "rows": [{
+      "data": {
+        "phase_type": "a",
+        "current_price_pereos": "70.00000000000000000",
+        "proposed_price_pereos": "0.00000000000000000",
+        "vector_admin": [
+          "vigoradmin11",
+          "vigoradmin12",
+          "vigoradmin13",
+          "vigoradmin14",
+          "vigoradmin15"
+        ],
+        "vector_admin_vote": [],
+        "decision_timestamp": 0
+      },
+      "payer": "vigor1111ico"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+
 ### Action - `propoicorate`
 * propose the ICO rate as "42.0" for phase A within 1 min
 ```console
@@ -367,6 +402,7 @@ $ cleost get table vigor1111ico buy icorates --show-payer
     + the votes vector has been cleared. So, that the old votes are not considered for new proposals especially, if the admin didn't vote for the new proposal.
 
 ### Action - `deposit` (Payable action)
+#### For BUY
 * `vigoruser111` transfer some "3.0000 EOS" to ICO funding in phase-A & gets error due to unfit memo for this action 
 ```console
 $ cleost push action eosio.token transfer '["vigoruser111", "vigor1111ico", "3.0000 EOS", "transfer EOS for ICO"]' -p vigoruser111@active
@@ -507,6 +543,90 @@ $ cleost get table vigor1111ico vigoruser111 fund --show-payer
 }
 ```
 
+#### For SELL
+* `vigoruser111` wants to sell some VIGOR tokens.
+  - let's see the VIGOR balance
+```console
+$ cleost get table vigor11token vigoruser111 accounts
+{
+  "rows": [{
+      "balance": "270.0000 VIGOR"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+* Now, `vigoruser111` wants to sell "50 VIGOR" tokens at the rate of phase A & gets error as the ICO rate for phase A, sell is not set
+```console
+$ cleost push action vigor11token transfer '["vigoruser111", "vigor1111ico", "50.0000 VIGOR", "phase A"]' -p vigoruser111@active
+Error 3050003: eosio_assert_message assertion failure
+Error Details:
+assertion failure with message: ICO rate for 'sell' in phase a is not set. Contract owner must set using 'initicorate'
+pending console output:
+```
+* Now, `vigoruser111` wants to sell "5 VIGOR" tokens at the rate of phase A
+```console
+$ cleost push action vigor11token transfer '["vigoruser111", "vigor1111ico", "5.0000 VIGOR", "phase A"]' -p vigoruser111@active
+executed transaction: 6702444860d7ac2aecacb7d9843f9c2436fbc6eff58989fe20cfb220fb103127  136 bytes  343 us
+#  vigor11token <= vigor11token::transfer       {"from":"vigoruser111","to":"vigor1111ico","quantity":"5.0000 VIGOR","memo":"phase A"}
+#  vigoruser111 <= vigor11token::transfer       {"from":"vigoruser111","to":"vigor1111ico","quantity":"5.0000 VIGOR","memo":"phase A"}
+#  vigor1111ico <= vigor11token::transfer       {"from":"vigoruser111","to":"vigor1111ico","quantity":"5.0000 VIGOR","memo":"phase A"}
+#  vigor1111ico <= vigor1111ico::disburse       {"receiver_ac":"vigoruser111","buyorsell_type":"sell","phase_type":"a","disburse_qty":"0.2500 EOS","...
+#  vigor1111ico <= vigor1111ico::sendalert      {"user":"vigoruser111","message":"You receive '0.2500 EOS' for depositing '5.0000 VIGOR' to vigor IC...
+#   eosio.token <= eosio.token::transfer        {"from":"vigor1111ico","to":"vigoruser111","quantity":"0.2500 EOS","memo":"VIGOR ICO contract disbur...
+#  vigor1111ico <= eosio.token::transfer        {"from":"vigor1111ico","to":"vigoruser111","quantity":"0.2500 EOS","memo":"VIGOR ICO contract disbur...
+>> Either money is not sent to the contract or contract itself is the buyer.
+#  vigoruser111 <= eosio.token::transfer        {"from":"vigor1111ico","to":"vigoruser111","quantity":"0.2500 EOS","memo":"VIGOR ICO contract disbur...
+#  vigoruser111 <= vigor1111ico::sendalert      {"user":"vigoruser111","message":"You receive '0.2500 EOS' for depositing '5.0000 VIGOR' to vigor IC...
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+  - view the `fund` table
+```console
+$ cleost get table vigor1111ico vigoruser111 fund --show-payer
+{
+  "rows": [{
+      "data": {
+        "fund_type": "buy",
+        "tot_fundtype_qty": [{
+            "first": "a",
+            "second": "3.0000 EOS"
+          },{
+            "first": "b",
+            "second": "3.0000 EOS"
+          }
+        ],
+        "tot_disburse_qty": [{
+            "first": "a",
+            "second": "120.0000 VIGOR"
+          },{
+            "first": "b",
+            "second": "150.0000 VIGOR"
+          }
+        ]
+      },
+      "payer": "vigor1111ico"
+    },{
+      "data": {
+        "fund_type": "sell",
+        "tot_fundtype_qty": [{
+            "first": "a",
+            "second": "55.0000 VIGOR"
+          }
+        ],
+        "tot_disburse_qty": [{
+            "first": "a",
+            "second": "0.2500 EOS"
+          }
+        ]
+      },
+      "payer": "vigor1111ico"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
 
 ## TODO
 * [ ] Phase from_date, to_date for ICO
