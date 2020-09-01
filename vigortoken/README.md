@@ -111,11 +111,22 @@ $ cleost get table vigor11token VIGOR stat
 ### Action - `transfer`
 * issuer - `dcieosissuer` transfer some 10% of total 1M tokens i.e. 1,00,000 for ICO distribution in phase A
 ```console
-$ cleost push action vigor11token transfer '["dcieosissuer", "dci111111ico", "100000.0000 DCI", "transfer DC
-I tokens for ICO phase A"]' -p dcieosissuer@active
-executed transaction: e4334c81c4f2894c8de88c8e7561ebcb6e7be4705156e1e71a0d0483cb58686d  160 bytes  214 us
-#  vigor11token <= vigor11token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 DCI","memo":"transfer DCI tokens ...
-#  dcieosissuer <= vigor11token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 DCI","memo":"transfer DCI tokens ...
-#  dci111111ico <= vigor11token::transfer       {"from":"dcieosissuer","to":"dci111111ico","quantity":"100000.0000 DCI","memo":"transfer DCI tokens ...
+$ cleost push action vigor11token transfer '["vigor1issuer", "vigor1111ico", "100000.0000 VIGOR", "transfer VIGOR tokens for entire ICO phase A"]' -p vigor1issuer@active
+executed transaction: d162e4a1ce7651db7b6bd261dcc3686c96e3ba53757a49fe686ff91778f29eaa  176 bytes  408 us
+#  vigor11token <= vigor11token::transfer       {"from":"vigor1issuer","to":"vigor1111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tok...
+#  vigor1issuer <= vigor11token::transfer       {"from":"vigor1issuer","to":"vigor1111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tok...
+#  vigor1111ico <= vigor11token::transfer       {"from":"vigor1issuer","to":"vigor1111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tok...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+	- view the table
+```console
+$ cleost get table vigor11token vigor1111ico accounts
+{
+  "rows": [{
+      "balance": "100000.0000 VIGOR"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
 ```
