@@ -19,7 +19,7 @@ void vigorico::initicorate( const name& buyorsell_type,
 
 	icorate_table.emplace(get_self(), [&](auto& row){
 		row.phase_type = phase_type;
-		row.current_price_pereos = round_float_2(current_price_pereos);
+		row.current_price_pereos = current_price_pereos;
 		row.vector_admin = vector_admin;
 	});
 }
@@ -53,7 +53,7 @@ void vigorico::propoicorate( const name& setter,
 	// TODO: how does setter gets the RAM back. Here, the row won't be deleted, but it will remain forever.
 
 	icorate_table.modify(ico_it, setter, [&](auto& row){
-		row.proposed_price_pereos = round_float_2(proposed_price_pereos);
+		row.proposed_price_pereos = proposed_price_pereos;
 		row.decision_timestamp = decision_timestamp;
 	});
 }
