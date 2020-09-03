@@ -9,6 +9,14 @@ Jungle Testnet
 
 VIGOR Contracts
 =============
+trpm111token
+Private key: 5KLXtB9uvpDXvRCp2ZpCq1C4DzE7bMmWTUpiiEmzjFxVpH2DKak
+Public key: EOS6QKboME3VngH8bX6eCRPuopcdp15FnuywwuippXnfUqWpwyyJu
+-------------------------------------------------------------
+tropium11ico
+Private key: 5K5dh7yyM2nFmZT4DuKtvCMs6T8QePcRN9pkWqqM9jszyMZgZgL
+Public key: EOS6JJp3jPPbRDXRSJaPpbj1CvPZbq4UyFwjy7JadtLyzopDdAwBB
+-------------------------------------------------------------
 vigor11token
 Private key: 5JD1av78Wskmc1TaXywedooe2rEwkakGuoFzijbxq8Dhob7bVJY
 Public key: EOS5gZigusE7PgmLXypU15o43fVby2YkCz6BjEX2wHKYmFssCw15o
