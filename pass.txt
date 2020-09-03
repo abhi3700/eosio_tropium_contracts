@@ -1,13 +1,13 @@
 Wallet (locally)
 ================
-name: vigeos
-password: "PW5JgTXhXR82ikkpKmDj9iKFBznWUtnRjwWykpHZ6nvGDK2xoS9od"
-command: `cleos wallet unlock -n vigeos --password PW5JgTXhXR82ikkpKmDj9iKFBznWUtnRjwWykpHZ6nvGDK2xoS9od`
+name: trpmeos
+password: "PW5JrktM1FKVBtjqj5vtX2gR3bCuBwHBnFqKVURSDeZbf5L1djakr"
+command: `cleos wallet unlock -n trpmeos --password PW5JrktM1FKVBtjqj5vtX2gR3bCuBwHBnFqKVURSDeZbf5L1djakr`
 ########################################################################
 Jungle Testnet
 *********************************************************************************************************
 
-VIGOR Contracts
+TROPIUM Contracts
 =============
 trpm111token
 Private key: 5KLXtB9uvpDXvRCp2ZpCq1C4DzE7bMmWTUpiiEmzjFxVpH2DKak
@@ -17,56 +17,48 @@ tropium11ico
 Private key: 5K5dh7yyM2nFmZT4DuKtvCMs6T8QePcRN9pkWqqM9jszyMZgZgL
 Public key: EOS6JJp3jPPbRDXRSJaPpbj1CvPZbq4UyFwjy7JadtLyzopDdAwBB
 -------------------------------------------------------------
-vigor11token
-Private key: 5JD1av78Wskmc1TaXywedooe2rEwkakGuoFzijbxq8Dhob7bVJY
-Public key: EOS5gZigusE7PgmLXypU15o43fVby2YkCz6BjEX2wHKYmFssCw15o
--------------------------------------------------------------
-vigor1111ico
-Private key: 5JmiFpj389AjSopEuVxgfDGGo7nCA3VeMRnaA8uzMZJFi6jc77D
-Public key: EOS5zJKUSP4HMWdkwZ5RUXGLmXQh6gY7owrA9RWSbsVMsZcCUqAjc
--------------------------------------------------------------
-vigor12stake
-Private key: 5KYxjdubrUmJBmycC6JKef5iZfiJafvwucK4rcoMbx6uQrp9UGa
-Public key: EOS5HdphcB4x1UNavWX4VxLSGeR44GjKnaQdfEeMbiPtGvRshq9qr
+trpm111stake
+Private key: 5KR6jPYA819wMstKQCCXu5DPJX5FsNCsKtxq8oAZ6MX17KnZykF
+Public key: EOS8Y4iZBjanfshkDzF8gSkWZSYveNQFagcWWnepCqA6DPNv22Sye
 -------------------------------------------------------------
 
-VIGOR System accounts
+TROPIUM System accounts
 ===================
-vigor1issuer
-Private key: 5J271TqSqF1KYyj73jVVd7bgFH1HFHjoqA4kb3BdZPJ2LV3SUrF
-Public key: EOS7fenrtwMhQnxymysLo2iehBh5r7UsPF4dpJeB8LjQ3v2vUW77m
+trpiumissuer
+Private key: 5JwxB7EZdjURChcPiHQc79uRHpUBGc5K4kCyNwpujR3vJUfjxFe
+Public key: EOS75UozVYxrUFrEH2c9LUqzLGdu27PYtsgTXL6dMryZPzGyqDFtL
 -------------------------------------------------------------
 
-VIGOR Users
+TROPIUM Users
 =========
-vigoruser111
-Private key: 5KiTqWLH3k8M7gYRsPVD9Urpay6PwpbuyL6SaLZVuo9hFYNAhhK
-Public key: EOS4vDf9pViKNbCFtBCeAkMKGSqTvbfJaiZYxAmW35e512UASBu5G
+trpmuser1111
+Private key: 5K7TRXWfo1AsVPwfwnC4f2v68Sh8DnBog7epgQuauKH2y6P7GwE
+Public key: EOS5MLuNXGodGpAHyzbghQ4Dk1N4mRKkEeQ1LdRVEc8GKv4uQnUwT
 -------------------------------------------------------------
-vigoruser112
-Private key: 5JwyZqp6cP3Wz6KUcLMi45jbHzWL1eb9z92YzicZNwvnGc9PdeJ
-Public key: EOS6RuJdvbffDTsiC2eCwJKDub3DNnZCbVEQBcdN3UTdqaHt9Miah
+trpmuser1112
+Private key: 5HvBup3s4Tn35C4xpKkebKMLmcqujPxFYMkTENVgUC5KjtgXvU8
+Public key: EOS6DsHe5HMJ9mX2cYtDjRRV87KmPBDj24v2SLjAt9SzF7s91b7D9
 -------------------------------------------------------------
 
-Vigor Admins
+TROPIUM Admins
 ============
-vigoradmin11
-Private key: 5KM7h1UPUtJwnk26VFnqhYwV5mMQMFjmDNChdFaoDJgPHhuCMDb
-Public key: EOS5aiJJQNpSWPLmc5TDrDGS6oLhXwd7QiNjcMW5i1RsSf1QsVkpC
+trpmadmin111
+Private key: 5JgUezcmbafPCbSBL9TEuz7r5pvf2G7vpCqpLPwVmsc2jnYMgzC
+Public key: EOS61kyc24pxuZCq3QC4cQMaZPzGaWknzpMtsLp8rC1LHG9iLAt4G
 -----------------------------------------------------------------
-vigoradmin12
-Private key: 5Hs1Co4hzFpfQw5KfR2x71cJavdUS1Mbu3P3KobQczrcV5cN7Hs
-Public key: EOS84g6tipcMtFqrauQmDByCytzDSZcv1FcDt1itjyyS3Nvv3ySUN
+trpmadmin112
+Private key: 5JELqUs6FGGBLpUp64Fr8Nx31WxrRq8bmCPcFiTnTY3t4b9d3ex
+Public key: EOS6YDtE45cZpW7z9eFJBy7Dgq2aHPuV8BYsQAMaAArXbg63jwCqs
 -----------------------------------------------------------------
-vigoradmin13
-Private key: 5JTdi4rFduYnAxpJwwb7GRHQgUAruXK5hAY7fTQ2fNuxakAXJWY
-Public key: EOS6u2mToYV9FWV6KTHBcT4SqteiWjDTeArLSpe4PrkwepuYecWic
+trpmadmin113
+Private key: 5JXKVpFuwSZKQJxqY4tdEdRUfWkEtir8k9nbbtfa5uqJ9xd7u2N
+Public key: EOS86UqrGm5by3qheYr7Jib8y1iv9tFeLGAnpqaDdEk3rsytC6Mmy
 -----------------------------------------------------------------
-vigoradmin14
-Private key: 5KVscQhTHKHJZmg3JyT3Av6gTH43Pv8Ku7nGmvLTMyFkHjoXf65
-Public key: EOS67mYLpihey6QdacuVpFy84Minu5Jna3QBHjbBF6QEByKP8vyeq
+trpmadmin114
+Private key: 5JetEYmc3jUZYn2wiLyczq6yYeBHd9JvMTeFV5xi8px7P5zfMVg
+Public key: EOS8gvN3zwcBxEH19NPxTPGrJXqqFvC8RACfiDrtPegeDScLayY1R
 -----------------------------------------------------------------
-vigoradmin15
-Private key: 5JcdFxnPcHgUQvvP2qGC7iVMhnzzNQgyjbysXQPh3QiZEhKA7SF
-Public key: EOS5Lk5wmBPQpWfP1DscZYfJGZy7ZYiBBKZisrh5CLqZYTCayanPt
+trpmadmin115
+Private key: 5HuvrqYc4HLGEmvFK8tWF9rgFmjAM2cFE1TbopnF81H7ox7GDAK
+Public key: EOS5DdKBD4EAxGX2C6q9vfYemYbeq8j7Edo99E5AsNZCDpzm1tsK8
 -----------------------------------------------------------------
