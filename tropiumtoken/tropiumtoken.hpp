@@ -23,12 +23,12 @@ using eosio::datastream;
 using std::string;
 
 
-CONTRACT vigortoken : public contract {
+CONTRACT tropiumtoken : public contract {
 
 public:
 	using contract::contract;
 
-	// vigortoken(name receiver, name code, datastream<const char*> ds) : 
+	// tropiumtoken(name receiver, name code, datastream<const char*> ds) : 
 	// 			contract(receiver, code, ds) {}
 
 	/**
@@ -127,12 +127,12 @@ public:
 		return ac.balance;							// now, return member i.e. 'supply' of struct 'ac'
 	}
 
-	using create_action  = action_wrapper<"create"_n, &vigortoken::create>;
-	using issuer_action  = action_wrapper<"issue"_n, &vigortoken::issue>;
-	using retire_action  = action_wrapper<"retire"_n, &vigortoken::retire>;
-	using transfer_action  = action_wrapper<"transfer"_n, &vigortoken::transfer>;
-	using open_action  = action_wrapper<"open"_n, &vigortoken::open>;
-	using close_action  = action_wrapper<"close"_n, &vigortoken::close>;
+	using create_action  = action_wrapper<"create"_n, &tropiumtoken::create>;
+	using issuer_action  = action_wrapper<"issue"_n, &tropiumtoken::issue>;
+	using retire_action  = action_wrapper<"retire"_n, &tropiumtoken::retire>;
+	using transfer_action  = action_wrapper<"transfer"_n, &tropiumtoken::transfer>;
+	using open_action  = action_wrapper<"open"_n, &tropiumtoken::open>;
+	using close_action  = action_wrapper<"close"_n, &tropiumtoken::close>;
 
 private:
 	// ------------------------------------------------------------------

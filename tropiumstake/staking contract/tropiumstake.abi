@@ -1,0 +1,174 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "addadmin",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "admin",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "banned",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "name"
+                },
+                {
+                    "name": "fund_held",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "banstaker",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "letinstaker",
+            "base": "",
+            "fields": [
+                {
+                    "name": "admin",
+                    "type": "name"
+                },
+                {
+                    "name": "username",
+                    "type": "name"
+                },
+                {
+                    "name": "is_given_back",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "regstaker",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "removeadmin",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "staker",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "name"
+                },
+                {
+                    "name": "fund_staked",
+                    "type": "asset"
+                },
+                {
+                    "name": "isstaked",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "unstake",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "name"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "addadmin",
+            "type": "addadmin",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "banstaker",
+            "type": "banstaker",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "letinstaker",
+            "type": "letinstaker",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "regstaker",
+            "type": "regstaker",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "removeadmin",
+            "type": "removeadmin",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "unstake",
+            "type": "unstake",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "adminlist",
+            "type": "admin",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "bannedlist",
+            "type": "banned",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "stakerlist",
+            "type": "staker",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}

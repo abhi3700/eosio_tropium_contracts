@@ -1,7 +1,7 @@
-#include "vigortoken.hpp"
+#include "tropiumtoken.hpp"
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigortoken::create( const name& issuer,
+void tropiumtoken::create( const name& issuer,
 						const asset& maximum_supply) 
 {
 	require_auth( get_self() );
@@ -27,7 +27,7 @@ void vigortoken::create( const name& issuer,
 
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigortoken::issue( const name& to,
+void tropiumtoken::issue( const name& to,
 						const asset& quantity,
 						const string& memo) 
 {
@@ -57,7 +57,7 @@ void vigortoken::issue( const name& to,
 
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigortoken::retire( const asset& quantity,
+void tropiumtoken::retire( const asset& quantity,
 						const string& memo )
 {
 	auto sym = quantity.symbol;
@@ -83,7 +83,7 @@ void vigortoken::retire( const asset& quantity,
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigortoken::transfer( const name& from,
+void tropiumtoken::transfer( const name& from,
 							const name& to,
 							const asset& quantity,
 							const string& memo)
@@ -113,7 +113,7 @@ void vigortoken::transfer( const name& from,
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigortoken::add_balance( const name& owner,
+void tropiumtoken::add_balance( const name& owner,
 							const asset& value,
 							const name& ram_payer) 
 {
@@ -133,7 +133,7 @@ void vigortoken::add_balance( const name& owner,
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigortoken::sub_balance( const name& owner,
+void tropiumtoken::sub_balance( const name& owner,
 							const asset& value)
 {
 	accounts_index from_acnts( get_self(), owner.value);
@@ -147,7 +147,7 @@ void vigortoken::sub_balance( const name& owner,
 }		
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigortoken::open( const name& owner, 
+void tropiumtoken::open( const name& owner, 
 						const symbol& symbol,
 						const name& ram_payer )
 {
@@ -171,7 +171,7 @@ void vigortoken::open( const name& owner,
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void vigortoken::close( const name& owner,
+void tropiumtoken::close( const name& owner,
 						const symbol& symbol)
 {
 	require_auth( owner );
