@@ -289,7 +289,7 @@ private:
 		}
 
 		// if "yes" count is more than 50% of voter_count
-		if(yes_count > voter_count/2) {
+		if(yes_count >= voter_count/2) {
 			return true;
 		} else {
 			return false;
