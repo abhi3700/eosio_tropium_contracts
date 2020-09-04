@@ -70,12 +70,12 @@
                     "type": "name"
                 },
                 {
-                    "name": "current_price_pereos",
-                    "type": "float32"
+                    "name": "current_price",
+                    "type": "asset"
                 },
                 {
-                    "name": "proposed_price_pereos",
-                    "type": "float32"
+                    "name": "proposed_price",
+                    "type": "asset"
                 },
                 {
                     "name": "vector_admin",
@@ -104,8 +104,8 @@
                     "type": "name"
                 },
                 {
-                    "name": "current_price_pereos",
-                    "type": "float32"
+                    "name": "current_price",
+                    "type": "asset"
                 },
                 {
                     "name": "vector_admin",
@@ -158,8 +158,8 @@
                     "type": "name"
                 },
                 {
-                    "name": "proposed_price_pereos",
-                    "type": "float32"
+                    "name": "proposed_price",
+                    "type": "asset"
                 },
                 {
                     "name": "decision_timestamp",

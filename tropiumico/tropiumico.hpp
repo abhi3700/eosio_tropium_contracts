@@ -45,9 +45,9 @@ public:
 	tropiumico(name receiver, name code, datastream<const char*> ds) : 
 				contract(receiver, code, ds), 
 				fund_token_symbol("EOS", 4),
-				dapp_token_symbol("VIGOR", 4),
-				token_contract_ac("vigor11token"_n),
-				dapp_token_issuer("vigor1issuer"_n) {}
+				dapp_token_symbol("TRPM", 4),
+				token_contract_ac("trpm111token"_n),
+				dapp_token_issuer("trpiumissuer"_n) {}
 
 
 
@@ -57,14 +57,14 @@ public:
 	 * 
 	 * @param buyorsell_type - buy/sell
 	 * @param phase_type - A/B/C
-	 * @param current_price_pereos - price per EOS token
+	 * @param current_price - price per EOS token
 	 * @param vector_admin - vector of admins who has the right to propose/approve the price proposal
 	 * 
 	 * @pre - the phase_type row (for buy/sell) must not exist
 	 */
 	ACTION initicorate( const name& buyorsell_type,
 						const name& phase_type,
-						float current_price_pereos,
+						const asset& current_price,
 						const vector<name> vector_admin );
 
 
@@ -76,7 +76,7 @@ public:
 	 * @setter - one of admins
 	 * @param buyorsell_type - buy/sell
 	 * @param phase_type - A/B/C
-	 * @param proposed_price_pereos - price per EOS token
+	 * @param proposed_price - price per EOS token
 	 * 
 	 * 
 	 * @pre - setter must be one of admins
@@ -84,7 +84,7 @@ public:
 	ACTION propoicorate( const name& setter,
 						const name& buyorsell_type,
 						const name& phase_type,
-						float proposed_price_pereos,
+						const asset& proposed_price,
 						uint32_t decision_timestamp );
 
 
@@ -189,13 +189,13 @@ public:
 	}
 
 private:
-	// `fund` table is for keeping the record of all buy in EOS, disburses in VIGOR
+	// `fund` table is for keeping the record of all buy in EOS, disburses in TRPM
 	// scope - user
 	TABLE fund
 	{
 		name fund_type;			// buy or sell
 		vector<pair<name, asset>> tot_fundtype_qty;			// E.g. [{"a": "5.0000 EOS"}, {"b": "10.0000 EOS"}]
-		vector<pair<name, asset>> tot_disburse_qty;			// E.g. [{"a": "200.0000 VIGOR"}, {"b": "500.0000 VIGOR"}]	@ respective ICO rate
+		vector<pair<name, asset>> tot_disburse_qty;			// E.g. [{"a": "200.0000 TRPM"}, {"b": "500.0000 TRPM"}]	@ respective ICO rate
 
 		auto primary_key() const { return fund_type.value; }
 	};
@@ -207,8 +207,8 @@ private:
 	TABLE icorate
 	{
 		name phase_type;									// a/b/c
-		float current_price_pereos;						// E.g. 1 EOS = 30 VIGOR. So, price_pereos = 30
-		float proposed_price_pereos;					// E.g. 1 EOS = 40 VIGOR. So, price_pereos = 40
+		asset current_price;						// E.g. 1 EOS = 30 TRPM. So, price_pereos = 30 TRPM
+		asset proposed_price;					// E.g. 1 EOS = 40 TRPM. So, price_pereos = 40 TRPM
 		vector<name> vector_admin;						// E.g. ["admin1", "admin2", "admin3", "admin4", "admin5"]
 		vector<pair<name, name>> vector_admin_vote;			// E.g. [{"admin1": "y"}, {"admin2": "n"}]
 		uint32_t decision_timestamp;					// E.g. in next 15 mins, use the timestamp 15 mins from current timestamp

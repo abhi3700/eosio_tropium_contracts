@@ -3,7 +3,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumico::initicorate( const name& buyorsell_type,
 							const name& phase_type,
-							float current_price_pereos,
+							const asset& current_price,
 							const vector<name> vector_admin )
 {
 	require_auth(get_self());
@@ -12,6 +12,13 @@ void tropiumico::initicorate( const name& buyorsell_type,
 
 	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
 
+	if(buyorsell_type == "buy"_n) {
+		check_quantity(current_price, dapp_token_symbol);
+	}
+	else if (buyorsell_type == "sell"_n) {
+		check_quantity(current_price, fund_token_symbol);
+	}
+
 	icorate_index icorate_table(get_self(), buyorsell_type.value);
 	auto ico_it = icorate_table.find(phase_type.value);
 
@@ -19,7 +26,7 @@ void tropiumico::initicorate( const name& buyorsell_type,
 
 	icorate_table.emplace(get_self(), [&](auto& row){
 		row.phase_type = phase_type;
-		row.current_price_pereos = current_price_pereos;
+		row.current_price = current_price;
 		row.vector_admin = vector_admin;
 	});
 }
@@ -28,7 +35,7 @@ void tropiumico::initicorate( const name& buyorsell_type,
 void tropiumico::propoicorate( const name& setter,
 							const name& buyorsell_type,
 							const name& phase_type,
-							float proposed_price_pereos,
+							const asset& proposed_price,
 							uint32_t decision_timestamp )
 {
 
@@ -36,6 +43,13 @@ void tropiumico::propoicorate( const name& setter,
 	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "Type can either be \'buy\' or \'sell\'.");
 
 	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
+
+	if(buyorsell_type == "buy"_n) {
+		check_quantity(proposed_price, dapp_token_symbol);
+	}
+	else if (buyorsell_type == "sell"_n) {
+		check_quantity(proposed_price, fund_token_symbol);
+	}
 
 	icorate_index icorate_table(get_self(), buyorsell_type.value);
 	auto ico_it = icorate_table.find(phase_type.value);
@@ -45,7 +59,7 @@ void tropiumico::propoicorate( const name& setter,
 	check_admin(ico_it->vector_admin, setter);
 	require_auth(setter);
 
-	check((proposed_price_pereos != ico_it->proposed_price_pereos) || (decision_timestamp != ico_it->decision_timestamp), "Either parsed proposed_price or decision_timestamp must be different.");
+	check((proposed_price != ico_it->proposed_price) || (decision_timestamp != ico_it->decision_timestamp), "Either parsed proposed_price or decision_timestamp must be different.");
 
 	// setter can set a price only if the current_timestamp > decision_timestamp. Otherwise, it might happen that the price is set again while already a proposal running
 	check(now() > ico_it->decision_timestamp, "Current timestamp must be greated than decision_timestamp. There is already a proposal running.");
@@ -53,7 +67,7 @@ void tropiumico::propoicorate( const name& setter,
 	// TODO: how does setter gets the RAM back. Here, the row won't be deleted, but it will remain forever.
 
 	icorate_table.modify(ico_it, setter, [&](auto& row){
-		row.proposed_price_pereos = proposed_price_pereos;
+		row.proposed_price = proposed_price;
 		row.decision_timestamp = decision_timestamp;
 	});
 }
@@ -114,7 +128,7 @@ void tropiumico::approicorate( const name& buyorsell_type,
 
 	icorate_table.modify(ico_it, get_self(), [&](auto& row){
 		if(approval_status(ico_it->vector_admin_vote)) {
-			row.current_price_pereos = ico_it->proposed_price_pereos;
+			row.current_price = ico_it->proposed_price;
 		}
 		row.vector_admin_vote.clear();		// clear all the votes after the decision_timestamp & the approval decision is taken. This is to ensure that for a new proposal old votes are not counted.
 	});
@@ -201,9 +215,8 @@ void tropiumico::deposit( const name& user,
 			auto ico_it = icorate_table.find(phase_type.value);
 
 			check(ico_it != icorate_table.end(), "ICO rate for \'" + buyorsell_type.to_string() + "\' in phase " + phase_type.to_string() + " is not set. Contract owner must set using \'initicorate\'");
-			check(ico_it->current_price_pereos != 0, "current price_pereos must be non-zero.");
 
-			disburse_asset.amount = quantity.amount * ico_it->current_price_pereos;
+			disburse_asset.amount = quantity.amount * ico_it->current_price.amount;
 
 			// // inline disburse of dapp token based on the amount of EOS sent
 			disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
@@ -220,9 +233,8 @@ void tropiumico::deposit( const name& user,
 			auto ico_it = icorate_table.find(phase_type.value);
 
 			check(ico_it != icorate_table.end(), "ICO rate for \'" + buyorsell_type.to_string() + "\' in phase " + phase_type.to_string() + " is not set. Contract owner must set using \'initicorate\'");
-			check(ico_it->current_price_pereos != 0, "current price_pereos must be non-zero.");
 
-			disburse_asset.amount = quantity.amount * ico_it->current_price_pereos;
+			disburse_asset.amount = quantity.amount * ico_it->current_price.amount;
 
 			// // inline disburse of dapp token based on the amount of EOS sent
 			disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
