@@ -1,0 +1,220 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "addadmin",
+            "base": "",
+            "fields": [
+                {
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "name"
+                },
+                {
+                    "name": "admin",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "admin",
+            "base": "",
+            "fields": [
+                {
+                    "name": "type",
+                    "type": "name"
+                },
+                {
+                    "name": "vector_admin",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
+            "name": "clradmins",
+            "base": "",
+            "fields": [
+                {
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "endrehab",
+            "base": "",
+            "fields": [
+                {
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "patient",
+                    "type": "name"
+                },
+                {
+                    "name": "patient_status",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "remadmin",
+            "base": "",
+            "fields": [
+                {
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "name"
+                },
+                {
+                    "name": "admin",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "setadmins",
+            "base": "",
+            "fields": [
+                {
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "type",
+                    "type": "name"
+                },
+                {
+                    "name": "vector_admin",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
+            "name": "stakewallet",
+            "base": "",
+            "fields": [
+                {
+                    "name": "amount",
+                    "type": "asset"
+                },
+                {
+                    "name": "lock_timestamp",
+                    "type": "uint32"
+                },
+                {
+                    "name": "start_timestamp",
+                    "type": "uint32"
+                },
+                {
+                    "name": "end_timestamp",
+                    "type": "uint32"
+                },
+                {
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "patient_status",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "startrehab",
+            "base": "",
+            "fields": [
+                {
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "patient",
+                    "type": "name"
+                },
+                {
+                    "name": "lock_timestamp",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "unstake",
+            "base": "",
+            "fields": [
+                {
+                    "name": "patient",
+                    "type": "name"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "addadmin",
+            "type": "addadmin",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "clradmins",
+            "type": "clradmins",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "endrehab",
+            "type": "endrehab",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "remadmin",
+            "type": "remadmin",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setadmins",
+            "type": "setadmins",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "startrehab",
+            "type": "startrehab",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "unstake",
+            "type": "unstake",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "admins",
+            "type": "admin",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "stakewallet",
+            "type": "stakewallet",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}

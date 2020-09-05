@@ -37,6 +37,7 @@ private:
 	const symbol fund_token_symbol;
 	const symbol dapp_token_symbol;
 	const name token_contract_ac;
+	const name stake_contract_ac;
 	const name dapp_token_issuer;
 
 public:
@@ -47,6 +48,7 @@ public:
 				fund_token_symbol("EOS", 4),
 				dapp_token_symbol("TRPM", 4),
 				token_contract_ac("trpm111token"_n),
+				stake_contract_ac("trpm111stake"_n),
 				dapp_token_issuer("trpiumissuer"_n) {}
 
 
@@ -58,14 +60,12 @@ public:
 	 * @param buyorsell_type - buy/sell
 	 * @param phase_type - A/B/C
 	 * @param current_price - price per EOS token
-	 * @param vector_admin - vector of admins who has the right to propose/approve the price proposal
 	 * 
 	 * @pre - the phase_type row (for buy/sell) must not exist
 	 */
 	ACTION initicorate( const name& buyorsell_type,
 						const name& phase_type,
-						const asset& current_price,
-						const vector<name> vector_admin );
+						const asset& current_price );
 
 
 
@@ -219,14 +219,16 @@ private:
 	using icorate_index = multi_index<"icorates"_n, icorate>;
 
 	// -----------------------------------------------------------------------------------------------------------------------
-	// struct account
-	// {
-	// 	asset balance;
+	// scope - self
+	struct admin {
+		name type;								// psychiatrist, therapist
+		vector<name> vector_admin;						// E.g. ["admin1", "admin2", "admin3", "admin4", "admin5"]
 
-	// 	uint64_t primary_key() const { return balance.symbol.code().raw(); }
-	// };
+		auto primary_key() const { return type.value; }
+	};
 
-	// using accounts_index = eosio::multi_index< "accounts"_n, account >;
+	using admin_index = multi_index<"admins"_n, admin>;
+
 	// -----------------------------------------------------------------------------------------------------------------------
 	// Adding inline action for `sendalert` action in the same contract 
 	void send_alert(const name& user, const string& message);

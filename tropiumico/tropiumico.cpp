@@ -1,10 +1,12 @@
 #include "tropiumico.hpp"
+#include <cmath>
+
+using std::pow;
 
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumico::initicorate( const name& buyorsell_type,
 							const name& phase_type,
-							const asset& current_price,
-							const vector<name> vector_admin )
+							const asset& current_price )
 {
 	require_auth(get_self());
 
@@ -19,6 +21,12 @@ void tropiumico::initicorate( const name& buyorsell_type,
 		check_quantity(current_price, fund_token_symbol);
 	}
 
+	admin_index admin_table(stake_contract_ac, stake_contract_ac.value);
+	auto admin_it = admin_table.find("doctor"_n.value);
+
+	check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
+	check(admin_it->vector_admin.size() != 0, "empty admin list");
+
 	icorate_index icorate_table(get_self(), buyorsell_type.value);
 	auto ico_it = icorate_table.find(phase_type.value);
 
@@ -27,7 +35,7 @@ void tropiumico::initicorate( const name& buyorsell_type,
 	icorate_table.emplace(get_self(), [&](auto& row){
 		row.phase_type = phase_type;
 		row.current_price = current_price;
-		row.vector_admin = vector_admin;
+		row.vector_admin = admin_it->vector_admin;
 	});
 }
 
@@ -148,7 +156,7 @@ void tropiumico::deposit( const name& user,
 		return;
 	}
 
-	if(user == dapp_token_issuer) {		// include the case where, additional ICO money with VIGOR tokens needed after the contract is deployed on this a/c 
+	if(user == dapp_token_issuer) {		// include the case where, additional ICO money with TROPIUM tokens needed after the contract is deployed on this a/c 
 		return;
 	} else {		
 		check((get_first_receiver() == "eosio.token"_n) || (get_first_receiver() == token_contract_ac), 
@@ -195,7 +203,7 @@ void tropiumico::deposit( const name& user,
 				row.tot_fundtype_qty.emplace_back(make_pair(phase_type, quantity));
 				
 				if(buyorsell_type == "buy"_n) {
-					row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, dapp_token_symbol))) ;		// initialize the asset with symbol "VIGOR" & '0' amount 
+					row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, dapp_token_symbol))) ;		// initialize the asset with symbol "TROPIUM" & '0' amount 
 				} else if(buyorsell_type == "sell"_n) {
 					row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, fund_token_symbol))) ;		// initialize the asset with symbol "EOS" & '0' amount 
 				}
@@ -206,43 +214,32 @@ void tropiumico::deposit( const name& user,
 			});
 		}
 
+
+		asset disburse_asset;
+
 		// prepare for disbursement of dapp tokens as per ICO rate
 		if(buyorsell_type == "buy"_n) {
-			auto disburse_asset = asset(0, dapp_token_symbol);
-
-			icorate_index icorate_table(get_self(), buyorsell_type.value);
-
-			auto ico_it = icorate_table.find(phase_type.value);
-
-			check(ico_it != icorate_table.end(), "ICO rate for \'" + buyorsell_type.to_string() + "\' in phase " + phase_type.to_string() + " is not set. Contract owner must set using \'initicorate\'");
-
-			disburse_asset.amount = quantity.amount * ico_it->current_price.amount;
-
-			// // inline disburse of dapp token based on the amount of EOS sent
-			disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
-
-			// send alert to buyer for receiving dapp token
-			send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
-										quantity.to_string() + "\' to vigor ICO contract for " + buyorsell_type.to_string() + " in " + memo );
+			disburse_asset = asset(0, dapp_token_symbol);
 		} 
 		else if(buyorsell_type == "sell"_n) {
-			auto disburse_asset = asset(0, fund_token_symbol);
-
-			icorate_index icorate_table(get_self(), buyorsell_type.value);
-
-			auto ico_it = icorate_table.find(phase_type.value);
-
-			check(ico_it != icorate_table.end(), "ICO rate for \'" + buyorsell_type.to_string() + "\' in phase " + phase_type.to_string() + " is not set. Contract owner must set using \'initicorate\'");
-
-			disburse_asset.amount = quantity.amount * ico_it->current_price.amount;
-
-			// // inline disburse of dapp token based on the amount of EOS sent
-			disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
-
-			// send alert to buyer for receiving dapp token
-			send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
-										quantity.to_string() + "\' to vigor ICO contract for " + buyorsell_type.to_string() + " in " + memo );
+			disburse_asset = asset(0, fund_token_symbol);
 		}
+
+		icorate_index icorate_table(get_self(), buyorsell_type.value);
+
+		auto ico_it = icorate_table.find(phase_type.value);
+
+		check(ico_it != icorate_table.end(), "ICO rate for \'" + buyorsell_type.to_string() + "\' in phase " + phase_type.to_string() + " is not set. Contract owner must set using \'initicorate\'");
+
+		auto prec = ico_it->current_price.symbol.precision();
+		disburse_asset.amount = quantity.amount * ico_it->current_price.amount/pow(10, prec);
+
+		// // inline disburse of dapp token based on the amount of EOS sent
+		disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
+
+		// send alert to buyer for receiving dapp token
+		send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
+									quantity.to_string() + "\' to ICO contract for " + buyorsell_type.to_string() + " in " + memo );
 
 	}
 
@@ -290,7 +287,7 @@ void tropiumico::disburse(const name& receiver_ac,
 			token_contract_ac,
 			"transfer"_n,
 			std::make_tuple(get_self(), receiver_ac, disburse_qty, 
-								"VIGOR ICO contract disburses " + disburse_qty.to_string() + " to \'" + receiver_ac.to_string() + "\'. for " + buyorsell_type.to_string() + " in " + memo)
+								"TROPIUM ICO contract disburses " + disburse_qty.to_string() + " to \'" + receiver_ac.to_string() + "\'. for " + buyorsell_type.to_string() + " in " + memo)
 		).send();
 	} else if(buyorsell_type == "sell"_n) {
 		action(
@@ -298,7 +295,7 @@ void tropiumico::disburse(const name& receiver_ac,
 			"eosio.token"_n,
 			"transfer"_n,
 			std::make_tuple(get_self(), receiver_ac, disburse_qty, 
-								"VIGOR ICO contract disburses " + disburse_qty.to_string() + " to \'" + receiver_ac.to_string() + "\'. for " + buyorsell_type.to_string() + " in " + memo)
+								"TROPIUM ICO contract disburses " + disburse_qty.to_string() + " to \'" + receiver_ac.to_string() + "\'. for " + buyorsell_type.to_string() + " in " + memo)
 		).send();
 	}
 

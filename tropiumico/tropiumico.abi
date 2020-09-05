@@ -106,10 +106,6 @@
                 {
                     "name": "current_price",
                     "type": "asset"
-                },
-                {
-                    "name": "vector_admin",
-                    "type": "name[]"
                 }
             ]
         },
