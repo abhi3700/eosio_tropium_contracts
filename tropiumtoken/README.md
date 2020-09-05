@@ -44,19 +44,19 @@ Warning, action <close> does not have a ricardian contract
 ## Deploy
 * deploy contract
 ```console
-$ cleost set contract vigor11token ./
+$ cleost set contract trpm111token ./
 Reading WASM from /mnt/f/Coding/github_repos/eosio_vigor_contracts/vigortoken/vigortoken.wasm...
 Publishing contract...
 executed transaction: ca5d82d3a2bb04a1b7e3b40cbda6def2f90f0643c53d04c7270da75c6347af82  7016 bytes  733 us
-#         eosio <= eosio::setcode               {"account":"vigor11token","vmtype":0,"vmversion":0,"code":"0061736d0100000001a0011b60000060017e00600...
-#         eosio <= eosio::setabi                {"account":"vigor11token","abi":"0e656f73696f3a3a6162692f312e310008076163636f756e7400010762616c616e6...
+#         eosio <= eosio::setcode               {"account":"trpm111token","vmtype":0,"vmversion":0,"code":"0061736d0100000001a0011b60000060017e00600...
+#         eosio <= eosio::setabi                {"account":"trpm111token","abi":"0e656f73696f3a3a6162692f312e310008076163636f756e7400010762616c616e6...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 * Adding eosio.code to permissions (for inline actions)
 ```console
-$ cleost set account permission vigor11token active --add-code
-executed transaction: b32e9611db31a58822c8e57a505a616382ac843b568c2487274858f744171c82  184 bytes  205 us
-#         eosio <= eosio::updateauth            {"account":"vigor11token","permission":"active","parent":"owner","auth":{"threshold":1,"keys":[{"key...
+$ cleost set account permission trpm111token active --add-code
+executed transaction: be0f656bff17c776eb3ab851fe9d3eb42b41a35732681e4b762f733c0099c279  184 bytes  172 us
+#         eosio <= eosio::updateauth            {"account":"trpm111token","permission":"active","parent":"owner","auth":{"threshold":1,"keys":[{"key...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 
@@ -64,19 +64,19 @@ warning: transaction executed locally, but may not be confirmed by the network y
 ### Action - `create`
 * create the token 1 M tokens for 10 years. Total 10 M tokens
 ```console
-$ cleost push action vigor11token create '["vigor1issuer", "10000000.0000 VIGOR"]' -p vigor11token@active
-executed transaction: d2522d99db139d48bf63dc69289e7bc69ace168d62b436a16fcce6401c28f1c4  120 bytes  194 us
-#  vigor11token <= vigor11token::create         {"issuer":"vigor1issuer","maximum_supply":"10000000.0000 VIGOR"}
+$ cleost push action trpm111token create '["trpiumissuer", "10000000.0000 TRPM"]' -p trpm111token@active
+executed transaction: 36f0c0e1965e0b65d393fd59fd1a4200549049acbd1f2c7afa492a7454e27b5c  120 bytes  229 us
+#  trpm111token <= trpm111token::create         {"issuer":"trpiumissuer","maximum_supply":"10000000.0000 TRPM"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- View the table after this operation
 ```console
-$ cleost get table vigor11token VIGOR stat
+$ cleost get table trpm111token TRPM stat
 {
   "rows": [{
-      "supply": "0.0000 VIGOR",
-      "max_supply": "10000000.0000 VIGOR",
-      "issuer": "vigor1issuer"
+      "supply": "0.0000 TRPM",
+      "max_supply": "10000000.0000 TRPM",
+      "issuer": "trpiumissuer"
     }
   ],
   "more": false,
@@ -85,21 +85,21 @@ $ cleost get table vigor11token VIGOR stat
 ```
 
 ### Action - `issue`
-* issue 1 M to issuer - `vigor1issuer`
+* issue 1 M to issuer - `trpiumissuer`
 ```console
-$ cleost push action vigor11token issue '["vigor1issuer", "1000000.0000 VIGOR", "issue 1M tokens"]' -p vigor1issuer@active
-executed transaction: 4157609766fe0e45c61eabb52c1e4a9ddbbcf9af51010161001c3c5886a1d8c4  136 bytes  176 us
-#  vigor11token <= vigor11token::issue          {"to":"vigor1issuer","quantity":"1000000.0000 VIGOR","memo":"issue 1M tokens"}
+$ cleost push action trpm111token issue '["trpiumissuer", "1000000.0000 TRPM", "issue 1M tokens"]' -p trpiumissuer@active
+executed transaction: c79ae107a26e4593bad0a97f2d6d273ff56aad17c04f5ff195f77a49a6cd9fae  136 bytes  192 us
+#  trpm111token <= trpm111token::issue          {"to":"trpiumissuer","quantity":"1000000.0000 TRPM","memo":"issue 1M tokens"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- View the table after this operation
 ```console
-$ cleost get table vigor11token VIGOR stat
+$ cleost get table trpm111token TRPM stat
 {
   "rows": [{
-      "supply": "1000000.0000 VIGOR",
-      "max_supply": "10000000.0000 VIGOR",
-      "issuer": "vigor1issuer"
+      "supply": "1000000.0000 TRPM",
+      "max_supply": "10000000.0000 TRPM",
+      "issuer": "trpiumissuer"
     }
   ],
   "more": false,
@@ -109,21 +109,21 @@ $ cleost get table vigor11token VIGOR stat
 
 
 ### Action - `transfer`
-* issuer - `vigor1issuer` transfer some 10% of total 1M tokens i.e. 100,000 for ICO distribution in phase A
+* issuer - `trpiumissuer` transfer some 10% of total 1M tokens i.e. 100,000 for ICO distribution
 ```console
-$ cleost push action vigor11token transfer '["vigor1issuer", "vigor1111ico", "100000.0000 VIGOR", "transfer VIGOR tokens for entire ICO phase A"]' -p vigor1issuer@active
-executed transaction: 18614c0a30c462df9a823cfca6f201bad299ce72d78d02228490b9d19bbc318d  176 bytes  219 us
-#  vigor11token <= vigor11token::transfer       {"from":"vigor1issuer","to":"vigor1111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tok...
-#  vigor1issuer <= vigor11token::transfer       {"from":"vigor1issuer","to":"vigor1111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tok...
-#  vigor1111ico <= vigor11token::transfer       {"from":"vigor1issuer","to":"vigor1111ico","quantity":"100000.0000 VIGOR","memo":"transfer VIGOR tok...
+$ cleost push action trpm111token transfer '["trpiumissuer", "tropium11ico", "100000.0000 TRPM", "transfer TRPM tokens for entire ICO"]' -p trpiumissuer@active
+executed transaction: 655949506d3e00af3ccde9ad7fe8af7aff06b1f7c840611cf4ee2e000aa5acb8  160 bytes  223 us
+#  trpm111token <= trpm111token::transfer       {"from":"trpiumissuer","to":"tropium11ico","quantity":"100000.0000 TRPM","memo":"transfer TRPM token...
+#  trpiumissuer <= trpm111token::transfer       {"from":"trpiumissuer","to":"tropium11ico","quantity":"100000.0000 TRPM","memo":"transfer TRPM token...
+#  tropium11ico <= trpm111token::transfer       {"from":"trpiumissuer","to":"tropium11ico","quantity":"100000.0000 TRPM","memo":"transfer TRPM token...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
-	- view the table of `vigor1issuer`
+	- view the table of `trpiumissuer`
 ```console
-$ cleost get table vigor11token vigor1issuer accounts
+$ cleost get table trpm111token trpiumissuer accounts
 {
   "rows": [{
-      "balance": "900000.0000 VIGOR"
+      "balance": "900000.0000 TRPM"
     }
   ],
   "more": false,
@@ -131,12 +131,12 @@ $ cleost get table vigor11token vigor1issuer accounts
 }
 ```
 
-	- view the table of `vigor1111ico`
+	- view the table of `tropium11ico`
 ```console
-$ cleost get table vigor11token vigor1111ico accounts
+$ cleost get table trpm111token tropium11ico accounts
 {
   "rows": [{
-      "balance": "100000.0000 VIGOR"
+      "balance": "100000.0000 TRPM"
     }
   ],
   "more": false,
