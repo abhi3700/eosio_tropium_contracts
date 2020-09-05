@@ -24,7 +24,7 @@ void tropiumico::initicorate( const name& buyorsell_type,
 	admin_index admin_table(stake_contract_ac, stake_contract_ac.value);
 	auto admin_it = admin_table.find("doctor"_n.value);
 
-	check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
+	check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\' of stake contract.");
 	check(admin_it->vector_admin.size() != 0, "empty admin list");
 
 	icorate_index icorate_table(get_self(), buyorsell_type.value);
@@ -36,6 +36,12 @@ void tropiumico::initicorate( const name& buyorsell_type,
 		row.phase_type = phase_type;
 		row.current_price = current_price;
 		row.vector_admin = admin_it->vector_admin;
+		if(buyorsell_type == "buy"_n) {
+			row.proposed_price.symbol = dapp_token_symbol;
+		}
+		else if (buyorsell_type == "sell"_n) {
+			row.proposed_price.symbol = fund_token_symbol;
+		}
 	});
 }
 
@@ -234,7 +240,7 @@ void tropiumico::deposit( const name& user,
 		auto prec = ico_it->current_price.symbol.precision();
 		disburse_asset.amount = quantity.amount * ico_it->current_price.amount/pow(10, prec);
 
-		// // inline disburse of dapp token based on the amount of EOS sent
+		// inline disburse of dapp token based on the amount of EOS sent
 		disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
 
 		// send alert to buyer for receiving dapp token

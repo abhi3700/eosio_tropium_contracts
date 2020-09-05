@@ -15,6 +15,8 @@ void tropiumstake::setadmins(const name& doctor,
 			row.vector_admin = vector_admin;
 		});
 	} else {
+		check(admin_it->vector_admin != vector_admin, "the parsed admin list is same as the stored one.");
+		
 		admin_table.modify(admin_it, get_self(), [&](auto& row){
 			row.vector_admin = vector_admin;
 		});
