@@ -151,9 +151,9 @@ public:
 
 	/**
 	 * @brief - send alert
-	 * @details - send alert after the action is successfully done. e.g. after the disburse action is implemented
+	 * @details - send alert after the action is successfully done
 	 * 
-	 * @param user - driver/commuter
+	 * @param user - user
 	 * @param message - note depending on the action
 	 */
 	ACTION sendalert( const name& user,
