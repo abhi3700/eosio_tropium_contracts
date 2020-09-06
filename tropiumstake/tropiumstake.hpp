@@ -56,8 +56,7 @@ public:
 	 * 
 	 * @pre - check the row has no data
 	 */
-	ACTION setadmins(const name& doctor,
-					const name& type,
+	ACTION setadmins(const name& type,
 					const vector<name> vector_admin );
 
 	/**
@@ -69,16 +68,13 @@ public:
 	 * 
 	 * @return [description]
 	 */
-	ACTION addadmin(const name& doctor,
-					const name& type, 
+	ACTION addadmin(const name& type, 
 					const name& admin);
 
-	ACTION remadmin(const name& doctor,
-					const name& type, 
+	ACTION remadmin(const name& type, 
 					const name& admin);
 
-	ACTION clradmins(const name& doctor,
-					const name& type);
+	ACTION clradmins(const name& type);
 
 	/**
 	 * @brief - stake by patient
@@ -117,6 +113,26 @@ public:
 	 */
 	ACTION unstake(const name& patient);
 
+
+	/**
+	 * @brief - send alert
+	 * @details - send alert after the action is successfully done
+	 * 
+	 * @param user - user
+	 * @param message - note depending on the action
+	 */
+	ACTION sendalert( const name& user,
+						const string& message);
+
+	ACTION testdeladmin(const name& type) {
+		admin_index admin_table(get_self(), get_self().value);
+		auto admin_it = admin_table.find(type.value);
+
+		check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
+
+		admin_table.erase(admin_it);
+	}
+
 	static void check_quantity( const asset& quantity, const symbol& qty_sym ) {
 		check(quantity.is_valid(), "invalid quantity");
 		check(quantity.amount > 0, "must withdraw positive quantity");
@@ -149,12 +165,13 @@ private:
 	using admin_index = multi_index<"admins"_n, admin>;
 
 	// -----------------------------------------------------------------------------------------------------------------------
+	// Adding inline action for `sendalert` action in the same contract 
+	void send_alert(const name& user, const string& message);
+
 	// get the current timestamp
 	inline uint32_t now() const {
 		return current_time_point().sec_since_epoch();
 	}
-
-
 
 
 };

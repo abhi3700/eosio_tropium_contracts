@@ -8,10 +8,6 @@
             "base": "",
             "fields": [
                 {
-                    "name": "doctor",
-                    "type": "name"
-                },
-                {
                     "name": "type",
                     "type": "name"
                 },
@@ -39,10 +35,6 @@
             "name": "clradmins",
             "base": "",
             "fields": [
-                {
-                    "name": "doctor",
-                    "type": "name"
-                },
                 {
                     "name": "type",
                     "type": "name"
@@ -72,10 +64,6 @@
             "base": "",
             "fields": [
                 {
-                    "name": "doctor",
-                    "type": "name"
-                },
-                {
                     "name": "type",
                     "type": "name"
                 },
@@ -86,13 +74,23 @@
             ]
         },
         {
-            "name": "setadmins",
+            "name": "sendalert",
             "base": "",
             "fields": [
                 {
-                    "name": "doctor",
+                    "name": "user",
                     "type": "name"
                 },
+                {
+                    "name": "message",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setadmins",
+            "base": "",
+            "fields": [
                 {
                     "name": "type",
                     "type": "name"
@@ -152,6 +150,16 @@
             ]
         },
         {
+            "name": "testdeladmin",
+            "base": "",
+            "fields": [
+                {
+                    "name": "type",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "unstake",
             "base": "",
             "fields": [
@@ -184,6 +192,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "sendalert",
+            "type": "sendalert",
+            "ricardian_contract": ""
+        },
+        {
             "name": "setadmins",
             "type": "setadmins",
             "ricardian_contract": ""
@@ -191,6 +204,11 @@
         {
             "name": "startrehab",
             "type": "startrehab",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "testdeladmin",
+            "type": "testdeladmin",
             "ricardian_contract": ""
         },
         {

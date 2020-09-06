@@ -1,10 +1,9 @@
 #include "tropiumstake.hpp"
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::setadmins(const name& doctor,
-							const name& type,
+void tropiumstake::setadmins(const name& type,
 							const vector<name> vector_admin ) {
-	require_auth(doctor);
+	require_auth(get_self());
 
 	admin_index admin_table(get_self(), get_self().value);
 	auto admin_it = admin_table.find(type.value);
@@ -24,10 +23,9 @@ void tropiumstake::setadmins(const name& doctor,
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::addadmin(const name& doctor,
-							const name& type, 
+void tropiumstake::addadmin(const name& type, 
 							const name& admin) {
-	require_auth(doctor);
+	require_auth(get_self());
 
 	admin_index admin_table(get_self(), get_self().value);
 	auto admin_it = admin_table.find(type.value);
@@ -52,31 +50,40 @@ void tropiumstake::addadmin(const name& doctor,
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::remadmin(const name& doctor,
-					const name& type, 
-					const name& admin) {
-	require_auth(doctor);
+void tropiumstake::remadmin(const name& type, 
+                    const name& admin) {
+    require_auth(get_self());
 
-	admin_index admin_table(get_self(), get_self().value);
-	auto admin_it = admin_table.find(type.value);
+    admin_index admin_table(get_self(), get_self().value);
+    auto admin_it = admin_table.find(type.value);
 
-	check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
-	check(admin_it->vector_admin.size() != 0, "empty admin list");
-	
-	admin_table.modify(admin_it, get_self(), [&](auto& row){	// found & erase it
-		auto vec = admin_it->vector_admin;
-		auto vec_it = std::find(vec.begin(), vec.end(), admin);
+    check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
+    check(admin_it->vector_admin.size() != 0, "empty admin list");
+    
+    auto vec = admin_it->vector_admin;
+    auto vec_it = std::find(vec.begin(), vec.end(), admin);
+    // for (auto itr = vec.begin(); itr != vec.end(); ++itr)
+    // {
+    // 	if (*itr == admin){
+		  //   // admin_table.modify(admin_it, get_self(), [&](auto& row){    // found & erase it
+		  //   //     row.vector_admin.erase(itr);
+		  //   // });
+		  //   print("true");
+		  //   return;
 
-		check(vec_it != vec.end(), "the parsed admin is not in the list.");
+    // 	}
+    // }
+    check(vec_it != vec.end(), "the parsed admin is not in the list."); 
 
-		row.vector_admin.erase(vec_it);
-	});
+    admin_table.modify(admin_it, get_self(), [&](auto& row){    // found & erase it
+        row.vector_admin.erase(vec_it);
+    });
+
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::clradmins(const name& doctor,
-							const name& type) {
-	require_auth(doctor);
+void tropiumstake::clradmins(const name& type) {
+    require_auth(get_self());
 
 	admin_index admin_table(get_self(), get_self().value);
 	auto admin_it = admin_table.find(type.value);
@@ -135,6 +142,9 @@ void tropiumstake::startrehab(const name& doctor,
 		row.doctor = doctor;
 		row.patient_status = "assigned"_n;
 	});
+
+	// send alert to patient
+	send_alert(patient, "Your rehab period is started by the doctor: \'" + stakewallet_it->doctor.to_string() + "\'.");
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -157,6 +167,10 @@ void tropiumstake::endrehab(const name& doctor,
 		row.end_timestamp = now();
 		row.patient_status = patient_status;
 	});
+
+	// send alert to patient
+	send_alert(patient, "Your rehab period is ended as the doctor: \'" + stakewallet_it->doctor.to_string() + "\' mentioned status as: \'" + 
+							stakewallet_it->patient_status.to_string() + "\'.");
 }
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumstake::unstake(const name& patient) {
@@ -206,8 +220,31 @@ void tropiumstake::unstake(const name& patient) {
 		).send();
 
 		stakewallet_table.erase(stakewallet_it);
+
+		// send alert to patient
+		send_alert(patient, "You lose your staked tokens: \'" + stakewallet_it->staked_qty.to_string() + "\' for rehab");
 	}
 
 
 
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+void tropiumstake::sendalert(const name& user,
+							const string& message) {
+	require_auth(get_self());
+
+	require_recipient(user);
+}
+
+void tropiumstake::send_alert(const name& user, 
+							const string& message) {
+	check(message.size() <= 256, "message has more than 256 bytes");
+	
+	action(
+		permission_level(get_self(), "active"_n),
+		get_self(),
+		"sendalert"_n,
+		std::make_tuple(user, message)
+	).send();
 }

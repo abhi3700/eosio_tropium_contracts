@@ -49,9 +49,9 @@ warning: transaction executed locally, but may not be confirmed by the network y
 ### Action - `setadmins`
 * A doctor set admins list
 ```console
-$ cleost push action trpm111stake setadmins '{"doctor": "trpmadmin111","type": "doctor","vector_admin": ["trpmadmin111", "trpmadmin112", "trpmadmin113", "trpmadmin114", "trpmadmin115"]}' -p trpmadmin111@active
-executed transaction: 7b8f5d242655d39248695a20f7d377b1ad4dba6f366b1b1159689a21bb9ec0dd  152 bytes  272 us
-#  trpm111stake <= trpm111stake::setadmins      {"doctor":"trpmadmin111","type":"doctor","vector_admin":["trpmadmin111","trpmadmin112","trpmadmin113...
+$ cleost push action trpm111stake setadmins '{"type": "doctor","vector_admin": ["trpmadmin111", "trpmadmin112", "trpmadmin113", "trpmadmin114", "trpmadmin115"]}' -p trpm111stake@active
+executed transaction: f37ab7821fa82d7ef1472368c93b0c57963bbff118c78f3b4df11a5abcc289e8  144 bytes  185 us
+#  trpm111stake <= trpm111stake::setadmins      {"type":"doctor","vector_admin":["trpmadmin111","trpmadmin112","trpmadmin113","trpmadmin114","trpmad...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- view the table
@@ -78,7 +78,7 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
 ```
 * A doctor set same admins list & gets error:
 ```console
-$ cleost push action trpm111stake setadmins '{"doctor": "trpmadmin111","type": "doctor","vector_admin": ["trpmadmin111", "trpmadmin112", "trpmadmin113", "trpmadmin114", "trpmadmin115"]}' -p trpmadmin111@active
+$ cleost push action trpm111stake setadmins '{"type": "doctor","vector_admin": ["trpmadmin111", "trpmadmin112", "trpmadmin113", "trpmadmin114", "trpmadmin115"]}' -p trpm111stake@active
 Error 3050003: eosio_assert_message assertion failure
 Error Details:
 assertion failure with message: the parsed admin list is same as the stored one.
@@ -86,11 +86,11 @@ pending console output:
 ```
 
 ### Action - `addadmin`
-* `trpmadmin111` add admin to the list
+* `trpm111stake` add admin to the list
 ```console
-$ cleost push action trpm111stake addadmin '["trpmadmin111", "doctor", "trpmadmin121"]' -p trpmadmin111@active
-executed transaction: 4c7fc7e05b5d1c8abbe3e3d5fe72794373cfe17ca0c4836c297d7bf0b847f9e4  120 bytes  195 us
-#  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmadmin111","type":"doctor","admin":"trpmadmin121"}
+$ cleost push action trpm111stake addadmin '["doctor", "trpmadmin121"]' -p trpm111stake@active
+executed transaction: e5fc5dd51952b1c59ed94a9948c3ca9df9db5c0d102cfd516de692ca38e9536c  112 bytes  145 us
+#  trpm111stake <= trpm111stake::addadmin       {"type":"doctor","admin":"trpmadmin121"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- view the table
@@ -116,9 +116,9 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
   "next_key": ""
 }
 ```
-* `trpmadmin111` add same admin to the list & gets error:
+* `trpm111stake` add same admin to the list & gets error:
 ```console
-$ cleost push action trpm111stake addadmin '["trpmadmin111", "doctor", "trpmadmin121"]' -p trpmadmin111@active
+$ cleost push action trpm111stake addadmin '["doctor", "trpmadmin121"]' -p trpm111stake@active
 Error 3050003: eosio_assert_message assertion failure
 Error Details:
 assertion failure with message: the parsed admin is already in the list.
@@ -126,22 +126,20 @@ pending console output:
 ```
 
 ### Action - `remadmin`
-* `trpmadmin111` remove admin to the list
+* `trpm111stake` remove admin to the list
 ```console
-$ cleost push action trpm111stake remadmin '["trpmadmin111", "doctor", "trpmadmin121"]' -p trpmadmin111@active
-executed transaction: 4c7fc7e05b5d1c8abbe3e3d5fe72794373cfe17ca0c4836c297d7bf0b847f9e4  120 bytes  195 us
-#  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmadmin111","type":"doctor","admin":"trpmadmin121"}
-warning: transaction executed locally, but may not be confirmed by the network yet         ]
+$ cleost push action trpm111stake remadmin '["doctor", "trpmadmin121"]' -p trpm111stake@active
+Error 3070002: Runtime Error Processing WASM
+Error Details:
+access violation
+pending console output:
 ```
-
-
-
 
 ### Action - `clradmins`
 ```console
-$ cleost push action trpm111stake clradmins '["trpmadmin111", "doctor"]' -p trpmadmin111@active
-executed transaction: 844bf4feaec983cf70a35fa8a849cf431b1ef248bfc21910bebb2228867ec7ac  112 bytes  187 us
-#  trpm111stake <= trpm111stake::clradmins      {"doctor":"trpmadmin111","type":"doctor"}
+$ cleost push action trpm111stake clradmins '["doctor"]' -p trpm111stake@active
+executed transaction: 6f3fbd9e31462acf6497c32d671511d96548d68120c990588445dfb594df514c  104 bytes  206 us
+#  trpm111stake <= trpm111stake::clradmins      {"type":"doctor"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- view the table
