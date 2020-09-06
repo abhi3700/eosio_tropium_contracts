@@ -126,14 +126,14 @@ public:
 private:
 	// scope - patient
 	TABLE stakewallet {
-		asset amount;						// staked amount
+		asset staked_qty;						// staked amount
 		uint32_t lock_timestamp;			// normally 30 days
 		uint32_t start_timestamp;			// start time of rehab. shall be set when the Dr. sets the lock period
 		uint32_t end_timestamp;				// end time of rehab
 		name doctor;
 		name patient_status;				// unassigned/assigned/caught/cured
 
-		auto primary_key() const { return amount.symbol.raw(); }
+		auto primary_key() const { return staked_qty.symbol.raw(); }
 	};
 
 	using stakewallet_index = multi_index<"stakewallet"_n, stakewallet>;

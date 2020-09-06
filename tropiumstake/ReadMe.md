@@ -86,14 +86,181 @@ pending console output:
 ```
 
 ### Action - `addadmin`
-* add admin to the list
+* `trpmadmin111` add admin to the list
 ```console
-cleost push action trpm111stake addadmin '["", ""]' -p 
+$ cleost push action trpm111stake addadmin '["trpmadmin111", "doctor", "trpmadmin121"]' -p trpmadmin111@active
+executed transaction: 4c7fc7e05b5d1c8abbe3e3d5fe72794373cfe17ca0c4836c297d7bf0b847f9e4  120 bytes  195 us
+#  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmadmin111","type":"doctor","admin":"trpmadmin121"}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+	- view the table
+```console
+$ cleost get table trpm111stake trpm111stake admins --show-payer
+{
+  "rows": [{
+      "data": {
+        "type": "doctor",
+        "vector_admin": [
+          "trpmadmin111",
+          "trpmadmin112",
+          "trpmadmin113",
+          "trpmadmin114",
+          "trpmadmin115",
+          "trpmadmin121"
+        ]
+      },
+      "payer": "trpm111stake"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+* `trpmadmin111` add same admin to the list & gets error:
+```console
+$ cleost push action trpm111stake addadmin '["trpmadmin111", "doctor", "trpmadmin121"]' -p trpmadmin111@active
+Error 3050003: eosio_assert_message assertion failure
+Error Details:
+assertion failure with message: the parsed admin is already in the list.
+pending console output:
 ```
 
 ### Action - `remadmin`
+* `trpmadmin111` remove admin to the list
+```console
+$ cleost push action trpm111stake remadmin '["trpmadmin111", "doctor", "trpmadmin121"]' -p trpmadmin111@active
+executed transaction: 4c7fc7e05b5d1c8abbe3e3d5fe72794373cfe17ca0c4836c297d7bf0b847f9e4  120 bytes  195 us
+#  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmadmin111","type":"doctor","admin":"trpmadmin121"}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+
+
+
+
 ### Action - `clradmins`
+```console
+$ cleost push action trpm111stake clradmins '["trpmadmin111", "doctor"]' -p trpmadmin111@active
+executed transaction: 844bf4feaec983cf70a35fa8a849cf431b1ef248bfc21910bebb2228867ec7ac  112 bytes  187 us
+#  trpm111stake <= trpm111stake::clradmins      {"doctor":"trpmadmin111","type":"doctor"}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+	- view the table
+```console
+$ cleost get table trpm111stake trpm111stake admins --show-payer
+{
+  "rows": [{
+      "data": {
+        "type": "doctor",
+        "vector_admin": []
+      },
+      "payer": "trpm111stake"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+
 ### Action - `stake` (payable action)
+* Patient `trpmuser1112` wants to join the rehab centre. So, transfers "5000 TRPM" tokens
+```console
+$ cleost push action trpm111token transfer '["trpmuser1112", "trpm111stake", "5000.0000 TRPM", "phase A"]' -p trpmuser1112@active
+executed transaction: d36cf18919c36600711e7ef938e09e291ef14d03b5cebc8a7ce344ff8867b54e  136 bytes  232 us
+#  trpm111token <= trpm111token::transfer       {"from":"trpmuser1112","to":"trpm111stake","quantity":"5000.0000 TRPM","memo":"phase A"}
+#  trpmuser1112 <= trpm111token::transfer       {"from":"trpmuser1112","to":"trpm111stake","quantity":"5000.0000 TRPM","memo":"phase A"}
+#  trpm111stake <= trpm111token::transfer       {"from":"trpmuser1112","to":"trpm111stake","quantity":"5000.0000 TRPM","memo":"phase A"}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+	- View the table
+```console
+$ cleost get table trpm111stake trpmuser1112 stakewallet --show-payer
+{
+  "rows": [{
+      "data": {
+        "amount": "5000.0000 TRPM",
+        "lock_timestamp": 0,
+        "start_timestamp": 0,
+        "end_timestamp": 0,
+        "doctor": "",
+        "patient_status": "unassigned"
+      },
+      "payer": "trpm111stake"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+
 ### Action - `startrehab`
+* `trpmadmin111` sets lock period of 30 days for the patient `trpmuser1112`
+```console
+$ cleost push action trpm111stake startrehab '["trpmadmin111", "trpmuser1112", "1601944920"]' -p trpmadmin111@active
+executed transaction: f904007f3d39cf09efb40997c91ba71397aec14bb9d14a91ba9b49af2aa45e7f  112 bytes  230 us
+#  trpm111stake <= trpm111stake::startrehab     {"doctor":"trpmadmin111","patient":"trpmuser1112","lock_timestamp":1601944920}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+	- View the table
+```console
+$ cleost get table trpm111stake trpmuser1112 stakewallet --show-payer
+{
+  "rows": [{
+      "data": {
+        "staked_qty": "5000.0000 TRPM",
+        "lock_timestamp": 1601944920,
+        "start_timestamp": 1599353205,
+        "end_timestamp": 0,
+        "doctor": "trpmadmin111",
+        "patient_status": "assigned"
+      },
+      "payer": "trpm111stake"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+
 ### Action - `endrehab`
+* `trpmadmin111` caught & ends rehab.
+```console
+$ cleost push action trpm111stake endrehab '["trpmadmin111", "trpmuser1112", "caught"]' -p trpmadmin111@active
+executed transaction: 945008a0850a9077bfcb9f36a2c87d7f4c419ed48afad37388cbc7e4b7c97af9  120 bytes  192 us
+#  trpm111stake <= trpm111stake::endrehab       {"doctor":"trpmadmin111","patient":"trpmuser1112","patient_status":"caught"}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+	- View the table
+```console
+$ cleost get table trpm111stake trpmuser1112 stakewallet --show-payer
+{
+  "rows": [{
+      "data": {
+        "staked_qty": "5000.0000 TRPM",
+        "lock_timestamp": 1601944920,
+        "start_timestamp": 1599353205,
+        "end_timestamp": 1599353381,
+        "doctor": "trpmadmin111",
+        "patient_status": "caught"
+      },
+      "payer": "trpm111stake"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+
+
 ### Action - `unstake`
+* patient wants to unstake after rehab is ended with "caught" status
+```console
+$ cleost push action trpm111stake unstake '["trpmuser1112"]' -p trpmuser1112@active
+executed transaction: c2d901ff053f0ee8536908d561ef0094677573732002f502ad49157d2fc85e06  104 bytes  199 us
+#  trpm111stake <= trpm111stake::unstake        {"patient":"trpmuser1112"}
+#  trpm111token <= trpm111token::transfer       {"from":"trpm111stake","to":"trpmadmin111","quantity":"5000.0000 TRPM","memo":"TROPIUM Stake contrac...
+#  trpm111stake <= trpm111token::transfer       {"from":"trpm111stake","to":"trpmadmin111","quantity":"5000.0000 TRPM","memo":"TROPIUM Stake contrac...
+>> Either money is not sent to the contract or contract itself is the buyer.
+#  trpmadmin111 <= trpm111token::transfer       {"from":"trpm111stake","to":"trpmadmin111","quantity":"5000.0000 TRPM","memo":"TROPIUM Stake contrac...
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+	- Here, the patient loses all its staked tokens to Doctor.

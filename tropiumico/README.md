@@ -607,6 +607,23 @@ $ cleost get table tropium11ico trpmuser1112 fund --show-payer
   "next_key": ""
 }
 ```
+* `trpmuser1112` wants to buy "5000 TRPM" to join rehab centre. So, he transfers "119.0476 EOS" @ phas_type A rate
+```console
+$ cleost push action eosio.token transfer '["trpmuser1112", "tropium11ico", "119.0476 EOS", "phase A"]' -p trpmuser1112@active
+executed transaction: 83f00f9fab72fb34daa355ed00d8267b8a9dcf796360ded5d73fae191a301ddf  136 bytes  314 us
+#   eosio.token <= eosio.token::transfer        {"from":"trpmuser1112","to":"tropium11ico","quantity":"119.0476 EOS","memo":"phase A"}
+#  trpmuser1112 <= eosio.token::transfer        {"from":"trpmuser1112","to":"tropium11ico","quantity":"119.0476 EOS","memo":"phase A"}
+#  tropium11ico <= eosio.token::transfer        {"from":"trpmuser1112","to":"tropium11ico","quantity":"119.0476 EOS","memo":"phase A"}
+#  tropium11ico <= tropium11ico::disburse       {"receiver_ac":"trpmuser1112","buyorsell_type":"buy","phase_type":"a","disburse_qty":"4999.9992 TRPM...
+#  tropium11ico <= tropium11ico::sendalert      {"user":"trpmuser1112","message":"You receive '4999.9992 TRPM' for depositing '119.0476 EOS' to ICO ...
+#  trpm111token <= trpm111token::transfer       {"from":"tropium11ico","to":"trpmuser1112","quantity":"4999.9992 TRPM","memo":"TROPIUM ICO contract ...
+#  tropium11ico <= trpm111token::transfer       {"from":"tropium11ico","to":"trpmuser1112","quantity":"4999.9992 TRPM","memo":"TROPIUM ICO contract ...
+>> Either money is not sent to the contract or contract itself is the buyer.
+#  trpmuser1112 <= trpm111token::transfer       {"from":"tropium11ico","to":"trpmuser1112","quantity":"4999.9992 TRPM","memo":"TROPIUM ICO contract ...
+#  trpmuser1112 <= tropium11ico::sendalert      {"user":"trpmuser1112","message":"You receive '4999.9992 TRPM' for depositing '119.0476 EOS' to ICO ...
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+
 
 #### For SELL
 * `trpmuser1112` wants to sell some TRPM tokens.

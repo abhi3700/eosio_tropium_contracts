@@ -62,13 +62,13 @@ void tropiumstake::remadmin(const name& doctor,
 
 	check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
 	check(admin_it->vector_admin.size() != 0, "empty admin list");
-
-	auto vec = admin_it->vector_admin;
-	auto vec_it = std::find(vec.begin(), vec.end(), admin);
-
-	check(vec_it != vec.end(), "the parsed admin is not in the list.");
 	
 	admin_table.modify(admin_it, get_self(), [&](auto& row){	// found & erase it
+		auto vec = admin_it->vector_admin;
+		auto vec_it = std::find(vec.begin(), vec.end(), admin);
+
+		check(vec_it != vec.end(), "the parsed admin is not in the list.");
+
 		row.vector_admin.erase(vec_it);
 	});
 }
@@ -107,9 +107,10 @@ void tropiumstake::stake(	const name& patient,
 	auto stakewallet_it = stakewallet_table.find(quantity.symbol.raw());
 
 	check(stakewallet_it == stakewallet_table.end(), "money can't be further transferred to stake as it already exists.");
+	check(stakewallet_it->staked_qty.amount == 0, "the patient must have zero balance, otherwise the amount is still present in the stake wallet.");
 	
 	stakewallet_table.emplace(get_self(), [&](auto& row){
-		row.amount = quantity;
+		row.staked_qty = quantity;
 		row.patient_status = "unassigned"_n;
 	});
 }
@@ -120,7 +121,8 @@ void tropiumstake::startrehab(const name& doctor,
 							uint32_t lock_timestamp) {
 	require_auth(doctor);
 
-	check(lock_timestamp - now() == lock_period, "the lock_timestamp needs to be such that it is 30 days from now.");
+	// NOTE: this has been not set as it will be too accurate to push this action
+	// check(lock_timestamp - now() == lock_period, "the lock_timestamp needs to be such that it is 30 days from now.");
 
 	stakewallet_index stakewallet_table(get_self(), patient.value);
 	auto stakewallet_it = stakewallet_table.find(dapp_token_symbol.raw());
@@ -198,8 +200,8 @@ void tropiumstake::unstake(const name& patient) {
 			permission_level{get_self(), "active"_n},
 			token_contract_ac,
 			"transfer"_n,
-			std::make_tuple(get_self(), stakewallet_it->doctor, stakewallet_it->amount, 
-								"TROPIUM Stake contract disburses " + stakewallet_it->amount.to_string() + " to \'" 
+			std::make_tuple(get_self(), stakewallet_it->doctor, stakewallet_it->staked_qty, 
+								"TROPIUM Stake contract disburses " + stakewallet_it->staked_qty.to_string() + " to \'" 
 								+ stakewallet_it->doctor.to_string() + "\'. for treating \'" + patient.to_string() + "\'")
 		).send();
 

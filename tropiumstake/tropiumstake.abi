@@ -108,7 +108,7 @@
             "base": "",
             "fields": [
                 {
-                    "name": "amount",
+                    "name": "staked_qty",
                     "type": "asset"
                 },
                 {
