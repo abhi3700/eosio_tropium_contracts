@@ -60,20 +60,8 @@ void tropiumstake::remadmin(const name& type,
     check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
     check(admin_it->vector_admin.size() != 0, "empty admin list");
     
-    auto vec = admin_it->vector_admin;
-    auto vec_it = std::find(vec.begin(), vec.end(), admin);
-    // for (auto itr = vec.begin(); itr != vec.end(); ++itr)
-    // {
-    // 	if (*itr == admin){
-		  //   // admin_table.modify(admin_it, get_self(), [&](auto& row){    // found & erase it
-		  //   //     row.vector_admin.erase(itr);
-		  //   // });
-		  //   print("true");
-		  //   return;
-
-    // 	}
-    // }
-    check(vec_it != vec.end(), "the parsed admin is not in the list."); 
+    auto vec_it = std::find(admin_it->vector_admin.begin(), admin_it->vector_admin.end(), admin);
+    check(vec_it != admin_it->vector_admin.end(), "the parsed admin is not in the list."); 
 
     admin_table.modify(admin_it, get_self(), [&](auto& row){    // found & erase it
         row.vector_admin.erase(vec_it);

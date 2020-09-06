@@ -126,12 +126,41 @@ pending console output:
 ```
 
 ### Action - `remadmin`
-* `trpm111stake` remove admin to the list
+* `trpm111stake` remove admin - `trpmadmin121` from the list
 ```console
 $ cleost push action trpm111stake remadmin '["doctor", "trpmadmin121"]' -p trpm111stake@active
-Error 3070002: Runtime Error Processing WASM
+executed transaction: a4b6b5d1b1cf13b6ecbf68c1f00b743e3c5f4de626b0c4f77fb04b6b1cd5f390  112 bytes  176 us
+#  trpm111stake <= trpm111stake::remadmin       {"type":"doctor","admin":"trpmadmin121"}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+  - view the table
+```console
+$ cleost get table trpm111stake trpm111stake admins --show-payer
+{
+  "rows": [{
+      "data": {
+        "type": "doctor",
+        "vector_admin": [
+          "trpmadmin111",
+          "trpmadmin112",
+          "trpmadmin113",
+          "trpmadmin114",
+          "trpmadmin115"
+        ]
+      },
+      "payer": "trpm111stake"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+* `trpm111stake` removes same admin - `trpmadmin121` from the list & gets error:
+```console
+$ cleost push action trpm111stake remadmin '["doctor", "trpmadmin121"]' -p trpm111stake@active
+Error 3050003: eosio_assert_message assertion failure
 Error Details:
-access violation
+assertion failure with message: the parsed admin is not in the list.
 pending console output:
 ```
 
