@@ -28,6 +28,9 @@ trpiumissuer
 Private key: 5JwxB7EZdjURChcPiHQc79uRHpUBGc5K4kCyNwpujR3vJUfjxFe
 Public key: EOS75UozVYxrUFrEH2c9LUqzLGdu27PYtsgTXL6dMryZPzGyqDFtL
 -------------------------------------------------------------
+tropmfounder
+Private key: 5KZt5Qu3ocLLhPBNZ9vJAG2JVcgaEQC1APz9TwFFQ4RT4oG4j7z
+Public key: EOS5fhwC6nVhDri7TKCrTzbfoY9vfbYsZQGQbxZQhAFWn4QJBnJcU
 
 TROPIUM Users
 =========
@@ -48,37 +51,37 @@ Private key: 5JW3an5wf6Ejy87EXZ1JmAJhaUGwdycWKYUHt1et6s5p9ZpZ4oQ
 Public key: EOS6RqXji4ebfVixFeHEue3iCvTuLpwsSbX1oiZMYh1pkttFrsmwd
 -------------------------------------------------------------
 
-TROPIUM Admins
+TROPIUM doctors
 ============
-trpmadmin111
-Private key: 5JgUezcmbafPCbSBL9TEuz7r5pvf2G7vpCqpLPwVmsc2jnYMgzC
-Public key: EOS61kyc24pxuZCq3QC4cQMaZPzGaWknzpMtsLp8rC1LHG9iLAt4G
+trpmdoc11111
+Private key: 5KFN7rRzdqa3FrS7F95FXZ9JehoveiwhqVomG1cQRBesokCGR8w
+Public key: EOS6VaXTHtSnAxwX5FbbGDsQ8qT5ARJusSf8KkYK7qqaCdvZoey1Y
 -----------------------------------------------------------------
-trpmadmin112
-Private key: 5JELqUs6FGGBLpUp64Fr8Nx31WxrRq8bmCPcFiTnTY3t4b9d3ex
-Public key: EOS6YDtE45cZpW7z9eFJBy7Dgq2aHPuV8BYsQAMaAArXbg63jwCqs
+trpmdoc11112
+Private key: 5JnaWfb4kRccGQMKxpA2NVsurwATGj4zU56kp72gE1ZwwZHQ82M
+Public key: EOS5yDwLfG11pgJcd7tkxcxfPEu1QB6NRiZfDbrhJ6VjU32v62Zvv
 -----------------------------------------------------------------
-trpmadmin113
-Private key: 5JXKVpFuwSZKQJxqY4tdEdRUfWkEtir8k9nbbtfa5uqJ9xd7u2N
-Public key: EOS86UqrGm5by3qheYr7Jib8y1iv9tFeLGAnpqaDdEk3rsytC6Mmy
+trpmdoc11113
+Private key: 5JmDZ1uhsV4CFwM89uS5o5mnfE6Yoy7DfARerE74T4MvXTfkyGw
+Public key: EOS7xRtaLrrKrxdXgbXXa24qF9sdenYQn7uBx4uYKk6645vYYTJX7
 -----------------------------------------------------------------
-trpmadmin114
-Private key: 5JetEYmc3jUZYn2wiLyczq6yYeBHd9JvMTeFV5xi8px7P5zfMVg
-Public key: EOS8gvN3zwcBxEH19NPxTPGrJXqqFvC8RACfiDrtPegeDScLayY1R
+trpmdoc11114
+Private key: 5KQQfzikA5C5kJPExE8rxZmcqXxrPsyvMxRvP6dudMepipqKM3m
+Public key: EOS8SfqSghhDaxyxsZr2mLnczEQ4sVzSrFBpH3z6osMHGUnjoyGEK
 -----------------------------------------------------------------
-trpmadmin115
-Private key: 5HuvrqYc4HLGEmvFK8tWF9rgFmjAM2cFE1TbopnF81H7ox7GDAK
-Public key: EOS5DdKBD4EAxGX2C6q9vfYemYbeq8j7Edo99E5AsNZCDpzm1tsK8
+trpmdoc11115
+Private key: 5J9oAkNPycsBKV7aBhPa5YtMa3jSPKa6vdP54h2UWHECJ3wKEJx
+Public key: EOS5rXrKNHsjdm6zhH7U4TUJj1NcmTiTuLu9EdP4x3TkuHvRtHJwM
 -----------------------------------------------------------------
-trpmadmin121
-Private key: 5J2PaPypiKgedsVJHdBkq7hM4cSBhhfJA5zBMvWmTye2k1rFoa2
-Public key: EOS8XukQPWtqssWkyr3Hv5bm8ssYVJ9KknGnj8LBpi4MgGhqXijJo
+trpmdoc11121
+Private key: 5JWhDiQrtb7cfWpx5SyqCWBT4t85YyHbAc3FA4LPW6DunFjNDXv
+Public key: EOS8mjMGP18LMKGJ5kh2EdBVzecNoi93h88zxfNxBtuCLapynS8Q2
 -----------------------------------------------------------------
-trpmadmin122
-Private key: 5JtLrMgv49SXFBsTCktvPsADuSwYbnDsyRp41WvYJzPcdSc7UKb
-Public key: EOS6xiTghS4HcX6nJ7nkB1btWZ3teDupeLYWUXyCxBEVfCM1xjX2a
+trpmdoc11122
+Private key: 5JqTXDCUU71xJgpRpmZvJapjmZ3KY8asCVXHmhnhKcDsgf1PG2s
+Public key: EOS85PYsJMiNgiA2wKTzPATGopV8ryY6V3ZRrDETK2VkPyTX43i5M
 -----------------------------------------------------------------
-trpmadmin123
-Private key: 5JcFRFGZLkEYxtYtmjXvXgwVrbqbvWxSWdBr7fsT4KoQDb5kJHs
-Public key: EOS6V9KA58hwURN1kuNwwiVxW7QzMXyBhpkVd22mEJT2A94KytZsR
+trpmdoc11123
+Private key: 5Hx69PiA9dz5LvT1BhNPcGWTwHKb7aENBsxJJXy1jGwbDtr8snc
+Public key: EOS6aoWwUeq4bre1o68zxYcbjMLXeeC8g76VgBqLRrqcE55mvaeou
 -----------------------------------------------------------------
