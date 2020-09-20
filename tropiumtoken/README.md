@@ -1,5 +1,6 @@
 # Token contract
 ## Brief
+* the total_supply is 5 billion, max_supply is 15 billion.
 * It is a token contract which is to 
 	- [x] create tokens with issuer & max_supply
 	- [x] issue tokens to issuer only

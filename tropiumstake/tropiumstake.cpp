@@ -1,5 +1,63 @@
 #include "tropiumstake.hpp"
 
+
+// --------------------------------------------------------------------------------------------------------------------
+void tropiumstake::regbydoctor( const name& doctor, 
+								const name& type, 
+								const string& profile_url
+								)
+{
+	require_auth(doctor);
+
+	auth_index auth_table(get_self(), doctor.value);
+	auto auth_it = auth_table.find(doctor.value);
+
+	if (auth_it == auth_table.end()) {
+		auth_table.emplace(doctor, [&](auto& row) {
+			row.doctor = doctor;
+			row.type = type;
+			row.profile_url = profile_url;
+			row.user_status = "added"_n;
+			row.add_timestamp = now();
+		});
+	} else {
+		check((auth_it->type != type) || (auth_it->profile_url != profile_url), "Either type or profile_url has to be different than the stored one.");
+		auth_table.modify(auth_it, doctor, [&](auto& row) {
+			if(auth_it->type != type) {
+				row.type = type;
+			}
+			if(auth_it->profile_url != profile_url) {
+				row.profile_url = profile_url;
+			}
+
+			row.user_status = "updated"_n;
+			row.update_timestamp = now();
+		});
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+void tropiumstake::verify( const name& verified_doctor,
+							const name& new_doctor,
+							const name& user_status) {
+	check(has_auth(founder_ac) || has_auth(verified_doctor), "missing required authority of accounta or accountb");
+
+	check( (user_status == "verified"_n), "User status can only be \'verified\'.");
+
+	auth_index auth_table(get_self(), doctor.value);
+	auto auth_it = auth_table.find(doctor.value);
+
+	check(auth_it != auth_table.end(), "Doctor doesn\'t exist in the auth table.");
+
+	// check that doctor's status must be "added" or "updated" or "verified"
+	check((auth_it->user_status == "added"_n) || (auth_it->user_status == "updated"_n), "There is nothing added or updated in the doctor\'s profile.");
+
+	auth_table.modify(auth_it, doctor, [&](auto& row) {
+		row.user_status = "verified"_n;
+		row.verify_timestamp = now();
+	});
+
+}
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumstake::setadmins(const name& type,
 							const vector<name> vector_admin ) {

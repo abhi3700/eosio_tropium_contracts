@@ -1,9 +1,12 @@
 # Stake Contract
+* A doctor registers by giving NPI no.
+* An admin
 * Patient stakes "5000 TRPM" tokens to get rehab from doctor.
 * The assigned doctor `startrehab` & set the lock period of 30 days.
 * The Dr. can `endrehab` by setting the status as "cured" or "caught".
 * If cured, then Dr. gets 5% & remaining is returned back to the patient.
 * Else if caught, then Dr. gets 100% tokens & the patient loses entirely.
+* A doctor can be removed from the admins list when the no. is 5 
 
 ## Compile
 ```console
@@ -291,3 +294,7 @@ executed transaction: c2d901ff053f0ee8536908d561ef0094677573732002f502ad49157d2f
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- Here, the patient loses all its staked tokens to Doctor.
+
+## TODO
+* [ ] the auth table data ownership is transferred from new doctor to contract itself. as the verification is done.
+  - transfer back to the new doctor by an ACTION owndata(), only then the doctor is added to the admins list.
