@@ -1,10 +1,11 @@
 # ICO Contract
-This contract is used for auto/manual disbursement of dApp tokens in exchange of EOS tokens (which can be modified) at ICO rates (set for multiple phases). 
+This contract is used for auto disbursement of dApp tokens in exchange of EOS tokens (which can be modified) at ICO rates (set for multiple phases). 
 
 ## Features
 * Auto-disbursement of TRPM tokens from ICO contract after receiving EOS tokens from buyer.
 * Also, Manual-disbursement of TRPM tokens from ICO contract is possible, if `"vigorico::disburse"` action is not added as inline action, but rather  in the `vigorico` contract.
 * ICO can be conducted in multiple phases completely independent of each other.
+* ICO rate is - 0.15 EOS/1 TRPM
 
 ## Workflow
 ### Pre-requisite
@@ -19,9 +20,8 @@ This contract is used for auto/manual disbursement of dApp tokens in exchange of
 
 ### Real time
 * Buyer send EOS tokens & receive TRPM tokens to/from contract respectively.
-* Seller send TRPM tokens & receive EOS tokens to/from contract respectively.
 
-> NOTE: Anyone can be buyer/seller, no authentication required from dApp side.
+> NOTE: Anyone can be buyer, no authentication required from dApp side.
 
 ## Compile
 ```console
