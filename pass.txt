@@ -24,11 +24,7 @@ Public key: EOS8Y4iZBjanfshkDzF8gSkWZSYveNQFagcWWnepCqA6DPNv22Sye
 
 TROPIUM System accounts
 ===================
-trpiumissuer
-Private key: 5JwxB7EZdjURChcPiHQc79uRHpUBGc5K4kCyNwpujR3vJUfjxFe
-Public key: EOS75UozVYxrUFrEH2c9LUqzLGdu27PYtsgTXL6dMryZPzGyqDFtL
--------------------------------------------------------------
-tropmfounder
+eosaidchains
 Private key: 5KZt5Qu3ocLLhPBNZ9vJAG2JVcgaEQC1APz9TwFFQ4RT4oG4j7z
 Public key: EOS5fhwC6nVhDri7TKCrTzbfoY9vfbYsZQGQbxZQhAFWn4QJBnJcU
 
