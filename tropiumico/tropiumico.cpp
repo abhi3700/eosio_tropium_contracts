@@ -7,7 +7,7 @@ using std::pow;
 void tropiumico::seticorate( const name& phase_type,
 								const asset& current_price )
 {
-	require_auth(founder_ac);
+	require_auth(dapp_token_issuer);
 
 	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
 
@@ -37,20 +37,19 @@ void tropiumico::seticorate( const name& phase_type,
 
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumico::deposit( const name& user, 
+void tropiumico::deposit( const name& buyer_ac, 
 						const name& contract_ac, 
 						const asset& quantity, 
 						const string& memo ) {
 
 
 	// check for conditions if either or both of these are true for `from` & `to`
-	if(contract_ac != get_self() ||  user == get_self()) {		// atleast one of the condition is true
+	if(contract_ac != get_self() ||  buyer_ac == get_self()) {		// atleast one of the condition is true
 		print("Either money is not sent to the contract or contract itself is the buyer.");
 		return;
 	}
 
-	// founder_ac is the tokenissuer
-	if(user == founder_ac) {		// include the case where, additional ICO money with TROPIUM tokens needed after the contract is deployed on this a/c 
+	if(buyer_ac == dapp_token_issuer) {		// include the case where, additional ICO money with TROPIUM tokens needed after the contract is deployed on this a/c 
 		return;
 	} else {		
 
@@ -67,121 +66,91 @@ void tropiumico::deposit( const name& user,
 		}
 
 		// instantiate the `fund` table
-		fund_index fund_table(get_self(), user.value);
+		fund_index fund_table(get_self(), buyer_ac.value);
 		auto fund_it = fund_table.find(phase_type.value);
 
 		// update (add/modify) the deposit_qty
 		if(fund_it == fund_table.end()) {
 			fund_table.emplace(get_self(), [&](auto& row) {
-				row.fund_type = phase_type;
-				row.tot_fundtype_qty = quantity;
+				row.phase_type = phase_type;
+				row.tot_deposit_qty = quantity;
 				row.tot_disburse_qty.symbol = dapp_token_symbol;				
 			});
 		} else {
 			fund_table.modify(fund_it, get_self(), [&](auto& row) {
-				row.tot_fundtype_qty += quantity;
+				row.tot_deposit_qty += quantity;
 			});
 		}
 
 
-		asset disburse_asset;
+		asset disburse_qty;
 
 		// prepare for disbursement of dapp tokens as per ICO rate
-		disburse_asset = asset(0, dapp_token_symbol);
+		disburse_qty = asset(0, dapp_token_symbol);
 
 		icorate_index icorate_table(get_self(), get_self().value);
 
 		auto ico_it = icorate_table.find(phase_type.value);
 
-		check(ico_it != icorate_table.end(), "ICO rate for \'" + buyorsell_type.to_string() + "\' in phase " + phase_type.to_string() + " is not set. Contract owner must set using \'initicorate\'");
+		check(ico_it != icorate_table.end(), "ICO rate for phase " + phase_type.to_string() + " is not set.\'" + dapp_token_issuer.to_string() + "\' must set using \'seticorate\'");
 
 		auto prec = ico_it->current_price.symbol.precision();
-		disburse_asset.amount = quantity.amount * ico_it->current_price.amount/pow(10, prec);
+		disburse_qty.amount = quantity.amount * ico_it->current_price.amount/pow(10, prec);
 
 		// inline disburse of dapp token based on the amount of EOS sent
-		disburse_inline(user, buyorsell_type, phase_type, disburse_asset, memo);
+		action(
+			permission_level{get_self(), "active"_n},
+			"eosio.token"_n,
+			"transfer"_n,
+			std::make_tuple(buyer_ac, phase_type, disburse_qty, string("disburse for " + memo))
+		).send();
 
 		// send alert to buyer for receiving dapp token
-		send_alert(user, "You receive \'" + disburse_asset.to_string() + "\' for depositing \'" + 
-									quantity.to_string() + "\' to ICO contract for " + buyorsell_type.to_string() + " in " + memo );
+		send_alert(buyer_ac, "You receive \'" + disburse_qty.to_string() + "\' for depositing \'" + 
+									quantity.to_string() + "\' to ICO contract for " + memo );
 
 	}
-
-
 
 }
 
 
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumico::disburse(const name& receiver_ac,
-						const name& buyorsell_type,
 						const name& phase_type,
 						const asset& disburse_qty,
 						const string& memo )
 {
 	require_auth(get_self());
 
-	// require_recipient(receiver_ac);
-
 	check(is_account(receiver_ac), "receiver account doesn't exist");
 	check( receiver_ac != get_self(), "amount can't be disbursed to contract itself");
 
-	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "buyorsell_type can either be \'buy\' or \'sell\'.");
 	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
 
-	if(buyorsell_type == "buy"_n) {
-		// check quantity is valid for all conditions as 'asset'
-		check_quantity(disburse_qty, dapp_token_symbol);
-	}
-	else if(buyorsell_type == "sell"_n) {
-		// check quantity is valid for all conditions as 'asset'
-		check_quantity(disburse_qty, fund_token_symbol);
-	}
+	// check quantity is valid for all conditions as 'asset'
+	check_quantity(disburse_qty, dapp_token_symbol);
 
 	// instantiate the `fund` table
 	fund_index fund_table(get_self(), receiver_ac.value);
-	auto fund_it = fund_table.find(buyorsell_type.value);
+	auto fund_it = fund_table.find(phase_type.value);
 
 	// Make sure that the receiver_ac has deposited amount in the table
 	check( fund_it != fund_table.end(), "Sorry! There is no amount deposited by " + receiver_ac.to_string() + "in the fund.");
 
-	if(buyorsell_type == "buy"_n) {
-		action(
-			permission_level{get_self(), "active"_n},
-			token_contract_ac,
-			"transfer"_n,
-			std::make_tuple(get_self(), receiver_ac, disburse_qty, 
-								"TROPIUM ICO contract disburses " + disburse_qty.to_string() + " to \'" + receiver_ac.to_string() + "\'. for " + buyorsell_type.to_string() + " in " + memo)
-		).send();
-	} else if(buyorsell_type == "sell"_n) {
-		action(
-			permission_level{get_self(), "active"_n},
-			"eosio.token"_n,
-			"transfer"_n,
-			std::make_tuple(get_self(), receiver_ac, disburse_qty, 
-								"TROPIUM ICO contract disburses " + disburse_qty.to_string() + " to \'" + receiver_ac.to_string() + "\'. for " + buyorsell_type.to_string() + " in " + memo)
-		).send();
-	}
+	action(
+		permission_level{get_self(), "active"_n},
+		token_contract_ac,
+		"transfer"_n,
+		std::make_tuple(get_self(), receiver_ac, disburse_qty, 
+							"TROPIUM ICO contract disburses " + disburse_qty.to_string() + " to \'" + receiver_ac.to_string() + "\'. for " + memo)
+	).send();
 
 	fund_table.modify(fund_it, get_self(), [&](auto& row) {
-		creatify_vector_pair_fund(row.tot_disburse_qty, phase_type, disburse_qty);
+		row.tot_disburse_qty += disburse_qty;
 	});
 
 }
 
-void tropiumico::disburse_inline(const name& receiver_ac,
-						const name& buyorsell_type,
-						const name& phase_type,
-						const asset& disburse_qty,
-						const string& memo )
-{
-	action(
-		permission_level{get_self(), "active"_n},
-		get_self(),
-		"disburse"_n,
-		std::make_tuple(receiver_ac, buyorsell_type, phase_type, disburse_qty, memo)
-	).send();
-}
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumico::sendalert(const name& user,
 							const string& message) {

@@ -4,29 +4,11 @@
     "types": [],
     "structs": [
         {
-            "name": "approicorate",
-            "base": "",
-            "fields": [
-                {
-                    "name": "buyorsell_type",
-                    "type": "name"
-                },
-                {
-                    "name": "phase_type",
-                    "type": "name"
-                }
-            ]
-        },
-        {
             "name": "disburse",
             "base": "",
             "fields": [
                 {
                     "name": "receiver_ac",
-                    "type": "name"
-                },
-                {
-                    "name": "buyorsell_type",
                     "type": "name"
                 },
                 {
@@ -48,16 +30,16 @@
             "base": "",
             "fields": [
                 {
-                    "name": "fund_type",
+                    "name": "phase_type",
                     "type": "name"
                 },
                 {
-                    "name": "tot_fundtype_qty",
-                    "type": "pair_name_asset[]"
+                    "name": "tot_deposit_qty",
+                    "type": "asset"
                 },
                 {
                     "name": "tot_disburse_qty",
-                    "type": "pair_name_asset[]"
+                    "type": "asset"
                 }
             ]
         },
@@ -72,94 +54,6 @@
                 {
                     "name": "current_price",
                     "type": "asset"
-                },
-                {
-                    "name": "proposed_price",
-                    "type": "asset"
-                },
-                {
-                    "name": "vector_admin",
-                    "type": "name[]"
-                },
-                {
-                    "name": "vector_admin_vote",
-                    "type": "pair_name_name[]"
-                },
-                {
-                    "name": "decision_timestamp",
-                    "type": "uint32"
-                }
-            ]
-        },
-        {
-            "name": "initicorate",
-            "base": "",
-            "fields": [
-                {
-                    "name": "buyorsell_type",
-                    "type": "name"
-                },
-                {
-                    "name": "phase_type",
-                    "type": "name"
-                },
-                {
-                    "name": "current_price",
-                    "type": "asset"
-                }
-            ]
-        },
-        {
-            "name": "pair_name_asset",
-            "base": "",
-            "fields": [
-                {
-                    "name": "first",
-                    "type": "name"
-                },
-                {
-                    "name": "second",
-                    "type": "asset"
-                }
-            ]
-        },
-        {
-            "name": "pair_name_name",
-            "base": "",
-            "fields": [
-                {
-                    "name": "first",
-                    "type": "name"
-                },
-                {
-                    "name": "second",
-                    "type": "name"
-                }
-            ]
-        },
-        {
-            "name": "propoicorate",
-            "base": "",
-            "fields": [
-                {
-                    "name": "setter",
-                    "type": "name"
-                },
-                {
-                    "name": "buyorsell_type",
-                    "type": "name"
-                },
-                {
-                    "name": "phase_type",
-                    "type": "name"
-                },
-                {
-                    "name": "proposed_price",
-                    "type": "asset"
-                },
-                {
-                    "name": "decision_timestamp",
-                    "type": "uint32"
                 }
             ]
         },
@@ -174,6 +68,20 @@
                 {
                     "name": "message",
                     "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "seticorate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "phase_type",
+                    "type": "name"
+                },
+                {
+                    "name": "current_price",
+                    "type": "asset"
                 }
             ]
         },
@@ -204,54 +112,22 @@
                     "type": "name"
                 }
             ]
-        },
-        {
-            "name": "voteicorate",
-            "base": "",
-            "fields": [
-                {
-                    "name": "admin",
-                    "type": "name"
-                },
-                {
-                    "name": "buyorsell_type",
-                    "type": "name"
-                },
-                {
-                    "name": "phase_type",
-                    "type": "name"
-                },
-                {
-                    "name": "vote",
-                    "type": "name"
-                }
-            ]
         }
     ],
     "actions": [
-        {
-            "name": "approicorate",
-            "type": "approicorate",
-            "ricardian_contract": ""
-        },
         {
             "name": "disburse",
             "type": "disburse",
             "ricardian_contract": ""
         },
         {
-            "name": "initicorate",
-            "type": "initicorate",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "propoicorate",
-            "type": "propoicorate",
-            "ricardian_contract": ""
-        },
-        {
             "name": "sendalert",
             "type": "sendalert",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "seticorate",
+            "type": "seticorate",
             "ricardian_contract": ""
         },
         {
@@ -262,11 +138,6 @@
         {
             "name": "testdelico",
             "type": "testdelico",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "voteicorate",
-            "type": "voteicorate",
             "ricardian_contract": ""
         }
     ],

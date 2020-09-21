@@ -130,8 +130,6 @@ public:
 		fund_table.erase(fund_it);
 	}
 
-	using disburse_action  = action_wrapper<"disburse"_n, &tropiumico::disburse>;
-
 	static void check_quantity( const asset& quantity, const symbol& qty_sym ) {
 		check(quantity.is_valid(), "invalid quantity");
 		check(quantity.amount > 0, "must withdraw positive quantity");
@@ -147,7 +145,7 @@ private:
 		asset tot_deposit_qty;			// 5.0000 EOS
 		asset tot_disburse_qty;			// 200.0000 TRPM @ respective ICO rate
 
-		auto primary_key() const { return fund_type.value; }
+		auto primary_key() const { return phase_type.value; }
 	};
 
 	using fund_index = multi_index<"fund"_n, fund>;
@@ -165,64 +163,8 @@ private:
 	using icorate_index = multi_index<"icorates"_n, icorate>;
 
 	// -----------------------------------------------------------------------------------------------------------------------
-	// scope - self
-	struct admin {
-		name type;								// psychiatrist, therapist
-		vector<name> vector_admin;						// E.g. ["admin1", "admin2", "admin3", "admin4", "admin5"]
-
-		auto primary_key() const { return type.value; }
-	};
-
-	using admin_index = multi_index<"admins"_n, admin>;
-
-	// -----------------------------------------------------------------------------------------------------------------------
 	// Adding inline action for `sendalert` action in the same contract 
 	void send_alert(const name& user, const string& message);
-
-	// // Adding inline action for `disburse` action in the same contract 
-	// void disburse_inline( const name& receiver_ac,
-	// 						const name& phase_type,
-	// 						const asset& disburse_qty,
-	// 						const string& memo );
-
-	// get the current timestamp
-	inline uint32_t now() const {
-		return current_time_point().sec_since_epoch();
-	}
-
-	// NOTE: vector arg can't be const as emplace_back is non-const method
-	// asset values are added here in order to store the total value 
-	inline void creatify_vector_pair_fund( vector<pair<name, asset>>& v, 
-										const name& s, 
-										const asset& val) {
-		auto s_it = std::find_if(v.begin(), v.end(), [&](auto& vs){ return vs.first == s; });
-		if(s_it != v.end()) {		// key found
-			s_it->second += val;		// modify by adding values
-		}
-		else {						// key NOT found
-			v.emplace_back(make_pair(s, val));
-		}
-	}
-
-	// admin can change their votes repeatedly before the decision_timestamp
-	inline void creatify_vector_pair_ico( vector<pair<name, name>>& v, 
-										const name& s, 
-										const name& val		// can be "y"_n or "n"_n
-										) {
-		auto s_it = std::find_if(v.begin(), v.end(), [&](auto& vs){ return vs.first == s; });
-		if(s_it != v.end()) {		// key found
-			s_it->second = val;		// modify by setting values
-		}
-		else {						// key NOT found
-			v.emplace_back(make_pair(s, val));
-		}
-	}
-
-	// check if the user is one of admins set in the vector
-	// inline void check_admin(const vector<name> vec, const name& s) {
-	// 	auto it = std::find(vec.begin(), vec.end(), s);
-	// 	check(it != vec.end(), "Sorry! the user: " + s.to_string() + " is not present in the admin list.");
-	// }
 
 
 };
