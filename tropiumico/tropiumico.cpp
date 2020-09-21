@@ -4,150 +4,37 @@
 using std::pow;
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumico::initicorate( const name& buyorsell_type,
-							const name& phase_type,
-							const asset& current_price )
+void tropiumico::seticorate( const name& phase_type,
+								const asset& current_price )
 {
-	require_auth(get_self());
-
-	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "Type can either be \'buy\' or \'sell\'.");
+	require_auth(founder_ac);
 
 	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
 
-	if(buyorsell_type == "buy"_n) {
-		check_quantity(current_price, dapp_token_symbol);
-	}
-	else if (buyorsell_type == "sell"_n) {
-		check_quantity(current_price, fund_token_symbol);
-	}
+	check_quantity(current_price, dapp_token_symbol);
 
-	admin_index admin_table(stake_contract_ac, stake_contract_ac.value);
-	auto admin_it = admin_table.find("doctor"_n.value);
+	// admin_index admin_table(stake_contract_ac, stake_contract_ac.value);
+	// auto admin_it = admin_table.find("doctor"_n.value);
 
-	check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\' of stake contract.");
-	check(admin_it->vector_admin.size() != 0, "empty admin list");
+	// check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\' of stake contract.");
 
-	icorate_index icorate_table(get_self(), buyorsell_type.value);
+	icorate_index icorate_table(get_self(), get_self().value);
 	auto ico_it = icorate_table.find(phase_type.value);
 
-	check(ico_it == icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is already initialized." );
+	if(ico_it == icorate_table.end()) {
+		icorate_table.emplace(get_self(), [&](auto& row){
+			row.phase_type = phase_type;
+			row.current_price = current_price;
+		});
+	} else {
+		check(ico_it->current_price != current_price, "the parsed current price is same as the set one.");
 
-	icorate_table.emplace(get_self(), [&](auto& row){
-		row.phase_type = phase_type;
-		row.current_price = current_price;
-		row.vector_admin = admin_it->vector_admin;
-		if(buyorsell_type == "buy"_n) {
-			row.proposed_price.symbol = dapp_token_symbol;
-		}
-		else if (buyorsell_type == "sell"_n) {
-			row.proposed_price.symbol = fund_token_symbol;
-		}
-	});
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-void tropiumico::propoicorate( const name& setter,
-							const name& buyorsell_type,
-							const name& phase_type,
-							const asset& proposed_price,
-							uint32_t decision_timestamp )
-{
-
-
-	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "Type can either be \'buy\' or \'sell\'.");
-
-	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
-
-	if(buyorsell_type == "buy"_n) {
-		check_quantity(proposed_price, dapp_token_symbol);
+		icorate_table.modify(ico_it, get_self(), [&](auto& row){
+			row.current_price = current_price;
+		});
 	}
-	else if (buyorsell_type == "sell"_n) {
-		check_quantity(proposed_price, fund_token_symbol);
-	}
-
-	icorate_index icorate_table(get_self(), buyorsell_type.value);
-	auto ico_it = icorate_table.find(phase_type.value);
-
-	check(ico_it != icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is not set. Contract should initiate using \'initicorate\' action." );
-
-	check_admin(ico_it->vector_admin, setter);
-	require_auth(setter);
-
-	check((proposed_price != ico_it->proposed_price) || (decision_timestamp != ico_it->decision_timestamp), "Either parsed proposed_price or decision_timestamp must be different.");
-
-	// setter can set a price only if the current_timestamp > decision_timestamp. Otherwise, it might happen that the price is set again while already a proposal running
-	check(now() > ico_it->decision_timestamp, "Current timestamp must be greated than decision_timestamp. There is already a proposal running.");
-
-	// TODO: how does setter gets the RAM back. Here, the row won't be deleted, but it will remain forever.
-
-	icorate_table.modify(ico_it, setter, [&](auto& row){
-		row.proposed_price = proposed_price;
-		row.decision_timestamp = decision_timestamp;
-	});
 }
 
-// --------------------------------------------------------------------------------------------------------------------
-void tropiumico::voteicorate( const name& admin,
-							const name& buyorsell_type,
-							const name& phase_type,
-							const name& vote )
-{
-	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "Type can either be \'buy\' or \'sell\'.");
-
-	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
-
-	icorate_index icorate_table(get_self(), buyorsell_type.value);
-	auto ico_it = icorate_table.find(phase_type.value);
-
-	check(ico_it != icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is not set. Contract should initiate using \'initicorate\' action." );
-
-	check_admin(ico_it->vector_admin, admin);
-	require_auth(admin);
-
-	// vote can be "y" or "n"
-	check((vote == "y"_n) || (vote == "n"_n), "admin's vote must be \'y\' or \'n\'.");
-
-	auto v1 = ico_it->vector_admin_vote;
-	auto admin_search_it = std::find_if(v1.begin(), v1.end(), [&](auto& vs){ return vs.first == admin; });
-
-	// if admin is found in the voting list, then check if the parsed vote is already same as stored.
-	if(admin_search_it != v1.end()) {
-		check(vote != admin_search_it->second, "this vote already exists in the table.");
-	}
-
-	check(now() <= ico_it->decision_timestamp, "\'voteicorate\' action can be accessed within the \'decision_timestamp\'.");
-
-	icorate_table.modify(ico_it, admin, [&](auto& row){
-		creatify_vector_pair_ico(row.vector_admin_vote, admin, vote);
-	});
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-void tropiumico::approicorate( const name& buyorsell_type,
-							const name& phase_type )
-{
-	require_auth(get_self());
-
-	check((buyorsell_type == "buy"_n) || (buyorsell_type == "sell"_n), "Type can either be \'buy\' or \'sell\'.");
-
-	check((phase_type == "a"_n) || (phase_type == "b"_n) || (phase_type == "c"_n), "Phases can either be \'a\' or \'b\' or \'c\'.");
-
-	icorate_index icorate_table(get_self(), buyorsell_type.value);
-	auto ico_it = icorate_table.find(phase_type.value);
-
-	check(ico_it != icorate_table.end(), "The row for this phase_type: " + phase_type.to_string() + " is not set. Contract should initiate using \'initicorate\' action." );
-
-	check(now() > ico_it->decision_timestamp, "\'approicorate\' action can be accessed only after the \'decision_timestamp\' gets elapsed.");
-
-	icorate_table.modify(ico_it, get_self(), [&](auto& row){
-		if(approval_status(ico_it->vector_admin_vote)) {
-			row.current_price = ico_it->proposed_price;
-		}
-		row.vector_admin_vote.clear();		// clear all the votes after the decision_timestamp & the approval decision is taken. This is to ensure that for a new proposal old votes are not counted.
-	});
-
-}
 
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumico::deposit( const name& user, 
@@ -162,32 +49,13 @@ void tropiumico::deposit( const name& user,
 		return;
 	}
 
-	if(user == dapp_token_issuer) {		// include the case where, additional ICO money with TROPIUM tokens needed after the contract is deployed on this a/c 
+	// founder_ac is the tokenissuer
+	if(user == founder_ac) {		// include the case where, additional ICO money with TROPIUM tokens needed after the contract is deployed on this a/c 
 		return;
 	} else {		
-		check((get_first_receiver() == "eosio.token"_n) || (get_first_receiver() == token_contract_ac), 
-			"Acceptable token contracts: \'eosio.token\' or \'" + token_contract_ac.to_string() +" \'.");
-
-		name buyorsell_type = ""_n;
-		if(get_first_receiver() == "eosio.token"_n) {
-			buyorsell_type = "buy"_n;
-			
-			// Although this is checked in "vigortoken::transfer" action, but fund_token_symbol check is pending. 
-			// So, in addition the entire asset check is done using static func defined in "tropiumico.hpp" file.
-			// check quantity is valid for all conditions as 'asset'
-			check_quantity(quantity, fund_token_symbol);
-
-		} else if(get_first_receiver() == token_contract_ac) {
-			buyorsell_type = "sell"_n;
-
-			// Although this is checked in "vigortoken::transfer" action, but fund_token_symbol check is pending. 
-			// So, in addition the entire asset check is done using static func defined in "tropiumico.hpp" file.
-			// check quantity is valid for all conditions as 'asset'
-			check_quantity(quantity, dapp_token_symbol);
-		}
 
 		check((memo == "phase A") || (memo == "phase B") || (memo == "phase C"), 
-			"For sending to this contract, parsed memo can either be \'buy for phase A' or \'phase B' or \'phase C'");
+			"For sending to this contract, parsed memo can either be \'phase A' or \'phase B' or \'phase C'");
 
 		name phase_type = ""_n;
 		if(memo == "phase A") {
@@ -200,23 +68,18 @@ void tropiumico::deposit( const name& user,
 
 		// instantiate the `fund` table
 		fund_index fund_table(get_self(), user.value);
-		auto fund_it = fund_table.find(buyorsell_type.value);
+		auto fund_it = fund_table.find(phase_type.value);
 
 		// update (add/modify) the deposit_qty
 		if(fund_it == fund_table.end()) {
 			fund_table.emplace(get_self(), [&](auto& row) {
-				row.fund_type = buyorsell_type;
-				row.tot_fundtype_qty.emplace_back(make_pair(phase_type, quantity));
-				
-				if(buyorsell_type == "buy"_n) {
-					row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, dapp_token_symbol))) ;		// initialize the asset with symbol "TROPIUM" & '0' amount 
-				} else if(buyorsell_type == "sell"_n) {
-					row.tot_disburse_qty.emplace_back(make_pair(phase_type, asset(0, fund_token_symbol))) ;		// initialize the asset with symbol "EOS" & '0' amount 
-				}
+				row.fund_type = phase_type;
+				row.tot_fundtype_qty = quantity;
+				row.tot_disburse_qty.symbol = dapp_token_symbol;				
 			});
 		} else {
 			fund_table.modify(fund_it, get_self(), [&](auto& row) {
-				creatify_vector_pair_fund(row.tot_fundtype_qty, phase_type, quantity);
+				row.tot_fundtype_qty += quantity;
 			});
 		}
 
@@ -224,14 +87,9 @@ void tropiumico::deposit( const name& user,
 		asset disburse_asset;
 
 		// prepare for disbursement of dapp tokens as per ICO rate
-		if(buyorsell_type == "buy"_n) {
-			disburse_asset = asset(0, dapp_token_symbol);
-		} 
-		else if(buyorsell_type == "sell"_n) {
-			disburse_asset = asset(0, fund_token_symbol);
-		}
+		disburse_asset = asset(0, dapp_token_symbol);
 
-		icorate_index icorate_table(get_self(), buyorsell_type.value);
+		icorate_index icorate_table(get_self(), get_self().value);
 
 		auto ico_it = icorate_table.find(phase_type.value);
 

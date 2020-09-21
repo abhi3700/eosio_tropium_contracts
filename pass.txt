@@ -24,6 +24,11 @@ Public key: EOS8Y4iZBjanfshkDzF8gSkWZSYveNQFagcWWnepCqA6DPNv22Sye
 
 TROPIUM System accounts
 ===================
+-------------------------------------------------------------
+tropiumchain (token issuer)
+Private key: 5JqsevPbpAKPydzkCu5sd7hDPtJHz33Ucm9mAEYEnkK226dh8WF
+Public key: EOS7fuEknCbHvZcDyVxtP6WXZcHNfBTJQJATUPWM6wCvkuKJpkutX
+-------------------------------------------------------------
 eosaidchains
 Private key: 5KZt5Qu3ocLLhPBNZ9vJAG2JVcgaEQC1APz9TwFFQ4RT4oG4j7z
 Public key: EOS5fhwC6nVhDri7TKCrTzbfoY9vfbYsZQGQbxZQhAFWn4QJBnJcU

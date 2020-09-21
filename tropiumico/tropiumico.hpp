@@ -49,7 +49,7 @@ public:
 				dapp_token_symbol("TRPM", 4),
 				token_contract_ac("trpm111token"_n),
 				stake_contract_ac("trpm111stake"_n),
-				dapp_token_issuer("trpiumissuer"_n) {}
+				dapp_token_issuer("tropiumchain"_n) {}
 
 
 
@@ -63,61 +63,12 @@ public:
 	 * 
 	 * @pre - the phase_type row (for buy/sell) must not exist
 	 */
-	ACTION initicorate( const name& buyorsell_type,
-						const name& phase_type,
+	ACTION seticorate( const name& phase_type,
 						const asset& current_price );
 
 
-
 	/**
-	 * @brief - only accessed by admins
-	 * @details - setter set ICO rate
-	 * 
-	 * @setter - one of admins
-	 * @param buyorsell_type - buy/sell
-	 * @param phase_type - A/B/C
-	 * @param proposed_price - price per EOS token
-	 * 
-	 * 
-	 * @pre - setter must be one of admins
-	 */
-	ACTION propoicorate( const name& setter,
-						const name& buyorsell_type,
-						const name& phase_type,
-						const asset& proposed_price,
-						uint32_t decision_timestamp );
-
-
-	/**
-	 * @brief - only accessed by admins
-	 * @details - vote for the proposal
-	 * 
-	 * @admin - one of admins
-	 * @param buyorsell_type - buy/sell
-	 * @param phase_type - A/B/C
-	 * @param vote - y/n
-	 * 
-	 * @pre - [current_timestamp <= decision_timestamp]
-	 */
-	ACTION voteicorate( const name& admin,
-						const name& buyorsell_type,
-						const name& phase_type,
-						const name& vote );
-
-
-	/**
-	 * @brief - only accessed by the contract
-	 * @details - count the votes & change the current_price as proposed_price
-	 * 
-	 * @param buyorsell_type - buy or sell
-	 * @param phase_type - A/B/C
-	 * 
-	 */
-	ACTION approicorate( const name& buyorsell_type,
-						const name& phase_type );
-
-	/**
-	 * @brief - deposit EOS into vigor ICO fund to the contract
+	 * @brief - deposit EOS into ICO fund to the contract
 	 * @details 
 	 * 		- deposit the `amount` to the contract to recieve tokens at ICO rate.
 	 * 		- this table `fund` acts as a record-keeper for amounts sent by the buyers
@@ -126,7 +77,7 @@ public:
 	 * @param quantity - the deposit amount
 	 * @param memo - remarks
 	 */
-	[[eosio::on_notify("*::transfer")]]
+	[[eosio::on_notify("eosio.token::transfer")]]
 	void deposit( const name& buyer_ac, 
 					const name& contract_ac, 
 					const asset& quantity, 
@@ -144,7 +95,6 @@ public:
 	 * @param memo - purpose of disbursing money
 	 */
 	ACTION disburse( const name& receiver_ac,
-					const name& buyorsell_type,
 					const name& phase_type,
 					const asset& disburse_qty,
 					const string& memo );
@@ -193,9 +143,9 @@ private:
 	// scope - user
 	TABLE fund
 	{
-		name fund_type;			// buy or sell
-		vector<pair<name, asset>> tot_fundtype_qty;			// E.g. [{"a": "5.0000 EOS"}, {"b": "10.0000 EOS"}]
-		vector<pair<name, asset>> tot_disburse_qty;			// E.g. [{"a": "200.0000 TRPM"}, {"b": "500.0000 TRPM"}]	@ respective ICO rate
+		name phase_type;				// a or b or c
+		asset tot_deposit_qty;			// 5.0000 EOS
+		asset tot_disburse_qty;			// 200.0000 TRPM @ respective ICO rate
 
 		auto primary_key() const { return fund_type.value; }
 	};
@@ -203,15 +153,11 @@ private:
 	using fund_index = multi_index<"fund"_n, fund>;
 
 	// -----------------------------------------------------------------------------------------------------------------------
-	// scope - buy or sell
+	// scope - self
 	TABLE icorate
 	{
 		name phase_type;									// a/b/c
-		asset current_price;						// E.g. 1 EOS = 30 TRPM. So, price_pereos = 30 TRPM
-		asset proposed_price;					// E.g. 1 EOS = 40 TRPM. So, price_pereos = 40 TRPM
-		vector<name> vector_admin;						// E.g. ["admin1", "admin2", "admin3", "admin4", "admin5"]
-		vector<pair<name, name>> vector_admin_vote;			// E.g. [{"admin1": "y"}, {"admin2": "n"}]
-		uint32_t decision_timestamp;					// E.g. in next 15 mins, use the timestamp 15 mins from current timestamp
+		asset current_price;						// E.g. 1 TRPM = 0.15 EOS => 1 EOS = 6.67 TRPM. So, price_pereos = 6.67 TRPM
 
 		auto primary_key() const { return phase_type.value; }
 	};
@@ -233,12 +179,11 @@ private:
 	// Adding inline action for `sendalert` action in the same contract 
 	void send_alert(const name& user, const string& message);
 
-	// Adding inline action for `disburse` action in the same contract 
-	void disburse_inline( const name& receiver_ac,
-							const name& buyorsell_type,
-							const name& phase_type,
-							const asset& disburse_qty,
-							const string& memo );
+	// // Adding inline action for `disburse` action in the same contract 
+	// void disburse_inline( const name& receiver_ac,
+	// 						const name& phase_type,
+	// 						const asset& disburse_qty,
+	// 						const string& memo );
 
 	// get the current timestamp
 	inline uint32_t now() const {
@@ -274,30 +219,11 @@ private:
 	}
 
 	// check if the user is one of admins set in the vector
-	inline void check_admin(const vector<name> vec, const name& s) {
-		auto it = std::find(vec.begin(), vec.end(), s);
-		check(it != vec.end(), "Sorry! the user: " + s.to_string() + " is not present in the admin list.");
-	}
+	// inline void check_admin(const vector<name> vec, const name& s) {
+	// 	auto it = std::find(vec.begin(), vec.end(), s);
+	// 	check(it != vec.end(), "Sorry! the user: " + s.to_string() + " is not present in the admin list.");
+	// }
 
-	inline bool approval_status(vector<pair<name, name>> vec) {
-		auto yes_count = 0;
-		auto voter_count = 0;
-
-		for (auto itr = vec.begin(); itr != vec.end(); ++itr) {
-			if(itr->second == "y"_n) {
-				++yes_count;
-			}
-			++voter_count;
-		}
-
-		// if "yes" count is more than 50% of voter_count
-		if(yes_count >= voter_count/2) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
 
 };
 
