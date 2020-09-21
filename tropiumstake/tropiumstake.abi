@@ -189,31 +189,6 @@
             ]
         },
         {
-            "name": "testdeladmin",
-            "base": "",
-            "fields": []
-        },
-        {
-            "name": "testdelauth",
-            "base": "",
-            "fields": [
-                {
-                    "name": "doctor",
-                    "type": "name"
-                }
-            ]
-        },
-        {
-            "name": "testdelstake",
-            "base": "",
-            "fields": [
-                {
-                    "name": "patient",
-                    "type": "name"
-                }
-            ]
-        },
-        {
             "name": "unstake",
             "base": "",
             "fields": [
@@ -277,21 +252,6 @@
         {
             "name": "startrehab",
             "type": "startrehab",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "testdeladmin",
-            "type": "testdeladmin",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "testdelauth",
-            "type": "testdelauth",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "testdelstake",
-            "type": "testdelstake",
             "ricardian_contract": ""
         },
         {

@@ -7,21 +7,20 @@ This contract is used for auto disbursement of dApp tokens in exchange of EOS to
 * ICO can be conducted in multiple phases completely independent of each other.
 * ICO rate is - 0.15 EOS/1 TRPM
 
-## Workflow
-### Pre-requisite
-* Create TRPM token with attributes:
-```md
-"max_supply": "10 M",
-"issuer": "vigor1issuer"
-```
-* Issue TRPM token to the issuer: `"vigor1issuer"`
-* Issuer transfer TRPM tokens to the __ICO contract__ for auto-disbursement TRPM tokens only after receiving EOS tokens from buyer.
-* ICO rate has to be set by the contract owner for respective phases - A, B, C.
+## About
+* contract name - `tropiumico`
+* contract's account name - `trpm11111ico`
+* action
+  - `seticorate`
+  - `deposit` [notify action]
+  - `disburse` [Inline action]
+  - `sendalert` [Inline action]
+* table
+  - `icorates`
+  - `fund`
+  - `auth`
 
-### Real time
-* Buyer send EOS tokens & receive TRPM tokens to/from contract respectively.
 
-> NOTE: Anyone can be buyer, no authentication required from dApp side.
 
 ## Compile
 ```console

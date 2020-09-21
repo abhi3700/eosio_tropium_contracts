@@ -180,30 +180,30 @@ public:
 	ACTION sendalert( const name& user,
 						const string& message);
 
-	ACTION testdelstake(const name& patient) {
-		stakewallet_index stakewallet_table(get_self(), patient.value);
-		auto stakewallet_it = stakewallet_table.find(dapp_token_symbol.raw());
+	// ACTION testdelstake(const name& patient) {
+	// 	stakewallet_index stakewallet_table(get_self(), patient.value);
+	// 	auto stakewallet_it = stakewallet_table.find(dapp_token_symbol.raw());
 
-		check(stakewallet_it != stakewallet_table.end(), "money hasn't been transferred to the wallet.");
-		stakewallet_table.erase(stakewallet_it);
-	}
+	// 	check(stakewallet_it != stakewallet_table.end(), "money hasn't been transferred to the wallet.");
+	// 	stakewallet_table.erase(stakewallet_it);
+	// }
 
-	ACTION testdeladmin() {
-		admin_index admin_table(get_self(), get_self().value);
-		auto admin_it = admin_table.find("doctor"_n.value);
+	// ACTION testdeladmin() {
+	// 	admin_index admin_table(get_self(), get_self().value);
+	// 	auto admin_it = admin_table.find("doctor"_n.value);
 
-		check(admin_it != admin_table.end(), "set admins list using action - \'compaddadmin\'.");
+	// 	check(admin_it != admin_table.end(), "set admins list using action - \'compaddadmin\'.");
 
-		admin_table.erase(admin_it);
-	}
+	// 	admin_table.erase(admin_it);
+	// }
 
-	ACTION testdelauth(const name& doctor) {
-		auth_index auth_table(get_self(), doctor.value);
-		auto auth_it = auth_table.find(doctor.value);
+	// ACTION testdelauth(const name& doctor) {
+	// 	auth_index auth_table(get_self(), doctor.value);
+	// 	auto auth_it = auth_table.find(doctor.value);
 
-		check(auth_it != auth_table.end(), "doctor is not present in the auth table.");
-		auth_table.erase(auth_it);
-	}
+	// 	check(auth_it != auth_table.end(), "doctor is not present in the auth table.");
+	// 	auth_table.erase(auth_it);
+	// }
 
 	static void check_quantity( const asset& quantity, const symbol& qty_sym ) {
 		check(quantity.is_valid(), "invalid quantity");
