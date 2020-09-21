@@ -99,16 +99,16 @@ public:
 	*/
 	ACTION close(const name& owner, const symbol& symbol);
 
-	// ACTION testdelstat(const name& token_contract_account, const symbol_code& sym_code ) {
-	// 	stats_index statstable(token_contract_account, sym_code.raw());
+	// ACTION testdelstat(const symbol_code& sym_code ) {
+	// 	stats_index statstable(get_self(), sym_code.raw());
 	// 	auto stats_it = statstable.find(sym_code.raw());
 
 	// 	check(stats_it != statstable.end(), "stat doesn't exist.");
 	// 	statstable.erase(stats_it);
 	// }
 
-	// ACTION testdelaccnt(const name& token_contract_account, const name& owner, const symbol_code& sym_code ) {
-	// 	accounts_index accountstable(token_contract_account, owner.value);
+	// ACTION testdelaccnt(const name& owner, const symbol_code& sym_code ) {
+	// 	accounts_index accountstable(get_self(), owner.value);
 	// 	auto accounts_it = accountstable.find(sym_code.raw());
 
 	// 	check(accounts_it != accountstable.end(), "account doesn't exist.");
