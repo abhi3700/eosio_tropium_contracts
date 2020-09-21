@@ -89,9 +89,8 @@ public:
 	 * @brief - founder adds itself to the admin
 	 * @details - founder adds itself to the admin
 	 * 
-	 * @param founder_ac - founder ac i.e. eosaidchains
 	 */
-	ACTION compaddadmin(const name& founder_ac);
+	ACTION compaddadmin();
 
 
 	/**

@@ -107,17 +107,19 @@ void tropiumstake::blacklist( const name& verified_doctor,
 
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::compaddadmin(const name& founder_ac) {
+void tropiumstake::compaddadmin() {
 	require_auth(founder_ac);
 
 	admin_index admin_table(get_self(), get_self().value);
 	auto admin_it = admin_table.find("doctor"_n.value);
 
-	check(admin_it == admin_table.end(), "admins list must be initialized by founder: \'eosaidchains\'");
+	check(admin_it == admin_table.end(), "admins list is already initialized by founder: \'eosaidchains\'. So, can\'t be redone.");
 	
 	admin_table.emplace(get_self(), [&](auto& row){	// not found
+		row.type = "doctor"_n;
 		row.vector_admin = {founder_ac};
 	});
+
 }
 
 // --------------------------------------------------------------------------------------------------------------------

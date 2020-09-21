@@ -86,12 +86,7 @@
         {
             "name": "compaddadmin",
             "base": "",
-            "fields": [
-                {
-                    "name": "founder_ac",
-                    "type": "name"
-                }
-            ]
+            "fields": []
         },
         {
             "name": "endrehab",

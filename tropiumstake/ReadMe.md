@@ -49,51 +49,51 @@ warning: transaction executed locally, but may not be confirmed by the network y
 ```
 
 ## Testing
-### Action - `setadmins`
-* A doctor set admins list
+### Action - `regbydoctor`
+* A doctor registers
 ```console
-$ cleost push action trpm111stake setadmins '{"type": "doctor","vector_admin": ["trpmadmin111", "trpmadmin112", "trpmadmin113", "trpmadmin114", "trpmadmin115"]}' -p trpm111stake@active
-executed transaction: f37ab7821fa82d7ef1472368c93b0c57963bbff118c78f3b4df11a5abcc289e8  144 bytes  185 us
-#  trpm111stake <= trpm111stake::setadmins      {"type":"doctor","vector_admin":["trpmadmin111","trpmadmin112","trpmadmin113","trpmadmin114","trpmad...
+$ cleost push action trpm111stake regbydoctor '["trpmdoc11111", "http://www.hipaaspace.com/medical_billing/coding/npi/codes/npi_1891894531.aspx"]' -p trpmdoc11111@active
+executed transaction: aa3f824fa95f52a48305d9f3886ab58935c82a4ac6e1c83cbd443a5b73b301e9  184 bytes  317 us
+#  trpm111stake <= trpm111stake::regbydoctor    {"doctor":"trpmdoc11111","profile_url":"http://www.hipaaspace.com/medical_billing/coding/npi/codes/n...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- view the table
 ```console
-$ cleost get table trpm111stake trpm111stake admins --show-payer
+$ cleost get table trpm111stake trpmdoc11111 auth --show-payer
 {
   "rows": [{
       "data": {
-        "type": "doctor",
-        "vector_admin": [
-          "trpmadmin111",
-          "trpmadmin112",
-          "trpmadmin113",
-          "trpmadmin114",
-          "trpmadmin115"
-        ]
+        "doctor": "trpmdoc11111",
+        "profile_url": "http://www.hipaaspace.com/medical_billing/coding/npi/codes/npi_1891894531.aspx",
+        "user_status": "added",
+        "add_timestamp": 1600709811,
+        "verify_timestamp": 0,
+        "blist_timestamp": 0,
+        "validator_verify": "",
+        "validators_blacklist": []
       },
-      "payer": "trpm111stake"
+      "payer": "trpmdoc11111"
     }
   ],
   "more": false,
   "next_key": ""
 }
 ```
-* A doctor set same admins list & gets error:
+* A doctor registers & gets error
 ```console
-$ cleost push action trpm111stake setadmins '{"type": "doctor","vector_admin": ["trpmadmin111", "trpmadmin112", "trpmadmin113", "trpmadmin114", "trpmadmin115"]}' -p trpm111stake@active
+$ cleost push action trpm111stake regbydoctor '["trpmdoc11111", "http://www.hipaaspace.com/medical_billing/coding/npi/codes/npi_1891894531.aspx"]' -p trpmdoc11111@active
 Error 3050003: eosio_assert_message assertion failure
 Error Details:
-assertion failure with message: the parsed admin list is same as the stored one.
+assertion failure with message: the doctor's info is already added.
 pending console output:
 ```
 
-### Action - `addadmin`
-* `trpm111stake` add admin to the list
+### Action - `compaddadmin`
+* founder `eosaidchains` add itself as admin to the list
 ```console
-$ cleost push action trpm111stake addadmin '["doctor", "trpmadmin121"]' -p trpm111stake@active
-executed transaction: e5fc5dd51952b1c59ed94a9948c3ca9df9db5c0d102cfd516de692ca38e9536c  112 bytes  145 us
-#  trpm111stake <= trpm111stake::addadmin       {"type":"doctor","admin":"trpmadmin121"}
+$ cleost push action trpm111stake compaddadmin '[]' -p eosaidchains@active
+executed transaction: 7c0cbbb2368822ef386bff28e58d7200efa43b9015fd9c9a607af593a7757950  104 bytes  156 us
+#  trpm111stake <= trpm111stake::compaddadmin   {"founder_ac":"eosaidchains"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- view the table
@@ -104,12 +104,7 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
       "data": {
         "type": "doctor",
         "vector_admin": [
-          "trpmadmin111",
-          "trpmadmin112",
-          "trpmadmin113",
-          "trpmadmin114",
-          "trpmadmin115",
-          "trpmadmin121"
+          "eosaidchains"
         ]
       },
       "payer": "trpm111stake"
@@ -119,12 +114,12 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
   "next_key": ""
 }
 ```
-* `trpm111stake` add same admin to the list & gets error:
+* founder `eosaidchains` add itself as admin to the list again & gets error
 ```console
-$ cleost push action trpm111stake addadmin '["doctor", "trpmadmin121"]' -p trpm111stake@active
+$ cleost push action trpm111stake compaddadmin '[]' -p eosaidchains@active
 Error 3050003: eosio_assert_message assertion failure
 Error Details:
-assertion failure with message: the parsed admin is already in the list.
+assertion failure with message: admins list is already initialized by founder: 'eosaidchains'. So, can't be redone.
 pending console output:
 ```
 
