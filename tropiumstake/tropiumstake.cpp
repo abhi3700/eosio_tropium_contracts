@@ -46,21 +46,24 @@ void tropiumstake::verify( const name& verified_doctor,
 
 	check(auth_it != auth_table.end(), "Doctor doesn\'t exist in the auth table.");
 
-	// check that doctor's status must be "added"
-	check((auth_it->user_status == "added"_n), "There is nothing added in the doctor\'s profile.");
+	// check that doctor's status must not be "verified"
+	check((auth_it->user_status != "verified"_n), "The doctor may already verified.");
 
 	auth_table.modify(auth_it, get_self(), [&](auto& row) {
 		row.user_status = "verified"_n;
 		row.verify_timestamp = now();
 		row.validator_verify = verified_doctor;
+		if(auth_it->validators_blacklist.size() != 0) {
+			row.validators_blacklist.clear();
+		}
 	});
 
 	// add new_doctor to the admins list
 	action(
-		permission_level{verified_doctor, "active"_n},
+		permission_level{get_self(), "active"_n},
 		get_self(),
 		"addadmin"_n,
-		std::make_tuple(verified_doctor, new_doctor)
+		std::make_tuple(new_doctor)
 	).send();
 
 
@@ -79,21 +82,20 @@ void tropiumstake::blacklist( const name& verified_doctor,
 
 	check(auth_it != auth_table.end(), "Doctor doesn\'t exist in the auth table.");
 
-	check((auth_it->user_status != "blacklisted"_n), "the parsed doctor is already blacklisted.");
-
 	auto blacklist_vector_count = auth_it->validators_blacklist.size();
 
 	auto search_it = std::find(auth_it->validators_blacklist.begin(), auth_it->validators_blacklist.end(), verified_doctor);
-	check(search_it == auth_it->validators_blacklist.end(), "the verified_doctor has already blacklisted this parsed doctor.");
+	check(search_it == auth_it->validators_blacklist.end(), "the parsed verified_doctor has already blacklisted this parsed doctor. So, other admins need to try.");
 
 	auth_table.modify(auth_it, get_self(), [&](auto& row) {
 		row.user_status = "blacklisted"_n;
-		row.verify_timestamp = now();
+		row.blist_timestamp = now();
 		row.validators_blacklist.emplace_back(verified_doctor);
 	});
 
 	// after adding the blacklister to the vector, if the vector count is 5, then remove doctor from the admins list.
 	if( (blacklist_vector_count + 1) == 5 ) {
+
 		// remove doctor to the admins list
 		action(
 			permission_level{get_self(), "active"_n},
@@ -123,13 +125,9 @@ void tropiumstake::compaddadmin() {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::addadmin(const name& verified_doctor,
-							const name& doctor) {
+void tropiumstake::addadmin(const name& doctor) {
 
-	require_auth(verified_doctor);
-
-	// check if the verified_doctor is one of the admins
-	check_admin(get_self(), verified_doctor);
+	require_auth(get_self());
 
 	admin_index admin_table(get_self(), get_self().value);
 	auto admin_it = admin_table.find("doctor"_n.value);
@@ -186,13 +184,18 @@ void tropiumstake::stake(	const name& patient,
 	stakewallet_index stakewallet_table(get_self(), patient.value);
 	auto stakewallet_it = stakewallet_table.find(quantity.symbol.raw());
 
-	check(stakewallet_it == stakewallet_table.end(), "money can't be further transferred to stake as it already exists.");
-	check(stakewallet_it->staked_qty.amount == 0, "the patient must have zero balance, otherwise the amount is still present in the stake wallet.");
+	if (stakewallet_it == stakewallet_table.end()) {
+		stakewallet_table.emplace(get_self(), [&](auto& row){
+			row.staked_qty = quantity;
+			row.patient_status = "unassigned"_n;
+		});		
+	} else {
+		stakewallet_table.modify(stakewallet_it, get_self(), [&](auto& row){
+			row.staked_qty += quantity;
+			row.patient_status = "unassigned"_n;
+		});		
+	}
 	
-	stakewallet_table.emplace(get_self(), [&](auto& row){
-		row.staked_qty = quantity;
-		row.patient_status = "unassigned"_n;
-	});
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -211,6 +214,8 @@ void tropiumstake::startrehab(const name& verified_doctor,
 	auto stakewallet_it = stakewallet_table.find(dapp_token_symbol.raw());
 
 	check(stakewallet_it != stakewallet_table.end(), "money hasn't been transferred to the wallet.");
+	check(stakewallet_it->staked_qty.amount == stake_amount, "patient must have staked qty as 500 TRPM.");
+	check(stakewallet_it->patient_status == "unassigned"_n, "the patient status must be unassigned before starting of rehab.");
 	
 	stakewallet_table.modify(stakewallet_it, get_self(), [&](auto& row){
 		row.lock_timestamp = lock_timestamp;

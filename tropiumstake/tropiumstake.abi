@@ -8,10 +8,6 @@
             "base": "",
             "fields": [
                 {
-                    "name": "verified_doctor",
-                    "type": "name"
-                },
-                {
                     "name": "doctor",
                     "type": "name"
                 }

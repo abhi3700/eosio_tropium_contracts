@@ -96,13 +96,12 @@ public:
 	/**
 	 * @brief - verified_doctor add admin
 	 * @details - verified_doctor add admin
+	 * 			- Inline action
 	 * 
-	 * @param verified_doctor - verified doctor
 	 * @param doctor - doctor
 	 * 
 	 */
-	ACTION addadmin(const name& verified_doctor,
-						const name& doctor);
+	ACTION addadmin(const name& doctor);
 
 	/**
 	 * @brief - contract remove admin
