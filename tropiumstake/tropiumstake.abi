@@ -8,11 +8,11 @@
             "base": "",
             "fields": [
                 {
-                    "name": "type",
+                    "name": "verified_doctor",
                     "type": "name"
                 },
                 {
-                    "name": "admin",
+                    "name": "doctor",
                     "type": "name"
                 }
             ]
@@ -32,11 +32,63 @@
             ]
         },
         {
-            "name": "clradmins",
+            "name": "auth",
             "base": "",
             "fields": [
                 {
-                    "name": "type",
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "profile_url",
+                    "type": "string"
+                },
+                {
+                    "name": "user_status",
+                    "type": "name"
+                },
+                {
+                    "name": "add_timestamp",
+                    "type": "uint32"
+                },
+                {
+                    "name": "verify_timestamp",
+                    "type": "uint32"
+                },
+                {
+                    "name": "blist_timestamp",
+                    "type": "uint32"
+                },
+                {
+                    "name": "validator_verify",
+                    "type": "name"
+                },
+                {
+                    "name": "validators_blacklist",
+                    "type": "name[]"
+                }
+            ]
+        },
+        {
+            "name": "blacklist",
+            "base": "",
+            "fields": [
+                {
+                    "name": "verified_doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "doctor",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "compaddadmin",
+            "base": "",
+            "fields": [
+                {
+                    "name": "founder_ac",
                     "type": "name"
                 }
             ]
@@ -60,15 +112,25 @@
             ]
         },
         {
+            "name": "regbydoctor",
+            "base": "",
+            "fields": [
+                {
+                    "name": "doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "profile_url",
+                    "type": "string"
+                }
+            ]
+        },
+        {
             "name": "remadmin",
             "base": "",
             "fields": [
                 {
-                    "name": "type",
-                    "type": "name"
-                },
-                {
-                    "name": "admin",
+                    "name": "doctor",
                     "type": "name"
                 }
             ]
@@ -84,20 +146,6 @@
                 {
                     "name": "message",
                     "type": "string"
-                }
-            ]
-        },
-        {
-            "name": "setadmins",
-            "base": "",
-            "fields": [
-                {
-                    "name": "type",
-                    "type": "name"
-                },
-                {
-                    "name": "vector_admin",
-                    "type": "name[]"
                 }
             ]
         },
@@ -136,7 +184,7 @@
             "base": "",
             "fields": [
                 {
-                    "name": "doctor",
+                    "name": "verified_doctor",
                     "type": "name"
                 },
                 {
@@ -152,9 +200,24 @@
         {
             "name": "testdeladmin",
             "base": "",
+            "fields": []
+        },
+        {
+            "name": "testdelauth",
+            "base": "",
             "fields": [
                 {
-                    "name": "type",
+                    "name": "doctor",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "testdelstake",
+            "base": "",
+            "fields": [
+                {
+                    "name": "patient",
                     "type": "name"
                 }
             ]
@@ -168,6 +231,20 @@
                     "type": "name"
                 }
             ]
+        },
+        {
+            "name": "verify",
+            "base": "",
+            "fields": [
+                {
+                    "name": "verified_doctor",
+                    "type": "name"
+                },
+                {
+                    "name": "new_doctor",
+                    "type": "name"
+                }
+            ]
         }
     ],
     "actions": [
@@ -177,13 +254,23 @@
             "ricardian_contract": ""
         },
         {
-            "name": "clradmins",
-            "type": "clradmins",
+            "name": "blacklist",
+            "type": "blacklist",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "compaddadmin",
+            "type": "compaddadmin",
             "ricardian_contract": ""
         },
         {
             "name": "endrehab",
             "type": "endrehab",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "regbydoctor",
+            "type": "regbydoctor",
             "ricardian_contract": ""
         },
         {
@@ -197,11 +284,6 @@
             "ricardian_contract": ""
         },
         {
-            "name": "setadmins",
-            "type": "setadmins",
-            "ricardian_contract": ""
-        },
-        {
             "name": "startrehab",
             "type": "startrehab",
             "ricardian_contract": ""
@@ -212,8 +294,23 @@
             "ricardian_contract": ""
         },
         {
+            "name": "testdelauth",
+            "type": "testdelauth",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "testdelstake",
+            "type": "testdelstake",
+            "ricardian_contract": ""
+        },
+        {
             "name": "unstake",
             "type": "unstake",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "verify",
+            "type": "verify",
             "ricardian_contract": ""
         }
     ],
@@ -221,6 +318,13 @@
         {
             "name": "admins",
             "type": "admin",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "auth",
+            "type": "auth",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

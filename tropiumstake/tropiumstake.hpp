@@ -45,66 +45,75 @@ public:
 				contract(receiver, code, ds),
 				dapp_token_symbol("TRPM", 4),
 				lock_period(2'592'000),
-				stake_amount(5000'0000),
+				stake_amount(500'0000),
 				token_contract_ac("trpm111token"_n),
-				founder_ac("tropmfounder"_n) {}
+				founder_ac("eosaidchains"_n) {}
 
 	/**
 	 * @brief - doctor register
 	 * @details - doctor register
 	 * 
 	 * @param doctor - doctor name
-	 * @param type - doctor type: psychiatrist, 
 	 * @param profile_url - profile link: e.g. "https://www.hipaaspace.com/medical_billing/coding/npi/codes/npi_1891894531.aspx"
 	 * 
-	 * @pre profile_url if stored, must not be the same.
 	 */
 	ACTION regbydoctor( const name& doctor, 
-						const name& type, 
-						const string& profile_url
-						);
+						const string& profile_url);
 
 	/**
 	 * @brief - contract verifies a doctor 
 	 * @details - contract verifies a doctor
 	 * 
-	 * @param doctor - doctor name
-	 * @param user_status - verified/blacklisted
+	 * @param verified_doctor - verified doctor name
+	 * @param new_doctor - new doctor name
 	 * 
-	 * @pre doctor must exist in the auth table & should have status as "added", "updated"
+	 * @pre doctor must exist in the auth table & should have status as "added"
 	 * 
 	 */
-	ACTION verify( const name& doctor,
-					const name& user_status);
+	ACTION verify( const name& verified_doctor,
+					const name& new_doctor);
+
 
 	/**
-	 * @brief - set admins list
-	 * @details - set admins list to a type
+	 * @brief - verified doctor blacklists the doctor
+	 * @details - verified doctor blacklists the doctor
+	 * 			- if the blacklist_vector is == 5, then rem doctor from admin list.
 	 * 
-	 * @param type - type
-	 * @param vector_admin - list of admins
-	 * 
-	 * @pre - check the row has no data
+	 * @param verified_doctor - verified doctor
+	 * @param doctor - doctor
 	 */
-	ACTION setadmins(const name& type,
-					const vector<name> vector_admin );
+	ACTION blacklist( const name& verified_doctor,
+						const name& doctor);
 
 	/**
-	 * @brief - add admins
-	 * @details - add admins
+	 * @brief - founder adds itself to the admin
+	 * @details - founder adds itself to the admin
 	 * 
-	 * @param type [description]
-	 * @param admin [description]
-	 * 
-	 * @return [description]
+	 * @param founder_ac - founder ac i.e. eosaidchains
 	 */
-	ACTION addadmin(const name& type, 
-					const name& admin);
+	ACTION compaddadmin(const name& founder_ac);
 
-	ACTION remadmin(const name& type, 
-					const name& admin);
 
-	ACTION clradmins(const name& type);
+	/**
+	 * @brief - verified_doctor add admin
+	 * @details - verified_doctor add admin
+	 * 
+	 * @param verified_doctor - verified doctor
+	 * @param doctor - doctor
+	 * 
+	 */
+	ACTION addadmin(const name& verified_doctor,
+						const name& doctor);
+
+	/**
+	 * @brief - contract remove admin
+	 * @details - contract remove admin
+	 * 			- inline action
+	 * 
+	 * @param doctor - doctor
+	 * 
+	 */
+	ACTION remadmin(const name& doctor);
 
 	/**
 	 * @brief - stake by patient
@@ -122,10 +131,29 @@ public:
 				const string& memo );
 
 
-	ACTION startrehab(const name& doctor,
+	/**
+	 * @brief - verified doctor starts the rehab
+	 * @details - verified doctor starts the rehab
+	 * 
+	 * @param verified_doctor - verified doctor
+	 * @param patient - patient
+	 * @param lock_timestamp - lock timestamp
+	 */
+	ACTION startrehab(const name& verified_doctor,
 						const name& patient,
 						uint32_t lock_timestamp);
 
+
+	/**
+	 * @brief - doctor
+	 * @details - doctor assigned ends the rehab
+	 * 
+	 * @param doctor - assigned doctor
+	 * @param patient - patient
+	 * @param patient_status - caught/cured
+	 * 
+	 * @pre - doctor must be the assigned one
+	 */
 	ACTION endrehab(const name& doctor,
 						const name& patient,
 						const name& patient_status);
@@ -138,7 +166,7 @@ public:
 	 * 
 	 * @param patient - patient
 	 * 
-	 * @pre - execute if (current_time > lock_timestamp && "cure"_n)
+	 * @pre - execute if (current_time > lock_timestamp && "cure"_n) OR
 	 * @pre - execute if patient_status == "caught"_n or 
 	 */
 	ACTION unstake(const name& patient);
@@ -154,13 +182,29 @@ public:
 	ACTION sendalert( const name& user,
 						const string& message);
 
-	ACTION testdeladmin(const name& type) {
-		admin_index admin_table(get_self(), get_self().value);
-		auto admin_it = admin_table.find(type.value);
+	ACTION testdelstake(const name& patient) {
+		stakewallet_index stakewallet_table(get_self(), patient.value);
+		auto stakewallet_it = stakewallet_table.find(dapp_token_symbol.raw());
 
-		check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
+		check(stakewallet_it != stakewallet_table.end(), "money hasn't been transferred to the wallet.");
+		stakewallet_table.erase(stakewallet_it);
+	}
+
+	ACTION testdeladmin() {
+		admin_index admin_table(get_self(), get_self().value);
+		auto admin_it = admin_table.find("doctor"_n.value);
+
+		check(admin_it != admin_table.end(), "set admins list using action - \'compaddadmin\'.");
 
 		admin_table.erase(admin_it);
+	}
+
+	ACTION testdelauth(const name& doctor) {
+		auth_index auth_table(get_self(), doctor.value);
+		auto auth_it = auth_table.find(doctor.value);
+
+		check(auth_it != auth_table.end(), "doctor is not present in the auth table.");
+		auth_table.erase(auth_it);
 	}
 
 	static void check_quantity( const asset& quantity, const symbol& qty_sym ) {
@@ -170,29 +214,14 @@ public:
 	}
 
 
-	static void check_admins(const name& stake_contract_ac,
-								const name& type,
-		 						const vector<name> vector_admin) {
-
-		for(auto&& doctor : vector_admin) {
-			auth_index auth_table(stake_contract_ac, doctor.value);
-			auto auth_it = auth_table.find(doctor.value);
-
-			check(auth_it != auth_table.end(), "\'" + doctor.to_string() + "\' doesn\'t exist in the auth table.");
-			check(auth_it->type == type, "\'" + doctor.to_string() + "\' type: \'" + auth_it->type.to_string() + "\' doesn\'t match with the parsed type: \'" + type.to_string() + "\'.");			
-			check(auth_it->user_status == "verified"_n, "\'" + doctor.to_string() + "\' is not verified yet.");			
-		}
-	}
 	static void check_admin(const name& stake_contract_ac,
-								const name& type,
 		 						const name& doctor) {
+		admin_index admin_table(stake_contract_ac, stake_contract_ac.value);
+		auto admin_it = admin_table.find("doctor"_n.value);
 
-		auth_index auth_table(stake_contract_ac, doctor.value);
-		auto auth_it = auth_table.find(doctor.value);
-
-		check(auth_it != auth_table.end(), "\'" + doctor.to_string() + "\' doesn\'t exist in the auth table.");
-		check(auth_it->type == type, "\'" + doctor.to_string() + "\' type: \'" + auth_it->type.to_string() + "\' doesn\'t match with the parsed type: \'" + type.to_string() + "\'.");			
-		check(auth_it->user_status == "verified"_n, "\'" + doctor.to_string() + "\' is not verified yet.");			
+		check(admin_it != admin_table.end(), "there is no admins list created so far.");
+		auto search_it = std::find(admin_it->vector_admin.begin(), admin_it->vector_admin.end(), doctor);
+		check(search_it != admin_it->vector_admin.end(), "the parsed verified doctor is not in the admins list.");
 	}
 
 private:
@@ -224,14 +253,13 @@ private:
 	// scope - doctor name
 	TABLE auth {
 		name doctor;					// doctor name
-		name type;
-		name profile_url;				// doctor's url
+		string profile_url;				// doctor's url
 		name user_status;				// added/updated/verified
 		uint32_t add_timestamp;			// timestamp at which the user details is added
-		uint32_t update_timestamp;		// timestamp at which the user details is updated
 		uint32_t verify_timestamp;		// timestamp at which the user details is verified
+		uint32_t blist_timestamp;		// timestamp at which the user is blacklisted
 		name validator_verify;			// validator who verifies the user
-		vector<name> validator_blacklist;		// validator list who blacklists the user. the doctor will be marked as blacklisted only if the length is 5.
+		vector<name> validators_blacklist;		// validator list who blacklists the user. the doctor will be marked as blacklisted only if the length is 5.
 
 
 		auto primary_key() const { return doctor.value; }

@@ -3,123 +3,161 @@
 
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumstake::regbydoctor( const name& doctor, 
-								const name& type, 
-								const string& profile_url
-								)
+								const string& profile_url)
 {
 	require_auth(doctor);
 
 	auth_index auth_table(get_self(), doctor.value);
 	auto auth_it = auth_table.find(doctor.value);
 
-	if (auth_it == auth_table.end()) {
-		auth_table.emplace(doctor, [&](auto& row) {
-			row.doctor = doctor;
-			row.type = type;
-			row.profile_url = profile_url;
-			row.user_status = "added"_n;
-			row.add_timestamp = now();
-		});
-	} else {
-		check((auth_it->type != type) || (auth_it->profile_url != profile_url), "Either type or profile_url has to be different than the stored one.");
-		auth_table.modify(auth_it, doctor, [&](auto& row) {
-			if(auth_it->type != type) {
-				row.type = type;
-			}
-			if(auth_it->profile_url != profile_url) {
-				row.profile_url = profile_url;
-			}
+	check(auth_it == auth_table.end(), "the doctor\'s info is already added.");
+	auth_table.emplace(doctor, [&](auto& row) {
+		row.doctor = doctor;
+		row.profile_url = profile_url;
+		row.user_status = "added"_n;
+		row.add_timestamp = now();
+	});
+	// else {
+	// 	check((auth_it->type != type) || (auth_it->profile_url != profile_url), "Either type or profile_url has to be different than the stored one.");
+	// 	auth_table.modify(auth_it, doctor, [&](auto& row) {
+	// 		if(auth_it->type != type) {
+	// 			row.type = type;
+	// 		}
+	// 		if(auth_it->profile_url != profile_url) {
+	// 			row.profile_url = profile_url;
+	// 		}
 
-			row.user_status = "updated"_n;
-			row.update_timestamp = now();
-		});
-	}
+	// 		row.user_status = "updated"_n;
+	// 		row.update_timestamp = now();
+	// 	});
+	// }
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumstake::verify( const name& verified_doctor,
-							const name& new_doctor,
-							const name& user_status) {
-	check(has_auth(founder_ac) || has_auth(verified_doctor), "missing required authority of accounta or accountb");
+							const name& new_doctor) {
+	require_auth(verified_doctor);
 
-	check( (user_status == "verified"_n), "User status can only be \'verified\'.");
+	// check if the verified_doctor is one of the admins
+	check_admin(get_self(), verified_doctor);
+
+	auth_index auth_table(get_self(), new_doctor.value);
+	auto auth_it = auth_table.find(new_doctor.value);
+
+	check(auth_it != auth_table.end(), "Doctor doesn\'t exist in the auth table.");
+
+	// check that doctor's status must be "added"
+	check((auth_it->user_status == "added"_n), "There is nothing added in the doctor\'s profile.");
+
+	auth_table.modify(auth_it, get_self(), [&](auto& row) {
+		row.user_status = "verified"_n;
+		row.verify_timestamp = now();
+		row.validator_verify = verified_doctor;
+	});
+
+	// add new_doctor to the admins list
+	action(
+		permission_level{verified_doctor, "active"_n},
+		get_self(),
+		"addadmin"_n,
+		std::make_tuple(verified_doctor, new_doctor)
+	).send();
+
+
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+void tropiumstake::blacklist( const name& verified_doctor,
+								const name& doctor) {
+	require_auth(verified_doctor);
+
+	// check if the verified_doctor is one of the admins
+	check_admin(get_self(), verified_doctor);
 
 	auth_index auth_table(get_self(), doctor.value);
 	auto auth_it = auth_table.find(doctor.value);
 
 	check(auth_it != auth_table.end(), "Doctor doesn\'t exist in the auth table.");
 
-	// check that doctor's status must be "added" or "updated" or "verified"
-	check((auth_it->user_status == "added"_n) || (auth_it->user_status == "updated"_n), "There is nothing added or updated in the doctor\'s profile.");
+	check((auth_it->user_status != "blacklisted"_n), "the parsed doctor is already blacklisted.");
 
-	auth_table.modify(auth_it, doctor, [&](auto& row) {
-		row.user_status = "verified"_n;
+	auto blacklist_vector_count = auth_it->validators_blacklist.size();
+
+	auto search_it = std::find(auth_it->validators_blacklist.begin(), auth_it->validators_blacklist.end(), verified_doctor);
+	check(search_it == auth_it->validators_blacklist.end(), "the verified_doctor has already blacklisted this parsed doctor.");
+
+	auth_table.modify(auth_it, get_self(), [&](auto& row) {
+		row.user_status = "blacklisted"_n;
 		row.verify_timestamp = now();
+		row.validators_blacklist.emplace_back(verified_doctor);
+	});
+
+	// after adding the blacklister to the vector, if the vector count is 5, then remove doctor from the admins list.
+	if( (blacklist_vector_count + 1) == 5 ) {
+		// remove doctor to the admins list
+		action(
+			permission_level{get_self(), "active"_n},
+			get_self(),
+			"remadmin"_n,
+			std::make_tuple(doctor)
+		).send();
+	}
+
+}
+
+
+// --------------------------------------------------------------------------------------------------------------------
+void tropiumstake::compaddadmin(const name& founder_ac) {
+	require_auth(founder_ac);
+
+	admin_index admin_table(get_self(), get_self().value);
+	auto admin_it = admin_table.find("doctor"_n.value);
+
+	check(admin_it == admin_table.end(), "admins list must be initialized by founder: \'eosaidchains\'");
+	
+	admin_table.emplace(get_self(), [&](auto& row){	// not found
+		row.vector_admin = {founder_ac};
+	});
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+void tropiumstake::addadmin(const name& verified_doctor,
+							const name& doctor) {
+
+	require_auth(verified_doctor);
+
+	// check if the verified_doctor is one of the admins
+	check_admin(get_self(), verified_doctor);
+
+	admin_index admin_table(get_self(), get_self().value);
+	auto admin_it = admin_table.find("doctor"_n.value);
+
+	check(admin_it != admin_table.end(), "admins list must have min. 1 verified doctor i.e. \'eosaidchains\'");
+	check(admin_it->vector_admin.size() != 0, "admins list size must be non-zero as it must have min. 1 verified doctor i.e. \'eosaidchains\'");
+
+	auto vec = admin_it->vector_admin;
+	auto vec_it = std::find(vec.begin(), vec.end(), doctor);
+
+	check(vec_it == vec.end(), "the parsed doctor is already in the list.");
+	
+	admin_table.modify(admin_it, get_self(), [&](auto& row){	// not found
+		row.vector_admin.emplace_back(doctor);
 	});
 
 }
-// --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::setadmins(const name& type,
-							const vector<name> vector_admin ) {
-	require_auth(get_self());
-
-	admin_index admin_table(get_self(), get_self().value);
-	auto admin_it = admin_table.find(type.value);
-
-	if(admin_it == admin_table.end()) {
-		admin_table.emplace(get_self(), [&](auto& row){
-			row.type = type;
-			row.vector_admin = vector_admin;
-		});
-	} else {
-		check(admin_it->vector_admin != vector_admin, "the parsed admin list is same as the stored one.");
-		
-		admin_table.modify(admin_it, get_self(), [&](auto& row){
-			row.vector_admin = vector_admin;
-		});
-	}
-}
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::addadmin(const name& type, 
-							const name& admin) {
-	require_auth(get_self());
-
-	admin_index admin_table(get_self(), get_self().value);
-	auto admin_it = admin_table.find(type.value);
-
-	check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
-
-	if (admin_it->vector_admin.size() != 0) {		// non-empty vector
-		auto vec = admin_it->vector_admin;
-		auto vec_it = std::find(vec.begin(), vec.end(), admin);
-
-		check(vec_it == vec.end(), "the parsed admin is already in the list.");
-		
-		admin_table.modify(admin_it, get_self(), [&](auto& row){	// not found
-			row.vector_admin.emplace_back(admin);
-		});
-
-	} else {		// empty vector
-		admin_table.modify(admin_it, get_self(), [&](auto& row){
-			row.vector_admin.emplace_back(admin);
-		});
-	}
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::remadmin(const name& type, 
-                    const name& admin) {
+void tropiumstake::remadmin(const name& doctor) {
     require_auth(get_self());
 
     admin_index admin_table(get_self(), get_self().value);
-    auto admin_it = admin_table.find(type.value);
+    auto admin_it = admin_table.find("doctor"_n.value);
 
-    check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
+    check(admin_it != admin_table.end(), "set admins list using action - \'compaddadmin\' action.");
     check(admin_it->vector_admin.size() != 0, "empty admin list");
     
-    auto vec_it = std::find(admin_it->vector_admin.begin(), admin_it->vector_admin.end(), admin);
-    check(vec_it != admin_it->vector_admin.end(), "the parsed admin is not in the list."); 
+    auto vec_it = std::find(admin_it->vector_admin.begin(), admin_it->vector_admin.end(), doctor);
+    check(vec_it != admin_it->vector_admin.end(), "the parsed doctor is not in the admins list."); 
 
     admin_table.modify(admin_it, get_self(), [&](auto& row){    // found & erase it
         row.vector_admin.erase(vec_it);
@@ -127,19 +165,6 @@ void tropiumstake::remadmin(const name& type,
 
 }
 
-// --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::clradmins(const name& type) {
-    require_auth(get_self());
-
-	admin_index admin_table(get_self(), get_self().value);
-	auto admin_it = admin_table.find(type.value);
-
-	check(admin_it != admin_table.end(), "set admins list using action - \'setadmins\'.");
-
-	admin_table.modify(admin_it, get_self(), [&](auto& row){	// found & erase it
-		row.vector_admin.clear();
-	});
-}
 
 // --------------------------------------------------------------------------------------------------------------------
 void tropiumstake::stake(	const name& patient,
@@ -154,7 +179,7 @@ void tropiumstake::stake(	const name& patient,
 
 	check_quantity(quantity, dapp_token_symbol);
 
-	check(quantity.amount == stake_amount , "the send quantity amount should be 5000 ");
+	check(quantity.amount == stake_amount , "the send quantity amount should be 500 TRPM.");
 
 	stakewallet_index stakewallet_table(get_self(), patient.value);
 	auto stakewallet_it = stakewallet_table.find(quantity.symbol.raw());
@@ -169,10 +194,13 @@ void tropiumstake::stake(	const name& patient,
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-void tropiumstake::startrehab(const name& doctor,
-							const name& patient,
-							uint32_t lock_timestamp) {
-	require_auth(doctor);
+void tropiumstake::startrehab(const name& verified_doctor,
+								const name& patient,
+								uint32_t lock_timestamp) {
+	require_auth(verified_doctor);
+
+	// check if the verified_doctor is one of the admins
+	check_admin(get_self(), verified_doctor);
 
 	// NOTE: this has been not set as it will be too accurate to push this action
 	// check(lock_timestamp - now() == lock_period, "the lock_timestamp needs to be such that it is 30 days from now.");
@@ -185,7 +213,7 @@ void tropiumstake::startrehab(const name& doctor,
 	stakewallet_table.modify(stakewallet_it, get_self(), [&](auto& row){
 		row.lock_timestamp = lock_timestamp;
 		row.start_timestamp = now();
-		row.doctor = doctor;
+		row.doctor = verified_doctor;
 		row.patient_status = "assigned"_n;
 	});
 
@@ -198,12 +226,12 @@ void tropiumstake::endrehab(const name& doctor,
 						const name& patient,
 						const name& patient_status) {
 	
-	check((patient_status == "caught"_n) || (patient_status == "cured"_n), "patient status can be \'caught\' or \'cured\'");
+	check((patient_status == "caught"_n) || (patient_status == "cured"_n), "patient status can either be \'caught\' or \'cured\'.");
 
 	stakewallet_index stakewallet_table(get_self(), patient.value);
 	auto stakewallet_it = stakewallet_table.find(dapp_token_symbol.raw());
 
-	check(stakewallet_it != stakewallet_table.end(), "money hasn't been transferred to the wallet.");
+	check(stakewallet_it != stakewallet_table.end(), "patient hasn\'t transferred any money to the wallet.");
 	
 	check(doctor == stakewallet_it->doctor, "parsed Doctor\'s name does not match with assigned Dr. name.");
 
@@ -224,7 +252,7 @@ void tropiumstake::unstake(const name& patient) {
 	stakewallet_index stakewallet_table(get_self(), patient.value);
 	auto stakewallet_it = stakewallet_table.find(dapp_token_symbol.raw());
 
-	check(stakewallet_it != stakewallet_table.end(), "money hasn't been transferred to the wallet.");
+	check(stakewallet_it != stakewallet_table.end(), "patient hasn\'t transferred any money to the wallet.");
 
 	require_auth(patient);
 
