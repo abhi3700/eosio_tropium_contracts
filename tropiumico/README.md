@@ -18,7 +18,6 @@ This contract is used for auto disbursement of dApp tokens in exchange of EOS to
 * table
   - `icorates`
   - `fund`
-  - `auth`
 
 
 
