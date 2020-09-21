@@ -100,8 +100,8 @@ void tropiumico::deposit( const name& buyer_ac,
 		// inline disburse of dapp token based on the amount of EOS sent
 		action(
 			permission_level{get_self(), "active"_n},
-			"eosio.token"_n,
-			"transfer"_n,
+			get_self(),
+			"disburse"_n,
 			std::make_tuple(buyer_ac, phase_type, disburse_qty, string("disburse for " + memo))
 		).send();
 

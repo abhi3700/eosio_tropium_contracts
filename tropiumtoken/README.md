@@ -123,7 +123,7 @@ $ cleost get table trpm111token tropiumchain accounts
 
 
 ### Action - `transfer`
-* issuer - `tropiumchain` transfer some 10% of total 5B tokens i.e. 500,000,000 for ICO distribution
+* issuer - `tropiumchain` transfer some 10% of total 5B tokens i.e. 500,000,000 for ICO distribution to contract ac - `trpm11111ico` (after the contract was deployed)
 ```console
 $ cleost push action trpm111token transfer '["tropiumchain", "trpm11111ico", "500000000.0000 TRPM", "transfer TRPM tokens for entire ICO"]' -p tropiumchain@active
 executed transaction: 98c43779a97bf785565d2cd4ff72eb33b869dc3ef2806ac60e7461e21187fd1b  160 bytes  218 us

@@ -122,45 +122,35 @@ $ cleost get table trpm11111ico trpm11111ico icorates --show-payer
 
 
 ### Action - `deposit` (Payable action)
-#### For BUY
-* `trpmuser1112` transfer some "3.0000 EOS" to ICO funding in phase-A & gets error due to unfit memo for this action 
+* `trpmuser1111` transfer some "3.0000 EOS" to ICO funding in phase-A & gets error due to unfit memo for this action 
 ```console
-$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "3.0000 EOS", "transfer EOS for ICO"]' -p trpmuser1112@active
+$ cleost push action eosio.token transfer '["trpmuser1111", "trpm11111ico", "3.0000 EOS", "transfer EOS for ICO"]' -p trpmuser1111@active
 Error 3050003: eosio_assert_message assertion failure
 Error Details:
-assertion failure with message: For sending to this contract, parsed memo can either be 'buy for phase A' or 'phase B' or 'phase C'
+assertion failure with message: For sending to this contract, parsed memo can either be 'phase A' or 'phase B' or 'phase C'
 pending console output:
 ```
-* `trpmuser1112` transfer some "3.0000 EOS" to ICO funding in phase-A & gets error because the contract account was not transferred any dapp tokens by the issuer - `dcieosissuer`
+* `trpmuser1111` transfer some "3.0000 EOS" to ICO funding in phase-A
 ```console
-$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "3.0000 EOS", "phase A"]' -p trpmuser1112@active
-Error 3050003: eosio_assert_message assertion failure
-Error Details:
-assertion failure with message: no balance object found
-pending console output:
-``` 
-* `trpmuser1112` successfully transfer some "3.0000 EOS" to ICO funding in phase-A
-```console
-$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "3.0000 EOS", "phase A"]' -p trpmuser1112@active
-executed transaction: eaf47b27efcd8a12b416710badc32dc30cfa88d101980d23108144782be3879b  136 bytes  368 us
-#   eosio.token <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase A"}
-#  trpmuser1112 <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase A"}
-#  trpm11111ico <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase A"}
-#  trpm11111ico <= trpm11111ico::disburse       {"receiver_ac":"trpmuser1112","buyorsell_type":"buy","phase_type":"a","disburse_qty":"126.0000 TRPM"...
-#  trpm11111ico <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '126.0000 TRPM' for depositing '3.0000 EOS' to ICO con...
-#  trpm111token <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"126.0000 TRPM","memo":"TROPIUM ICO contract d...
-#  trpm11111ico <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"126.0000 TRPM","memo":"TROPIUM ICO contract d...
->> Either money is not sent to the contract or contract itself is the buyer.
-#  trpmuser1112 <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"126.0000 TRPM","memo":"TROPIUM ICO contract d...
-#  trpmuser1112 <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '126.0000 TRPM' for depositing '3.0000 EOS' to ICO con...
+$ cleost push action eosio.token transfer '["trpmuser1111", "trpm11111ico", "3.0000 EOS", "phase A"]' -p trpmuser1111@active
+executed transaction: 4db8a386f077e00c08b7c28442fa662ad6b4ae3df65a99af8d9f62c4a09f4ba4  136 bytes  402 us
+#   eosio.token <= eosio.token::transfer        {"from":"trpmuser1111","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase A"}
+#  trpmuser1111 <= eosio.token::transfer        {"from":"trpmuser1111","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase A"}
+#  trpm11111ico <= eosio.token::transfer        {"from":"trpmuser1111","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase A"}
+#  trpm11111ico <= trpm11111ico::disburse       {"receiver_ac":"trpmuser1111","phase_type":"a","disburse_qty":"20.0100 TRPM","memo":"disburse for ph...
+#  trpm11111ico <= trpm11111ico::sendalert      {"user":"trpmuser1111","message":"You receive '20.0100 TRPM' for depositing '3.0000 EOS' to ICO cont...
+#  trpm111token <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1111","quantity":"20.0100 TRPM","memo":"TROPIUM ICO contract di...
+#  trpm11111ico <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1111","quantity":"20.0100 TRPM","memo":"TROPIUM ICO contract di...
+#  trpmuser1111 <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1111","quantity":"20.0100 TRPM","memo":"TROPIUM ICO contract di...
+#  trpmuser1111 <= trpm11111ico::sendalert      {"user":"trpmuser1111","message":"You receive '20.0100 TRPM' for depositing '3.0000 EOS' to ICO cont...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
-```
-	- View the TRPM balance of `trpmuser1112` buyer
+``` 
+  - View the TRPM balance of `trpmuser1111` buyer
 ```console
-$ cleost get table trpm111token trpmuser1112 accounts
+$ cleost get table trpm111token trpmuser1111 accounts
 {
   "rows": [{
-      "balance": "126.0000 TRPM"
+      "balance": "20.0100 TRPM"
     }
   ],
   "more": false,
@@ -169,21 +159,13 @@ $ cleost get table trpm111token trpmuser1112 accounts
 ```
   - View the fund table of `trpmuser1112` buyer
 ```console
-$ cleost get table trpm11111ico trpmuser1112 fund --show-payer
+$ cleost get table trpm11111ico trpmuser1111 fund --show-payer
 {
   "rows": [{
       "data": {
-        "fund_type": "buy",
-        "tot_fundtype_qty": [{
-            "first": "a",
-            "second": "3.0000 EOS"
-          }
-        ],
-        "tot_disburse_qty": [{
-            "first": "a",
-            "second": "126.0000 TRPM"
-          }
-        ]
+        "phase_type": "a",
+        "tot_deposit_qty": "3.0000 EOS",
+        "tot_disburse_qty": "20.0100 TRPM"
       },
       "payer": "trpm11111ico"
     }
@@ -192,31 +174,21 @@ $ cleost get table trpm11111ico trpmuser1112 fund --show-payer
   "next_key": ""
 }
 ```
+  - So, basically, buyer sends `3.0000 EOS` & receives `20.0100 TRPM` tokens instead
 
-	- So, basically, buyer sends `3.0000 EOS` & receives `126.0000 TRPM` tokens instead
-
-* `trpmuser1112` transfer some "3.0000 EOS" to ICO funding in phase B & gets error: ICO rate for phase B is not set
+* `trpmuser1112` successfully transfer some "5.0000 EOS" to ICO funding in phase-A
 ```console
-$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "3.0000 EOS", "phase B"]' -p trpmuser1112@active
-Error 3050003: eosio_assert_message assertion failure
-Error Details:
-assertion failure with message: ICO rate for phase b is not set. Please set using 'seticorate'
-pending console output:
-```
-* `trpmuser1112` transfer some "3.0000 EOS" to ICO funding in phase B
-```console
-$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "3.0000 EOS", "phase B"]' -p trpmuser1112@active
-executed transaction: 09c0e161da782bd189d786f33faa43dcb05ab77d888616d8e2e9aa40f5c94707  136 bytes  323 us
-#   eosio.token <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase B"}
-#  trpmuser1112 <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase B"}
-#  trpm11111ico <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"3.0000 EOS","memo":"phase B"}
-#  trpm11111ico <= trpm11111ico::disburse       {"receiver_ac":"trpmuser1112","buyorsell_type":"buy","phase_type":"b","disburse_qty":"150.0000 TRPM"...
-#  trpm11111ico <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '150.0000 TRPM' for depositing '3.0000 EOS' to ICO con...
-#  trpm111token <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"150.0000 TRPM","memo":"TROPIUM ICO contract d...
-#  trpm11111ico <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"150.0000 TRPM","memo":"TROPIUM ICO contract d...
->> Either money is not sent to the contract or contract itself is the buyer.
-#  trpmuser1112 <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"150.0000 TRPM","memo":"TROPIUM ICO contract d...
-#  trpmuser1112 <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '150.0000 TRPM' for depositing '3.0000 EOS' to ICO con...
+$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "5.0000 EOS", "phase A"]' -p trpmuser1112@active
+executed transaction: d0e1035419466302143090d4c02992d3185e64f5d9bf278f3b6f08c265b84fa5  136 bytes  360 us
+#   eosio.token <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"5.0000 EOS","memo":"phase A"}
+#  trpmuser1112 <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"5.0000 EOS","memo":"phase A"}
+#  trpm11111ico <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"5.0000 EOS","memo":"phase A"}
+#  trpm11111ico <= trpm11111ico::disburse       {"receiver_ac":"trpmuser1112","phase_type":"a","disburse_qty":"33.3500 TRPM","memo":"disburse for ph...
+#  trpm11111ico <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '33.3500 TRPM' for depositing '5.0000 EOS' to ICO cont...
+#  trpm111token <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"33.3500 TRPM","memo":"TROPIUM ICO contract di...
+#  trpm11111ico <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"33.3500 TRPM","memo":"TROPIUM ICO contract di...
+#  trpmuser1112 <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"33.3500 TRPM","memo":"TROPIUM ICO contract di...
+#  trpmuser1112 <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '33.3500 TRPM' for depositing '5.0000 EOS' to ICO cont...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
   - View the TRPM balance of `trpmuser1112` buyer
@@ -224,7 +196,7 @@ warning: transaction executed locally, but may not be confirmed by the network y
 $ cleost get table trpm111token trpmuser1112 accounts
 {
   "rows": [{
-      "balance": "276.0000 TRPM"
+      "balance": "33.3500 TRPM"
     }
   ],
   "more": false,
@@ -237,23 +209,9 @@ $ cleost get table trpm11111ico trpmuser1112 fund --show-payer
 {
   "rows": [{
       "data": {
-        "fund_type": "buy",
-        "tot_fundtype_qty": [{
-            "first": "a",
-            "second": "3.0000 EOS"
-          },{
-            "first": "b",
-            "second": "3.0000 EOS"
-          }
-        ],
-        "tot_disburse_qty": [{
-            "first": "a",
-            "second": "126.0000 TRPM"
-          },{
-            "first": "b",
-            "second": "150.0000 TRPM"
-          }
-        ]
+        "phase_type": "a",
+        "tot_deposit_qty": "5.0000 EOS",
+        "tot_disburse_qty": "33.3500 TRPM"
       },
       "payer": "trpm11111ico"
     }
@@ -262,100 +220,51 @@ $ cleost get table trpm11111ico trpmuser1112 fund --show-payer
   "next_key": ""
 }
 ```
-* `trpmuser1112` wants to buy "5000 TRPM" to join rehab centre. So, he transfers "119.0476 EOS" @ phas_type A rate
+  - So, basically, buyer sends `5.0000 EOS` & receives `33.3500 TRPM` tokens instead
+
+* `trpmuser1112` transfer some "8.0000 EOS" to ICO funding in phase B
 ```console
-$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "119.0476 EOS", "phase A"]' -p trpmuser1112@active
-executed transaction: 83f00f9fab72fb34daa355ed00d8267b8a9dcf796360ded5d73fae191a301ddf  136 bytes  314 us
-#   eosio.token <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"119.0476 EOS","memo":"phase A"}
-#  trpmuser1112 <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"119.0476 EOS","memo":"phase A"}
-#  trpm11111ico <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"119.0476 EOS","memo":"phase A"}
-#  trpm11111ico <= trpm11111ico::disburse       {"receiver_ac":"trpmuser1112","buyorsell_type":"buy","phase_type":"a","disburse_qty":"4999.9992 TRPM...
-#  trpm11111ico <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '4999.9992 TRPM' for depositing '119.0476 EOS' to ICO ...
-#  trpm111token <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"4999.9992 TRPM","memo":"TROPIUM ICO contract ...
-#  trpm11111ico <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"4999.9992 TRPM","memo":"TROPIUM ICO contract ...
->> Either money is not sent to the contract or contract itself is the buyer.
-#  trpmuser1112 <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"4999.9992 TRPM","memo":"TROPIUM ICO contract ...
-#  trpmuser1112 <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '4999.9992 TRPM' for depositing '119.0476 EOS' to ICO ...
+$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "8.0000 EOS", "phase B"]' -p trpmuser1112@active
+executed transaction: f946f128e4cb250e5af213e8275b9d9e940ee0a6fc062d6347989e06713b3dcd  136 bytes  288 us
+#   eosio.token <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"8.0000 EOS","memo":"phase B"}
+#  trpmuser1112 <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"8.0000 EOS","memo":"phase B"}
+#  trpm11111ico <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"8.0000 EOS","memo":"phase B"}
+#  trpm11111ico <= trpm11111ico::disburse       {"receiver_ac":"trpmuser1112","phase_type":"b","disburse_qty":"77.3600 TRPM","memo":"disburse for ph...
+#  trpm11111ico <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '77.3600 TRPM' for depositing '8.0000 EOS' to ICO cont...
+#  trpm111token <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"77.3600 TRPM","memo":"TROPIUM ICO contract di...
+#  trpm11111ico <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"77.3600 TRPM","memo":"TROPIUM ICO contract di...
+#  trpmuser1112 <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"77.3600 TRPM","memo":"TROPIUM ICO contract di...
+#  trpmuser1112 <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '77.3600 TRPM' for depositing '8.0000 EOS' to ICO cont...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
-
-
-#### For SELL
-* `trpmuser1112` wants to sell some TRPM tokens.
-  - let's see the TRPM balance
+  - View the TRPM balance of `trpmuser1112` buyer
 ```console
 $ cleost get table trpm111token trpmuser1112 accounts
 {
   "rows": [{
-      "balance": "276.0000 TRPM"
+      "balance": "110.7100 TRPM"
     }
   ],
   "more": false,
   "next_key": ""
 }
 ```
-* Now, `trpmuser1112` wants to sell "50 TRPM" tokens at the rate of phase A & gets error as the ICO rate for phase A, sell is not set
-```console
-$ cleost push action trpm111token transfer '["trpmuser1112", "trpm11111ico", "50.0000 TRPM", "phase A"]' -p trpmuser1112@active
-Error 3050003: eosio_assert_message assertion failure
-Error Details:
-assertion failure with message: ICO rate for 'sell' in phase a is not set. Contract owner must set using 'initicorate'
-pending console output:
-```
-* Now, `trpmuser1112` wants to sell "5 TRPM" tokens at the rate of phase A
-```console
-$ cleost push action trpm111token transfer '["trpmuser1112", "trpm11111ico", "5.0000 TRPM", "phase A"]' -p trpmuser1112@active
-executed transaction: b329d0f0a97717a6ab0078d6024c18b4ac5f64021aca3b82a9b9ae99ac64e302  136 bytes  284 us
-#  trpm111token <= trpm111token::transfer       {"from":"trpmuser1112","to":"trpm11111ico","quantity":"5.0000 TRPM","memo":"phase A"}
-#  trpmuser1112 <= trpm111token::transfer       {"from":"trpmuser1112","to":"trpm11111ico","quantity":"5.0000 TRPM","memo":"phase A"}
-#  trpm11111ico <= trpm111token::transfer       {"from":"trpmuser1112","to":"trpm11111ico","quantity":"5.0000 TRPM","memo":"phase A"}
-#  trpm11111ico <= trpm11111ico::disburse       {"receiver_ac":"trpmuser1112","buyorsell_type":"sell","phase_type":"a","disburse_qty":"0.2500 EOS","...
-#  trpm11111ico <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '0.2500 EOS' for depositing '5.0000 TRPM' to ICO contr...
-#   eosio.token <= eosio.token::transfer        {"from":"trpm11111ico","to":"trpmuser1112","quantity":"0.2500 EOS","memo":"TROPIUM ICO contract disb...
-#  trpm11111ico <= eosio.token::transfer        {"from":"trpm11111ico","to":"trpmuser1112","quantity":"0.2500 EOS","memo":"TROPIUM ICO contract disb...
->> Either money is not sent to the contract or contract itself is the buyer.
-#  trpmuser1112 <= eosio.token::transfer        {"from":"trpm11111ico","to":"trpmuser1112","quantity":"0.2500 EOS","memo":"TROPIUM ICO contract disb...
-#  trpmuser1112 <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '0.2500 EOS' for depositing '5.0000 TRPM' to ICO contr...
-warning: transaction executed locally, but may not be confirmed by the network yet         ]
-```
-  - view the `fund` table
+  - View the fund table of `trpmuser1112` buyer
 ```console
 $ cleost get table trpm11111ico trpmuser1112 fund --show-payer
 {
   "rows": [{
       "data": {
-        "fund_type": "buy",
-        "tot_fundtype_qty": [{
-            "first": "a",
-            "second": "3.0000 EOS"
-          },{
-            "first": "b",
-            "second": "3.0000 EOS"
-          }
-        ],
-        "tot_disburse_qty": [{
-            "first": "a",
-            "second": "126.0000 TRPM"
-          },{
-            "first": "b",
-            "second": "150.0000 TRPM"
-          }
-        ]
+        "phase_type": "a",
+        "tot_deposit_qty": "5.0000 EOS",
+        "tot_disburse_qty": "33.3500 TRPM"
       },
       "payer": "trpm11111ico"
     },{
       "data": {
-        "fund_type": "sell",
-        "tot_fundtype_qty": [{
-            "first": "a",
-            "second": "5.0000 TRPM"
-          }
-        ],
-        "tot_disburse_qty": [{
-            "first": "a",
-            "second": "0.2500 EOS"
-          }
-        ]
+        "phase_type": "b",
+        "tot_deposit_qty": "8.0000 EOS",
+        "tot_disburse_qty": "77.3600 TRPM"
       },
       "payer": "trpm11111ico"
     }
@@ -364,6 +273,69 @@ $ cleost get table trpm11111ico trpmuser1112 fund --show-payer
   "next_key": ""
 }
 ```
+* `trpmuser1112` wants to buy "500 TRPM" to join rehab centre. So, he transfers "75.0000 EOS" @ phase_type A rate
+```console
+$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "75.0000 EOS", "phase A"]' -p trpmuser1112@active
+executed transaction: a89c5827370a153130e20abe0fba13bec0f09e1aaed2d8d0fddc5a3f85504e59  136 bytes  353 us
+#   eosio.token <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"75.0000 EOS","memo":"phase A"}
+#  trpmuser1112 <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"75.0000 EOS","memo":"phase A"}
+#  trpm11111ico <= eosio.token::transfer        {"from":"trpmuser1112","to":"trpm11111ico","quantity":"75.0000 EOS","memo":"phase A"}
+#  trpm11111ico <= trpm11111ico::disburse       {"receiver_ac":"trpmuser1112","phase_type":"a","disburse_qty":"500.2500 TRPM","memo":"disburse for p...
+#  trpm11111ico <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '500.2500 TRPM' for depositing '75.0000 EOS' to ICO co...
+#  trpm111token <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"500.2500 TRPM","memo":"TROPIUM ICO contract d...
+#  trpm11111ico <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"500.2500 TRPM","memo":"TROPIUM ICO contract d...
+#  trpmuser1112 <= trpm111token::transfer       {"from":"trpm11111ico","to":"trpmuser1112","quantity":"500.2500 TRPM","memo":"TROPIUM ICO contract d...
+#  trpmuser1112 <= trpm11111ico::sendalert      {"user":"trpmuser1112","message":"You receive '500.2500 TRPM' for depositing '75.0000 EOS' to ICO co...
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+  - View the TRPM balance of `trpmuser1112` buyer
+```console
+$ cleost get table trpm111token trpmuser1112 accounts
+{
+  "rows": [{
+      "balance": "610.9600 TRPM"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+  - View the fund table of `trpmuser1112` buyer
+```console
+$ cleost get table trpm11111ico trpmuser1112 fund --show-payer
+{
+  "rows": [{
+      "data": {
+        "phase_type": "a",
+        "tot_deposit_qty": "80.0000 EOS",
+        "tot_disburse_qty": "533.6000 TRPM"
+      },
+      "payer": "trpm11111ico"
+    },{
+      "data": {
+        "phase_type": "b",
+        "tot_deposit_qty": "8.0000 EOS",
+        "tot_disburse_qty": "77.3600 TRPM"
+      },
+      "payer": "trpm11111ico"
+    }
+  ],
+  "more": false,
+  "next_key": ""
+}
+```
+  - Here, note that the total balance in TRPM matches with the sum of disbursement of phase A & B till now.
+  - This situation is only possible, if the user doesn't receive TRPM tokens from any other source.
+
+* `trpmuser1112` transfer some "10.0000 EOS" to ICO funding in phase C
+```console
+$ cleost push action eosio.token transfer '["trpmuser1112", "trpm11111ico", "10.0000 EOS", "phase C"]' -p trpmuser1112@active
+Error 3050003: eosio_assert_message assertion failure
+Error Details:
+assertion failure with message: ICO rate for phase c is not set.'tropiumchain' must set using 'seticorate'
+pending console output:
+```
+
 
 ## TODO
 * [ ] Phase from_date, to_date for ICO
