@@ -76,20 +76,20 @@ warning: transaction executed locally, but may not be confirmed by the network y
 * A doctor `trpmdoc11111` registers
 ```console
 $ cleost push action trpm111stake regbydoctor '["trpmdoc11111", "http://www.hipaaspace.com/medical_billing/coding/npi/codes/npi_1891894531.aspx"]' -p trpmdoc11111@active
-executed transaction: aa3f824fa95f52a48305d9f3886ab58935c82a4ac6e1c83cbd443a5b73b301e9  184 bytes  317 us
+executed transaction: 64d0e1fca08b9048f7515c22fb5b619fb5976e2c21c4e79e89e7756cb731b10d  184 bytes  340 us
 #  trpm111stake <= trpm111stake::regbydoctor    {"doctor":"trpmdoc11111","profile_url":"http://www.hipaaspace.com/medical_billing/coding/npi/codes/n...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- view the table
 ```console
-$ cleost get table trpm111stake trpmdoc11111 auth --show-payer
+$ cleost get table trpm111stake trpm111stake auth --show-payer --lower trpmdoc11111 --limit 1
 {
   "rows": [{
       "data": {
         "doctor": "trpmdoc11111",
         "profile_url": "http://www.hipaaspace.com/medical_billing/coding/npi/codes/npi_1891894531.aspx",
         "user_status": "added",
-        "add_timestamp": 1600709811,
+        "add_timestamp": 1601401696,
         "verify_timestamp": 0,
         "blist_timestamp": 0,
         "validator_verify": "",
@@ -114,37 +114,35 @@ pending console output:
   - for doctor `trpmdoc11112`
 ```console
 $ cleost push action trpm111stake regbydoctor '["trpmdoc11112", "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx"]' -p trpmdoc11112@active
-executed transaction: bcebae79c7515007f578ed1536ba2038a899dbd59eded1cbf1d775f983af1968  208 bytes  203 us
+executed transaction: 81481fc1473c14a58c78bd7058008d1aa2f7e7951e7cc5b5877475b0d1ef2a58  208 bytes  141 us
 #  trpm111stake <= trpm111stake::regbydoctor    {"doctor":"trpmdoc11112","profile_url":"https://www.hipaaspace.com/medical_billing/coding/national_p...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
   - for doctor `trpmdoc11113`
 ```console
 $ cleost push action trpm111stake regbydoctor '["trpmdoc11113", "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx"]' -p trpmdoc11113@active
-executed transaction: aa567df6659ea5557686f8c25272c26ee8da3712345f35cc35a42f6044d32dc5  208 bytes  177 us
+executed transaction: f7c1042c15e56013946bce177b7203b05d3ed3497f332846b07e45a427e1f04b  208 bytes  207 us
 #  trpm111stake <= trpm111stake::regbydoctor    {"doctor":"trpmdoc11113","profile_url":"https://www.hipaaspace.com/medical_billing/coding/national_p...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
   - for doctor `trpmdoc11114`
 ```console
-$ cleost push action trpm111stake regbydoctor '["trpmdoc11114", "https://www.hipaaspace.com/
-medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx"]' -p trpmdoc11114@active
-executed transaction: e6e27f6e4918965da90eca99df8c79c99142042a109a415e0ca84c135f3f4af0  208 bytes  250 us
+$ cleost push action trpm111stake regbydoctor '["trpmdoc11114", "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx"]' -p trpmdoc11114@active
+executed transaction: 7a6249cb37c5e333ebfbd822130d7cc1b90865542cd09f8cd8b1008f87b84889  208 bytes  224 us
 #  trpm111stake <= trpm111stake::regbydoctor    {"doctor":"trpmdoc11114","profile_url":"https://www.hipaaspace.com/medical_billing/coding/national_p...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
   - for doctor `trpmdoc11115`
 ```console
-$ cleost push action trpm111stake regbydoctor '["trpmdoc11115", "https://www.hipaaspace.com/
-medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx"]' -p trpmdoc11115@active
-executed transaction: 9a9d7606b752ed05d5d62b96ef553f21203d036402857f25a1fefec7b0818e9c  208 bytes  176 us
+$ cleost push action trpm111stake regbydoctor '["trpmdoc11115", "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx"]' -p trpmdoc11115@active
+executed transaction: d9239c166b3eacc24dd7dc93c113cef7c65705edad1d9a9f900d978cbedeaef0  208 bytes  158 us
 #  trpm111stake <= trpm111stake::regbydoctor    {"doctor":"trpmdoc11115","profile_url":"https://www.hipaaspace.com/medical_billing/coding/national_p...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
   - for doctor `trpmdoc11121`
 ```console
 $ cleost push action trpm111stake regbydoctor '["trpmdoc11121", "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx"]' -p trpmdoc11121@active
-executed transaction: 4f848045140b04c036c6e6340906153a9ce8c7c579a2fa333f5b5c9f9969edeb  208 bytes  264 us
+executed transaction: 534722a2cc2dd3f80cf077e7bb7e9deab3738ee4e57a85ab1a9538e2c4c1dddb  208 bytes  200 us
 #  trpm111stake <= trpm111stake::regbydoctor    {"doctor":"trpmdoc11121","profile_url":"https://www.hipaaspace.com/medical_billing/coding/national_p...
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
@@ -153,8 +151,8 @@ warning: transaction executed locally, but may not be confirmed by the network y
 * founder `eosaidchains` add itself as admin to the list
 ```console
 $ cleost push action trpm111stake compaddadmin '[]' -p eosaidchains@active
-executed transaction: 7c0cbbb2368822ef386bff28e58d7200efa43b9015fd9c9a607af593a7757950  104 bytes  156 us
-#  trpm111stake <= trpm111stake::compaddadmin   {"founder_ac":"eosaidchains"}
+executed transaction: acdcccec97547ccb7bf877fe419d8e233dffd8cbf0893d18621ed94691dd6864  96 bytes  196 us
+#  trpm111stake <= trpm111stake::compaddadmin   ""
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 	- view the table
@@ -188,31 +186,31 @@ pending console output:
 * founder `eosaidchains` verifies the doctor `trpmdoc11111`
 ```console
 $ cleost push action trpm111stake verify '["eosaidchains", "trpmdoc11111"]' -p eosaidchains@active
-executed transaction: 5ad2aa167840d1d1ec50bcef94f289b211ab45431368b717c23f720cdf0e4c9c  112 bytes  379 us
+executed transaction: 9e7f02eabd0648c73eb6321fc4a0ca63694edfb3c7aa96fd4c22257c7ee5c22f  112 bytes  223 us
 #  trpm111stake <= trpm111stake::verify         {"verified_doctor":"eosaidchains","new_doctor":"trpmdoc11111"}
 #  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmdoc11111"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
   - view the table `auth`
 ```console
-$ cleost get table trpm111stake trpmdoc11111 auth --show-payer
+$ cleost get table trpm111stake trpm111stake auth --show-payer --lower trpmdoc11111 --limit 1
 {
   "rows": [{
       "data": {
         "doctor": "trpmdoc11111",
         "profile_url": "http://www.hipaaspace.com/medical_billing/coding/npi/codes/npi_1891894531.aspx",
         "user_status": "verified",
-        "add_timestamp": 1600709811,
-        "verify_timestamp": 1600716255,
+        "add_timestamp": 1601401696,
+        "verify_timestamp": 1601402013,
         "blist_timestamp": 0,
         "validator_verify": "eosaidchains",
         "validators_blacklist": []
       },
-      "payer": "trpm111stake"
+      "payer": "trpmdoc11111"
     }
   ],
-  "more": false,
-  "next_key": ""
+  "more": true,
+  "next_key": "14837993877386314272"
 }
 ```
   - view the table `admins`
@@ -242,7 +240,7 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
   - to verify `trpmdoc11112`
 ```console
 $ cleost push action trpm111stake verify '["trpmdoc11111", "trpmdoc11112"]' -p trpmdoc11111@active
-executed transaction: d72f6ffd51fbac582847ea64e1d053a30e56568d8100c08074d6216d7baf420a  112 bytes  216 us
+executed transaction: 150d88db2802b84f56350c342f79c48879cf4efa8fb29a59bba449a3214474f3  112 bytes  185 us
 #  trpm111stake <= trpm111stake::verify         {"verified_doctor":"trpmdoc11111","new_doctor":"trpmdoc11112"}
 #  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmdoc11112"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
@@ -270,7 +268,7 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
   - to verify `trpmdoc11113`
 ```console
 $ cleost push action trpm111stake verify '["trpmdoc11111", "trpmdoc11113"]' -p trpmdoc11111@active
-executed transaction: cf525883fd62826c893757ce6a3723f26c1196aab12c5e59307a1eddd0096b21  112 bytes  207 us
+executed transaction: c4b812e4288f102390ee9f08e28d0919ffbb5a72cf3dfadfafddbe1d250ee909  112 bytes  157 us
 #  trpm111stake <= trpm111stake::verify         {"verified_doctor":"trpmdoc11111","new_doctor":"trpmdoc11113"}
 #  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmdoc11113"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
@@ -300,7 +298,7 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
   - to verify `trpmdoc11114`
 ```console
 $ cleost push action trpm111stake verify '["trpmdoc11112", "trpmdoc11114"]' -p trpmdoc11112@active
-executed transaction: 31ca2183c79635ce86e9883dfca2ae116deeee960f005558c5f41f5ea51e3423  112 bytes  207 us
+executed transaction: 7dd121d56508798eaa8613454159e1782cf2b1f2f3b699c987f6d9aed1e0003f  112 bytes  183 us
 #  trpm111stake <= trpm111stake::verify         {"verified_doctor":"trpmdoc11112","new_doctor":"trpmdoc11114"}
 #  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmdoc11114"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
@@ -330,7 +328,7 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
   - to verify `trpmdoc11115`
 ```console
 $ cleost push action trpm111stake verify '["trpmdoc11112", "trpmdoc11115"]' -p trpmdoc11112@active
-executed transaction: 726d8ef5ae1b97e9d505b8c2738c7819903a2d8886d201b9913f4942c21ccec7  112 bytes  208 us
+executed transaction: 79f75979a1774ce0070aa774b8b5e9776d89ef264e86af2ac156a4f16e3da882  112 bytes  194 us
 #  trpm111stake <= trpm111stake::verify         {"verified_doctor":"trpmdoc11112","new_doctor":"trpmdoc11115"}
 #  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmdoc11115"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
@@ -361,7 +359,7 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
   - to verify `trpmdoc11121`
 ```console
 $ cleost push action trpm111stake verify '["trpmdoc11112", "trpmdoc11121"]' -p trpmdoc11112@active
-executed transaction: 150d6c3fbb3556fb48262cd6f4f1c8a651c697920b905ecb3f782d53fbe03227  112 bytes  193 us
+executed transaction: f8e12c53e8eaebf88e43bb289f1175cf34849391bb0f742ecf9e11abdcf65577  112 bytes  214 us
 #  trpm111stake <= trpm111stake::verify         {"verified_doctor":"trpmdoc11112","new_doctor":"trpmdoc11121"}
 #  trpm111stake <= trpm111stake::addadmin       {"doctor":"trpmdoc11121"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
@@ -396,7 +394,7 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
   1. blacklist by `eosaidchains`
 ```console
 $ cleost push action trpm111stake blacklist '["eosaidchains", "trpmdoc11113"]' -p eosaidchains@active
-executed transaction: 4f5054342a0607ae5f1ff11b87b792f4f10a8b6eede5a06bb315259cac028c19  112 bytes  221 us
+executed transaction: 86a91bda549ed9ba6df723d9b9fdbf604f6e580415aae634f4d12880214879eb  112 bytes  336 us
 #  trpm111stake <= trpm111stake::blacklist      {"verified_doctor":"eosaidchains","doctor":"trpmdoc11113"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
@@ -426,16 +424,16 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
 ```
     + view the table `auth`
 ```console
-$ cleost get table trpm111stake trpmdoc11113 auth --show-payer
+$ cleost get table trpm111stake trpm111stake auth --show-payer --lower trpmdoc11113 --limit 1
 {
   "rows": [{
       "data": {
         "doctor": "trpmdoc11113",
         "profile_url": "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx",
         "user_status": "blacklisted",
-        "add_timestamp": 1600716893,
-        "verify_timestamp": 1600719809,
-        "blist_timestamp": 1600720704,
+        "add_timestamp": 1601401802,
+        "verify_timestamp": 1601402117,
+        "blist_timestamp": 1601402388,
         "validator_verify": "trpmdoc11111",
         "validators_blacklist": [
           "eosaidchains"
@@ -444,15 +442,15 @@ $ cleost get table trpm111stake trpmdoc11113 auth --show-payer
       "payer": "trpm111stake"
     }
   ],
-  "more": false,
-  "next_key": ""
+  "more": true,
+  "next_key": "14837993877386314304"
 }
 ```
 
   2. blacklist by `trpmdoc11111`
 ```console
 $ cleost push action trpm111stake blacklist '["trpmdoc11111", "trpmdoc11113"]' -p trpmdoc11111@active
-executed transaction: 98390b0c18ea86f6aa7c354d2c23354024a6b458e321c64e92dd9161440218dd  112 bytes  220 us
+executed transaction: 3c531e9905227bdc69f265d9dc4301fac4bf5d678dbb88ef7500f9b94598cb92  112 bytes  175 us
 #  trpm111stake <= trpm111stake::blacklist      {"verified_doctor":"trpmdoc11111","doctor":"trpmdoc11113"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
@@ -482,16 +480,16 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
 ```
     + view the table `auth`
 ```console
-$ cleost get table trpm111stake trpmdoc11113 auth --show-payer
+$ cleost get table trpm111stake trpm111stake auth --show-payer --lower trpmdoc11113 --limit 1
 {
   "rows": [{
       "data": {
         "doctor": "trpmdoc11113",
         "profile_url": "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx",
         "user_status": "blacklisted",
-        "add_timestamp": 1600716893,
-        "verify_timestamp": 1600719809,
-        "blist_timestamp": 1600720756,
+        "add_timestamp": 1601401802,
+        "verify_timestamp": 1601402117,
+        "blist_timestamp": 1601402473,
         "validator_verify": "trpmdoc11111",
         "validators_blacklist": [
           "eosaidchains",
@@ -501,14 +499,14 @@ $ cleost get table trpm111stake trpmdoc11113 auth --show-payer
       "payer": "trpm111stake"
     }
   ],
-  "more": false,
-  "next_key": ""
+  "more": true,
+  "next_key": "14837993877386314304"
 }
 ```
   3. blacklist by `trpmdoc11112`
 ```console
 $ cleost push action trpm111stake blacklist '["trpmdoc11112", "trpmdoc11113"]' -p trpmdoc11112@active
-executed transaction: 4af6e38bca522e04241f37b667ae875c75b68e77ee1981460dc0008e02d7a09c  112 bytes  281 us
+executed transaction: f4c554cb8e37a75f69097a71f13295eba5e39725ad96f8490900935de65a88c0  112 bytes  158 us
 #  trpm111stake <= trpm111stake::blacklist      {"verified_doctor":"trpmdoc11112","doctor":"trpmdoc11113"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
@@ -538,16 +536,16 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
 ```
     + view the table `auth`
 ```console
-$ cleost get table trpm111stake trpmdoc11113 auth --show-payer
+$ cleost get table trpm111stake trpm111stake auth --show-payer --lower trpmdoc11113 --limit 1
 {
   "rows": [{
       "data": {
         "doctor": "trpmdoc11113",
         "profile_url": "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx",
         "user_status": "blacklisted",
-        "add_timestamp": 1600716893,
-        "verify_timestamp": 1600719809,
-        "blist_timestamp": 1600720833,
+        "add_timestamp": 1601401802,
+        "verify_timestamp": 1601402117,
+        "blist_timestamp": 1601402536,
         "validator_verify": "trpmdoc11111",
         "validators_blacklist": [
           "eosaidchains",
@@ -558,14 +556,14 @@ $ cleost get table trpm111stake trpmdoc11113 auth --show-payer
       "payer": "trpm111stake"
     }
   ],
-  "more": false,
-  "next_key": ""
+  "more": true,
+  "next_key": "14837993877386314304"
 }
 ```
   4. blacklist by `trpmdoc11114`
 ```console
 $ cleost push action trpm111stake blacklist '["trpmdoc11114", "trpmdoc11113"]' -p trpmdoc11114@active
-executed transaction: 1eba132df4202f1a0a1f4d79d393bc214cee3fb84174f0f623bca8bbdb9dfc1c  112 bytes  210 us
+executed transaction: daea8061d6cc123b7c293de8a7b871e1f7031d89953c01b459eaa3b00422e46e  112 bytes  137 us
 #  trpm111stake <= trpm111stake::blacklist      {"verified_doctor":"trpmdoc11114","doctor":"trpmdoc11113"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
@@ -595,16 +593,16 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
 ```
     + view the table `auth`
 ```console
-$ cleost get table trpm111stake trpmdoc11113 auth --show-payer
+$ cleost get table trpm111stake trpm111stake auth --show-payer --lower trpmdoc11113 --limit 1
 {
   "rows": [{
       "data": {
         "doctor": "trpmdoc11113",
         "profile_url": "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx",
         "user_status": "blacklisted",
-        "add_timestamp": 1600716893,
-        "verify_timestamp": 1600719809,
-        "blist_timestamp": 1600720992,
+        "add_timestamp": 1601401802,
+        "verify_timestamp": 1601402117,
+        "blist_timestamp": 1601402583,
         "validator_verify": "trpmdoc11111",
         "validators_blacklist": [
           "eosaidchains",
@@ -616,14 +614,14 @@ $ cleost get table trpm111stake trpmdoc11113 auth --show-payer
       "payer": "trpm111stake"
     }
   ],
-  "more": false,
-  "next_key": ""
+  "more": true,
+  "next_key": "14837993877386314304"
 }
 ```
   5. blacklist by `trpmdoc11115`
 ```console
 $ cleost push action trpm111stake blacklist '["trpmdoc11115", "trpmdoc11113"]' -p trpmdoc11115@active
-executed transaction: 627956fe804fb2061b0a13455b617050326b8ecf2a90453f2d1379b3fdb5e4fb  112 bytes  204 us
+executed transaction: 0d88867886c9e0a3adcf3bb00695b2f62d5688c2f40ba991eb50c7cae5c5585e  112 bytes  186 us
 #  trpm111stake <= trpm111stake::blacklist      {"verified_doctor":"trpmdoc11115","doctor":"trpmdoc11113"}
 #  trpm111stake <= trpm111stake::remadmin       {"doctor":"trpmdoc11113"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
@@ -653,16 +651,16 @@ $ cleost get table trpm111stake trpm111stake admins --show-payer
 ```
     + view the table `auth`
 ```console
-$ cleost get table trpm111stake trpmdoc11113 auth --show-payer
+$ cleost get table trpm111stake trpm111stake auth --show-payer --lower trpmdoc11113 --limit 1
 {
   "rows": [{
       "data": {
         "doctor": "trpmdoc11113",
         "profile_url": "https://www.hipaaspace.com/medical_billing/coding/national_provider_identifier/codes/npi_1467586115.aspx",
         "user_status": "blacklisted",
-        "add_timestamp": 1600716893,
-        "verify_timestamp": 1600719809,
-        "blist_timestamp": 1600721078,
+        "add_timestamp": 1601401802,
+        "verify_timestamp": 1601402117,
+        "blist_timestamp": 1601402617,
         "validator_verify": "trpmdoc11111",
         "validators_blacklist": [
           "eosaidchains",
@@ -675,8 +673,8 @@ $ cleost get table trpm111stake trpmdoc11113 auth --show-payer
       "payer": "trpm111stake"
     }
   ],
-  "more": false,
-  "next_key": ""
+  "more": true,
+  "next_key": "14837993877386314304"
 }
 ```
 * Obeservations
@@ -840,6 +838,30 @@ $ cleost get table trpm111stake trpmuser1112 stakewallet --show-payer
   "more": false,
   "next_key": ""
 }
+```
+
+
+## Extra
+* del `admins` table
+```console
+$ cleost push action trpm111stake testdeladmin '[]' -p trpm111stake@active
+executed transaction: eae1544da3adf8f7872ce35fb50b4b4a4f2d82ff9f7ef06200182dba558794f2  96 bytes  278 us
+#  trpm111stake <= trpm111stake::testdeladmin   ""
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+* del `auth` table
+```console
+$ cleost push action trpm111stake testdelauth '["trpmdoc11111"]' -p trpm111stake@active
+executed transaction: d5b27ec97138fd4c9604d08132ee202e969999bcb1da037510ca230bd9b07d34  104 bytes  176 us
+#  trpm111stake <= trpm111stake::testdelauth    {"doctor":"trpmdoc11111"}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
+```
+* del `stakewallet` table
+```console
+$ cleost push action trpm111stake testdelstake '["trpmuser1112"]' -p trpm111stake@active
+executed transaction: d5b27ec97138fd4c9604d08132ee202e969999bcb1da037510ca230bd9b07d34  104 bytes  176 us
+#  trpm111stake <= trpm111stake::testdelauth    {"doctor":"trpmdoc11111"}
+warning: transaction executed locally, but may not be confirmed by the network yet         ]
 ```
 
 ## TODO

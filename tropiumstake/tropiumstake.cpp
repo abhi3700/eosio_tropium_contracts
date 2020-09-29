@@ -7,7 +7,7 @@ void tropiumstake::regbydoctor( const name& doctor,
 {
 	require_auth(doctor);
 
-	auth_index auth_table(get_self(), doctor.value);
+	auth_index auth_table(get_self(), get_self().value);
 	auto auth_it = auth_table.find(doctor.value);
 
 	check(auth_it == auth_table.end(), "the doctor\'s info is already added.");
@@ -41,7 +41,7 @@ void tropiumstake::verify( const name& verified_doctor,
 	// check if the verified_doctor is one of the admins
 	check_admin(get_self(), verified_doctor);
 
-	auth_index auth_table(get_self(), new_doctor.value);
+	auth_index auth_table(get_self(), get_self().value);
 	auto auth_it = auth_table.find(new_doctor.value);
 
 	check(auth_it != auth_table.end(), "Doctor doesn\'t exist in the auth table.");
@@ -49,7 +49,7 @@ void tropiumstake::verify( const name& verified_doctor,
 	// check that doctor's status must not be "verified"
 	check((auth_it->user_status != "verified"_n), "The doctor may already verified.");
 
-	auth_table.modify(auth_it, get_self(), [&](auto& row) {
+	auth_table.modify(auth_it, same_payer, [&](auto& row) {
 		row.user_status = "verified"_n;
 		row.verify_timestamp = now();
 		row.validator_verify = verified_doctor;
@@ -77,7 +77,7 @@ void tropiumstake::blacklist( const name& verified_doctor,
 	// check if the verified_doctor is one of the admins
 	check_admin(get_self(), verified_doctor);
 
-	auth_index auth_table(get_self(), doctor.value);
+	auth_index auth_table(get_self(), get_self().value);
 	auto auth_it = auth_table.find(doctor.value);
 
 	check(auth_it != auth_table.end(), "Doctor doesn\'t exist in the auth table.");
