@@ -858,7 +858,7 @@ warning: transaction executed locally, but may not be confirmed by the network y
 ```
 * del `stakewallet` table
 ```console
-$ cleost push action trpm111stake testdelstake '["trpmuser1112"]' -p trpm111stake@active
+$ cleost push action trpm111stake testdelrehab '["trpmuser1112"]' -p trpm111stake@active
 executed transaction: d5b27ec97138fd4c9604d08132ee202e969999bcb1da037510ca230bd9b07d34  104 bytes  176 us
 #  trpm111stake <= trpm111stake::testdelauth    {"doctor":"trpmdoc11111"}
 warning: transaction executed locally, but may not be confirmed by the network yet         ]
